@@ -1,83 +1,135 @@
 // FILE: src/App.tsx
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
-import { VideoSection } from './components/VideoSection';
-import { Vacancies, Vacancy } from './components/Vacancies';
-import { Modal } from './components/Modal';
 import { Partners } from './components/Partners';
 import { Schedule } from './components/Schedule';
-import { Reviews } from './components/Reviews';
 import { Steps } from './components/Steps';
 import { ContactForm } from './components/ContactForm';
-import { MobileApp } from './components/MobileApp';
 import { Footer } from './components/Footer';
-import { ScrollCar } from './components/ScrollCar';
+import { trackGoal } from './utils/analytics';
+import { ToastProvider } from './components/Toast';
+
+// Vacancies и Reviews тянут за собой swiper (не нужен для первого рендера) —
+// импортируем тип Vacancy отдельно (tree-shakeable), сами компоненты лениво
+type Vacancy = import('./components/Vacancies').Vacancy;
+const Vacancies = lazy(() => import('./components/Vacancies').then(m => ({ default: m.Vacancies })));
+const Reviews = lazy(() => import('./components/Reviews').then(m => ({ default: m.Reviews })));
+
+// Lazy-loaded components (не нужны при первой загрузке)
+const Modal = lazy(() => import('./components/Modal').then(m => ({ default: m.Modal })));
+const SeoLandingContent = lazy(() => import('./components/SeoLandingContent').then(m => ({ default: m.SeoLandingContent })));
+const MobileApp = lazy(() => import('./components/MobileApp').then(m => ({ default: m.MobileApp })));
+const ScrollCar = lazy(() => import('./components/ScrollCar').then(m => ({ default: m.ScrollCar })));
+const KnowledgeModal = lazy(() => import('./components/KnowledgeModal').then(m => ({ default: m.KnowledgeModal })));
+// Импортируем тип LegalType отдельно (tree-shakeable)
+type LegalType = import('./components/LegalModal').LegalType;
+const LegalModal = lazy(() => import('./components/LegalModal').then(m => ({ default: m.LegalModal })));
+const CookieBanner = lazy(() => import('./components/CookieBanner').then(m => ({ default: m.CookieBanner })));
 
 export const App = () => {
   const [selectedVacancy, setSelectedVacancy] = useState<Vacancy | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
   
-  // Состояние для автовыбора вакансии в форме
-  const [formVacancy, setFormVacancy] = useState<string | null>(null);
+  // Состояние для юридических модалок
+  const [legalModalType, setLegalModalType] = useState<LegalType>(null);
 
+  // Вакансии
   const handleOpenModal = (vacancy: Vacancy) => {
     setSelectedVacancy(vacancy);
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    // При простом закрытии не сбрасываем selectedVacancy сразу, чтобы не дергалась анимация
-  };
+  const handleCloseModal = () => setIsModalOpen(false);
 
-  // Функция, которая срабатывает при клике "Откликнуться" в модалке
+  // База знаний
+  const handleOpenKnowledge = () => setIsKnowledgeOpen(true);
+  const handleCloseKnowledge = () => setIsKnowledgeOpen(false);
+
+  // Юридические документы
+  const handleOpenLegal = (type: LegalType) => setLegalModalType(type);
+  const handleCloseLegal = () => setLegalModalType(null);
+
+  // Прокрутка к форме
   const handleApplyFromModal = () => {
-    if (selectedVacancy) {
-      setFormVacancy(selectedVacancy.title); // Передаем название в форму
-      setIsModalOpen(false); // Закрываем модалку
-      
-      // Плавный скролл к форме
-      const orderSection = document.getElementById('order');
-      if (orderSection) {
-         orderSection.scrollIntoView({ behavior: 'smooth' });
-      }
+    trackGoal('vacancy_apply_click', { vacancy: selectedVacancy?.id ?? 'unknown' });
+    setIsModalOpen(false);
+    const orderSection = document.getElementById('order');
+    if (orderSection) {
+      orderSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
+    <ToastProvider>
     <div className="min-h-screen bg-white">
-      <ScrollCar />
-      <Header />
+      <Suspense fallback={null}>
+        <ScrollCar />
+      </Suspense>
       
-      {/* Отступ для фиксированной шапки */}
+      <Header onOpenKnowledge={handleOpenKnowledge} />
+      
       <div className="h-20"></div>
-
+      
       <main>
         <Hero />
         <About />
-        <VideoSection />
-        <Vacancies onOpenModal={handleOpenModal} />
+        <Suspense fallback={null}>
+          <Vacancies onOpenModal={handleOpenModal} />
+        </Suspense>
         <Partners />
         <Schedule />
-        <Reviews />
+        <Suspense fallback={null}>
+          <Reviews />
+        </Suspense>
         <Steps />
-        {/* Передаем выбранную вакансию в форму */}
-        <ContactForm selectedVacancy={formVacancy} />
-        <MobileApp />
+        <Suspense fallback={null}>
+          <SeoLandingContent />
+        </Suspense>
+        {/* Передаем функцию открытия Оферты в форму */}
+        <ContactForm 
+            onOpenLegal={handleOpenLegal}
+        />
+        <Suspense fallback={null}>
+          <MobileApp />
+        </Suspense>
       </main>
+      
+      {/* Передаем функцию открытия документов в футер */}
+      <Footer onOpenLegal={handleOpenLegal} />
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          vacancy={selectedVacancy}
+          onApply={handleApplyFromModal}
+        />
+      </Suspense>
 
-      {/* Модальное окно теперь должно уметь вызывать handleApplyFromModal */}
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
-        vacancy={selectedVacancy}
-        onApply={handleApplyFromModal} // <-- Нам нужно добавить этот пропс в Modal
-      />
+      <Suspense fallback={null}>
+        <KnowledgeModal 
+          isOpen={isKnowledgeOpen}
+          onClose={handleCloseKnowledge}
+        />
+      </Suspense>
+
+      {/* Юридическая модалка */}
+      <Suspense fallback={null}>
+        <LegalModal
+          type={legalModalType}
+          onClose={handleCloseLegal}
+        />
+      </Suspense>
+
+      {/* Cookie-уведомление (блок C3) */}
+      <Suspense fallback={null}>
+        <CookieBanner onOpenLegal={handleOpenLegal} />
+      </Suspense>
     </div>
+    </ToastProvider>
   );
 };

@@ -12,7 +12,7 @@ export const Steps = () => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.4 }
     );
 
     if (sectionRef.current) {
@@ -26,7 +26,7 @@ export const Steps = () => {
     {
       id: "01",
       title: "Оставить заявку",
-      text: "Заполни простую форму на сайте. Это займет не более 2 минут.",
+      text: "Заполни простую форму на сайте. Это займет не более 30 секунд!",
       icon: <FileText size={28} />
     },
     {
@@ -50,7 +50,7 @@ export const Steps = () => {
   ];
 
   return (
-    <section className="py-12 bg-white relative overflow-hidden" ref={sectionRef}>
+    <section className="py-12 bg-gradient-to-br from-green-50 via-green-50/30 to-white relative overflow-hidden" ref={sectionRef}>
       <div className="container mx-auto relative z-10">
         <h2 className={`text-3xl lg:text-4xl font-bold uppercase text-center mb-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           Что нужно сделать?
@@ -61,7 +61,7 @@ export const Steps = () => {
           {/* Connecting line */}
           <div className="hidden lg:block absolute top-16 left-0 right-0 h-0.5 bg-gray-200">
             <div 
-              className="h-full bg-blue-600 transition-all duration-1000 ease-out"
+              className="h-full bg-green-600 transition-all duration-1000 ease-out"
               style={{ width: isVisible ? '100%' : '0%' }}
             />
           </div>
@@ -75,19 +75,19 @@ export const Steps = () => {
               >
                 {/* Step number circle */}
                 <div className="relative z-20 flex justify-center mb-4">
-                  <div className={`w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ${isVisible ? 'scale-100' : 'scale-0'}`}
+                  <div className={`w-14 h-14 rounded-full bg-gradient-to-br from-green-700 to-green-700 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ${isVisible ? 'scale-100' : 'scale-0'}`}
                     style={{ transitionDelay: `${index * 200 + 300}ms` }}
                   >
                     {step.icon}
                   </div>
                 </div>
 
-                <div className="text-6xl font-bold text-gray-100 absolute -top-2 left-0 z-0 group-hover:text-blue-100 transition-colors font-oswald select-none">
+                <div className="text-6xl font-bold text-gray-100 absolute -top-2 left-0 z-0 group-hover:text-green-200 transition-colors font-oswald select-none">
                   {step.id}
                 </div>
 
                 <div className="relative z-10 text-center">
-                  <h4 className="text-lg font-bold font-oswald mb-2 group-hover:text-blue-600 transition-colors">
+                  <h4 className="text-lg font-bold font-oswald mb-2 group-hover:text-green-600 transition-colors">
                     {step.title}
                   </h4>
                   <p className="text-gray-600 text-sm">
@@ -102,7 +102,7 @@ export const Steps = () => {
       
       {/* Decorative Background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full opacity-5 pointer-events-none">
-         <svg viewBox="0 0 100 100" className="w-full h-full fill-blue-600 animate-pulse">
+         <svg viewBox="0 0 100 100" className="w-full h-full fill-green-600 animate-pulse">
             <circle cx="50" cy="50" r="40" />
          </svg>
       </div>

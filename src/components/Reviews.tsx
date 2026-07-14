@@ -16,7 +16,7 @@ export const Reviews = () => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.4 }
     );
 
     if (sectionRef.current) {
@@ -28,62 +28,67 @@ export const Reviews = () => {
 
   const reviews = [
     {
-      name: "Алексей Смирнов",
-      role: "Курьер",
-      text: "Отличная работа для студента. Совмещаю с учебой без проблем. Выплаты всегда вовремя, что для меня самое главное.",
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      name: "Владимир Бондарь",
+      role: "Знаток города 4 уровня",
+      text: "Отличный сервис. Решают очень много вопросов и довольно быстро. Сотрудничаю с ними уже пятый месяц и ни разу не пожалел о выборе парка. Спасибо за Ваш профессионализм. Минусов пока небыло.",
+      emoji: "😀",
       rating: 5
     },
     {
-      name: "Марина Иванова",
-      role: "Сборщик заказов",
-      text: "Работаю уже полгода. Нравится коллектив и то, что магазин рядом с домом. Не трачу время на дорогу.",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
+      name: "Халил Магомедов",
+      role: "Знаток города 3 уровня",
+      text: "Пришел,вежливо обслужили,быстро помогли,проверили готовность на работу,дали советы,подсказали как и где лучше брать заказы.Огромное спасибо работникам,отзывчивость на уровне. Спасибо большое",
+      emoji: "😃",
       rating: 5
     },
     {
-      name: "Дмитрий Петров",
-      role: "Водитель",
-      text: "Перешел сюда из такси. Заработок выше, а нервов меньше. Машину предоставляют, бензин оплачивают.",
-      image: "https://randomuser.me/api/portraits/men/86.jpg",
+      name: "Александр Султан",
+      role: "Знаток города 3 уровня",
+      text: "Добрый день! Хочу выразить благодарность сотрудникам Барори Парк за их помощь в решении различных спорных вопросов. Всегда готовы выслушать и помочь. Настоящие профессионалы в своём деле! Спасибо!",
+      emoji: "😄",
       rating: 5
     },
     {
-      name: "Елена Козлова",
-      role: "Менеджер чата",
-      text: "Работаю из дома, пока ребенок в садике. Очень удобно! Обучили всему за пару дней.",
-      image: "https://randomuser.me/api/portraits/women/65.jpg",
-      rating: 4
+      name: "Оксана Б.",
+      role: "Знаток города 5 уровня",
+      text: "Здравствуйте! Рекомендую данный таксопарк! Очень оперативно работают. Термокоробы не дорогие, не завышают цены! Шахноза очень компетентный работник, проконсультировала. И ещё подарили омывающую! Советую. Пять звезд!",
+      emoji: "😊",
+      rating: 5
     }
   ];
 
   return (
-    <section className="py-12 bg-slate-50" ref={sectionRef}>
+    // Уменьшили отступ сверху для мобил (py-8)
+    <section className="py-8 lg:py-12 bg-gradient-to-br from-green-50 via-green-50/30 to-white" ref={sectionRef}>
       <div className="container mx-auto">
-        
-        {/* Заголовок с кнопками навигации */}
-        <div className={`flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          
-          {/* Кнопка "Назад" - Прямоугольная, залитая */}
-          <button className="review-prev hidden md:flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-            <ArrowLeft size={24} />
-          </button>
+
+        {/* Заголовок и кнопки навигации */}
+        {/* ВАЖНО: Добавил mb-6 только для ПК (lg:mb-10), чтобы на мобиле не было дырки */}
+        <div className={`flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-4 lg:mb-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+
+          {/* Кнопка Назад - скрыта на мобильном */}
+          <div className="hidden md:block">
+            <button className="review-prev flex items-center justify-center w-12 h-12 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg shadow-green-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+              <ArrowLeft size={24} />
+            </button>
+          </div>
 
           <h2 className="text-3xl lg:text-4xl font-bold uppercase text-center">
             Отзывы сотрудников
           </h2>
 
-          {/* Кнопка "Вперед" - Прямоугольная, залитая */}
-          <button className="review-next hidden md:flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-            <ArrowRight size={24} />
-          </button>
+          {/* Кнопка Вперед - скрыта на мобильном */}
+          <div className="hidden md:block">
+            <button className="review-next flex items-center justify-center w-12 h-12 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg shadow-green-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+              <ArrowRight size={24} />
+            </button>
+          </div>
         </div>
 
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           spaceBetween={24}
           slidesPerView={1}
-          // Связываем кнопки по классам
           navigation={{
             prevEl: '.review-prev',
             nextEl: '.review-next',
@@ -102,16 +107,18 @@ export const Reviews = () => {
                 className={`bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full flex flex-col relative card-3d transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
-                <Quote size={36} className="text-blue-100 absolute top-4 right-4" />
-                
+                <Quote size={36} className="text-green-200 absolute top-4 right-4" />
+
                 <div className="flex items-center gap-3 mb-4">
                   <div className="relative">
-                    <img 
-                      src={review.image} 
-                      alt={review.name} 
-                      className="w-14 h-14 rounded-full object-cover border-2 border-blue-500"
-                    />
-                    <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white" />
+                    <div
+                      role="img"
+                      aria-label={review.name}
+                      className="w-14 h-14 rounded-full flex items-center justify-center text-3xl bg-green-50 border-2 border-green-700"
+                    >
+                      {review.emoji}
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 bg-green-700 w-4 h-4 rounded-full border-2 border-white" />
                   </div>
                   <div>
                     <h4 className="font-bold text-base font-oswald">{review.name}</h4>
@@ -121,10 +128,10 @@ export const Reviews = () => {
 
                 <div className="flex gap-0.5 mb-3">
                   {[...Array(5)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      size={14} 
-                      className={i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} 
+                    <Star
+                      key={i}
+                      size={14}
+                      className={i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
                     />
                   ))}
                 </div>

@@ -54,17 +54,17 @@ export const ScrollCar = () => {
           </motion.g>
           
           {/* Van body */}
-          <rect x="8" y="12" width="40" height="20" rx="2" fill="#3B82F6" />
+          <rect x="8" y="12" width="40" height="20" rx="2" fill="#129243" />
           
           {/* Cargo area */}
-          <rect x="8" y="12" width="28" height="20" rx="2" fill="#2563EB" />
+          <rect x="8" y="12" width="28" height="20" rx="2" fill="#129243" />
           
           {/* Delivery box logo on side */}
           <rect x="16" y="18" width="12" height="8" rx="1" fill="#FCD34D" />
           <path d="M19 20L22 22L25 20" stroke="#92400E" strokeWidth="1.5" strokeLinecap="round" />
           
           {/* Cabin */}
-          <rect x="36" y="14" width="16" height="18" rx="2" fill="#3B82F6" />
+          <rect x="36" y="14" width="16" height="18" rx="2" fill="#129243" />
           
           {/* Windshield */}
           <rect x="40" y="16" width="10" height="10" rx="1" fill="#BFDBFE" />
@@ -102,9 +102,9 @@ export const ScrollCar = () => {
             animate={{ opacity: [0.5, 1, 0.5], x: [-1, -3, -1] }}
             transition={{ duration: 0.2, repeat: Infinity }}
           >
-            <line x1="4" y1="18" x2="-4" y2="18" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" />
-            <line x1="6" y1="22" x2="-2" y2="22" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" />
-            <line x1="4" y1="26" x2="-4" y2="26" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" />
+            <line x1="4" y1="18" x2="-4" y2="18" stroke="#129243" strokeWidth="2" strokeLinecap="round" />
+            <line x1="6" y1="22" x2="-2" y2="22" stroke="#129243" strokeWidth="2" strokeLinecap="round" />
+            <line x1="4" y1="26" x2="-4" y2="26" stroke="#129243" strokeWidth="2" strokeLinecap="round" />
           </motion.g>
           
           {/* Gradient definitions */}

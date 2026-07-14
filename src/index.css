@@ -2,9 +2,11 @@
 @import 'swiper/css';
 @import 'swiper/css/navigation';
 @import 'swiper/css/pagination';
+/* Локальные шрифты вместо Google Fonts CDN (блок C1 — без трансграничной передачи IP) */
+@import './fonts.css';
 
 @theme {
-  --font-sans: "Open Sans", "Roboto", "Inter", sans-serif;
+  --font-sans: "Open Sans", sans-serif;
   --font-oswald: "Oswald", sans-serif;
 }
 
@@ -90,8 +92,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Pulse glow */
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
-  50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), 0 0 50px rgba(59, 130, 246, 0.4); }
+  0%, 100% { box-shadow: 0 0 5px rgba(22, 101, 52, 0.5); }
+  50% { box-shadow: 0 0 25px rgba(22, 101, 52, 0.8), 0 0 50px rgba(22, 101, 52, 0.4); }
 }
 
 .pulse-glow {
@@ -127,20 +129,116 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animated-gradient {
-  background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+  background: linear-gradient(-45deg, #18703a, #064e3b, #0f8a67, #13a147);
   background-size: 400% 400%;
   animation: gradient-shift 8s ease infinite;
 }
 
 /* Card hover effects */
 .card-3d {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   transform-style: preserve-3d;
 }
 
 .card-3d:hover {
-  transform: translateY(-10px) rotateX(5deg);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== ABOUT SECTION — ENTRANCE + HOVER ===== */
+
+/* Default hidden state */
+.about-benefit-card,
+.about-support-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.35s ease-out,
+    box-shadow 0.25s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+/* Visible (entrance done) — reset delay so hover reacts instantly */
+.about-benefit-card.about-card-visible,
+.about-support-card.about-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0ms;
+}
+
+/* Hover lift — works after entrance finishes */
+.about-benefit-card.about-card-visible:hover,
+.about-support-card.about-card-visible:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Benefit cards — subtle shadow */
+.about-benefit-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 767px) {
+  .about-benefit-card:active {
+    transform: scale(0.98) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Support card — animated glow border on mobile */
+.about-support-card {
+  box-shadow: 0 4px 24px rgba(22, 101, 52, 0.2);
+}
+
+@media (max-width: 767px) {
+  .about-support-card {
+    box-shadow:
+      0 4px 24px rgba(22, 101, 52, 0.25),
+      0 0 0 1px rgba(22, 101, 52, 0.15);
+    animation: support-glow 3s ease-in-out infinite;
+  }
+}
+
+@keyframes support-glow {
+  0%, 100% {
+    box-shadow:
+      0 4px 24px rgba(22, 101, 52, 0.2),
+      0 0 0 1px rgba(22, 101, 52, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 8px 32px rgba(22, 101, 52, 0.35),
+      0 0 0 2px rgba(22, 101, 52, 0.2),
+      0 0 60px rgba(22, 101, 52, 0.08);
+  }
+}
+
+/* Online badge glow */
+.about-online-badge {
+  box-shadow: 0 0 8px rgba(134, 239, 172, 0.3);
+}
+
+/* ===== FLOATING RUBLES ===== */
+@keyframes ruble-float {
+  0% {
+    transform: translateY(100%) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh) translateX(30px) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+.ruble-float {
+  bottom: -40px;
+  animation: ruble-float linear infinite;
 }
 
 /* Scroll car road */
@@ -190,7 +288,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-  background: #3b82f6;
+  background: #129243;
   transform: scale(1.1);
 }
 
@@ -203,7 +301,7 @@ h1, h2, h3, h4, h5, h6 {
 .swiper-button-prev::after {
   font-size: 18px !important;
   font-weight: bold;
-  color: #3b82f6;
+  color: #129243;
 }
 
 .swiper-pagination-bullet {
@@ -213,7 +311,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .swiper-pagination-bullet-active {
-  background: #3b82f6;
+  background: #129243;
   width: 30px;
   border-radius: 5px;
 }
@@ -292,7 +390,7 @@ h1, h2, h3, h4, h5, h6 {
 .typing-cursor::after {
   content: '|';
   animation: blink 1s infinite;
-  color: #3b82f6;
+  color: #129243;
 }
 
 /* Section divider wave */
@@ -318,7 +416,7 @@ h1, h2, h3, h4, h5, h6 {
     to right,
     #1f2937 0%,    /* gray-800 */
     #1f2937 40%,
-    #2563eb 50%,   /* blue-600 */
+    #129243 50%,   /* green-600 */
     #1f2937 60%,
     #1f2937 100%
   );
@@ -357,4 +455,103 @@ h1, h2, h3, h4, h5, h6 {
 .animate-phone-ring {
   animation: phone-ring 2s ease-in-out infinite;
   transform-origin: center;
+}
+
+/* АНИМАЦИЯ ПУЛЬСАЦИИ КНОПОК */
+@keyframes btn-green-pulse {
+  0% {
+    /* Начало: тень плотная и прижата к кнопке */
+    box-shadow: 0 0 0 0 rgba(22, 101, 52, 0.7);
+  }
+  100% {
+    /* Конец: тень широкая и полностью исчезает */
+    /* Мы убрали 70%, теперь анимация идет до самого конца без паузы */
+    box-shadow: 0 0 0 20px rgba(22, 101, 52, 0);
+  }
+}
+
+.animate-btn-pulse {
+  /* 1.5s — оптимальная скорость для непрерывного цикла */
+  animation: btn-green-pulse 1.5s infinite ease-out;
+}
+/* Кнопка "Подробнее" — без tailwind hover: */
+.more-btn {
+  background-color: transparent;
+  transition: background-color 300ms, color 300ms, border-color 300ms;
+}
+
+/* Зеленый вариант */
+@media (hover: hover) {
+  .more-btn[data-variant="green"]:hover {
+    background-color: var(--color-green-600);
+    border-color: var(--color-green-600);
+    color: var(--color-white);
+  }
+
+  .more-btn[data-variant="orange"]:hover {
+    background-color: var(--color-orange-500);
+    border-color: var(--color-orange-500);
+    color: var(--color-white);
+  }
+}
+
+/* Чтобы работало с клавиатуры тоже */
+.more-btn[data-variant="green"]:focus-visible {
+  outline: 2px solid var(--color-green-600);
+  outline-offset: 2px;
+}
+.more-btn[data-variant="orange"]:focus-visible {
+  outline: 2px solid var(--color-orange-500);
+  outline-offset: 2px;
+}
+/* Кнопка "Подробнее" — заливка на hover (без tailwind hover:*) */
+.more-btn {
+  background-color: transparent;
+  transition: background-color 300ms, color 300ms, border-color 300ms, transform 150ms;
+}
+
+/* Hover только для устройств с наведением */
+@media (hover: hover) {
+  .more-btn--green:hover {
+    background-color: var(--color-green-600);
+    border-color: var(--color-green-600);
+    color: var(--color-white);
+  }
+
+  .more-btn--orange:hover {
+    background-color: var(--color-orange-500);
+    border-color: var(--color-orange-500);
+    color: var(--color-white);
+  }
+
+  .more-btn:hover .more-btn__icon {
+    transform: translateX(4px);
+  }
+}
+
+/* На всякий: актив на клик (полезно даже на компе) */
+.more-btn:active {
+  transform: scale(0.99);
+}
+
+/* Фокус с клавиатуры */
+.more-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, currentColor 40%, transparent);
+  outline-offset: 2px;
+}
+
+/* ===== TOAST ANIMATIONS ===== */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.4s ease-out forwards;
 }
