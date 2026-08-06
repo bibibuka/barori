@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru" class="theme-yellow">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Yandex.Metrika: счётчик НЕ инициализируется здесь.
+       Он подгружается из src/utils/metrika.ts только после согласия в cookie-баннере
+       (блоки C4/F12 в COMPLIANCE.md) — до согласия cookie и IP не обрабатываются. -->
+
+  <title>Работа курьером Яндекс Еды: пешком, на велосипеде или электротранспорте | Барори Парк</title>
+  <meta name="description"
+    content="Работа и подработка курьером в доставке еды: пешком, на велосипеде или электротранспорте. Свободные и плановые слоты, локацию выбираете в приложении. Проверим доступные форматы в вашем городе." />
+
+  <!-- Страница только для рекламного трафика: в поиске не нужна, из sitemap исключена. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#fce000" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:site_name" content="Барори Парк" />
+  <meta property="og:url" content="https://baroripark.ru/eda/" />
+  <meta property="og:title" content="Курьер Яндекс Еды — доставляйте в своём городе" />
+  <meta property="og:description"
+    content="Пешком, на велосипеде или электротранспорте. Свободные и плановые слоты, локацию выбираете сами. Барори Парк поможет с подключением." />
+  <meta property="og:image" content="https://baroripark.ru/bitrix/templates/barorikorNEW/img/IMG_4314.jfif.jpeg" />
+  <meta property="og:image:alt" content="Барори Парк — работа курьером в доставке еды" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Курьер Яндекс Еды — доставляйте в своём городе" />
+  <meta name="twitter:description"
+    content="Пешком, на велосипеде или электротранспорте. Слоты и локацию выбираете в приложении." />
+  <meta name="twitter:image" content="https://baroripark.ru/bitrix/templates/barorikorNEW/img/IMG_4314.jfif.jpeg" />
+
+  <!-- Шрифты локальные (см. src/fonts.css и /public/fonts) — без трансграничной передачи IP -->
+  <link rel="dns-prefetch" href="https://mc.yandex.ru">
+  <!-- капча грузится сразу вместе с формой первого экрана — не dns-prefetch, а полноценный preconnect -->
+  <link rel="preconnect" href="https://smartcaptcha.yandexcloud.net" crossorigin>
+  <link rel="preload" href="/fonts/oswald-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/open-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- LCP первого экрана: страница клиентская, без этой строки картинку находят только после загрузки JS.
+       Vite подменит путь на хешированный файл из dist/assets. -->
+  <link rel="preload" href="/src/assets/kura.webp" as="image" type="image/webp" fetchpriority="high">
+
+  <!-- Яндекс SmartCaptcha для формы отклика -->
+  <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/eda/main.tsx"></script>
+</body>
+
+</html>

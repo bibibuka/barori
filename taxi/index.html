@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru" class="theme-yellow">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Yandex.Metrika: счётчик НЕ инициализируется здесь.
+       Он подгружается из src/utils/metrika.ts только после согласия в cookie-баннере
+       (блоки C4/F12 в COMPLIANCE.md) — до согласия cookie и IP не обрабатываются. -->
+
+  <title>Работа в такси — подключение к Яндекс Такси за 15 минут | Барори Парк</title>
+  <meta name="description" content="Подключение водителей к Яндекс Такси через таксопарк: выплаты хоть каждый день, свободный график, помощь с самозанятостью и документами. Оставьте заявку — перезвоним за 15 минут." />
+
+  <!-- Страница только для рекламного трафика: в поиске не нужна, из sitemap исключена. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#fce000" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Работа в такси — на линию уже завтра" />
+  <meta property="og:description" content="Подключим к Яндекс Такси за 15 минут, поможем с оформлением. Выплаты хоть каждый день, график выбираете сами." />
+
+  <!-- Шрифты локальные (см. src/fonts.css и /public/fonts) — без трансграничной передачи IP -->
+  <link rel="dns-prefetch" href="https://mc.yandex.ru">
+  <link rel="dns-prefetch" href="https://smartcaptcha.yandexcloud.net">
+  <link rel="preload" href="/fonts/oswald-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/open-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Яндекс SmartCaptcha для формы заявки -->
+  <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/taxi/main.tsx"></script>
+</body>
+
+</html>

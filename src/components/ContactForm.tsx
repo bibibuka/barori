@@ -5,11 +5,7 @@ import { LegalType } from './LegalModal';
 import { trackGoal } from '../utils/analytics';
 import { useToast } from './Toast';
 import kuraImage from '../assets/kura.webp';
-
-// Версия текста Согласия на обработку ПД. Фиксируется вместе с каждой заявкой,
-// чтобы можно было доказать, какую редакцию согласия принял пользователь (ст. 9 ФЗ-152).
-// При изменении формулировок Согласия/Политики обновите дату здесь и в LegalModal.tsx.
-const CONSENT_VERSION = '2026-06-24';
+import { CONSENT_VERSION } from '../utils/consent';
 
 interface ContactFormProps {
   onOpenLegal: (type: LegalType) => void;

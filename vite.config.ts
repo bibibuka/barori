@@ -26,6 +26,16 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "assets",
     rollupOptions: {
+      // Многостраничная сборка: основной сайт + изолированные лендинги направлений.
+      // dostavka/index.html → dist/dostavka/index.html (URL https://baroripark.ru/dostavka/)
+      input: {
+        // ключ "index" — чтобы главный бандл остался index-*.js, как до многостраничности
+        index: path.resolve(__dirname, "index.html"),
+        dostavka: path.resolve(__dirname, "dostavka/index.html"),
+        eda: path.resolve(__dirname, "eda/index.html"),
+        taxi: path.resolve(__dirname, "taxi/index.html"),
+        smena: path.resolve(__dirname, "smena/index.html"),
+      },
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],

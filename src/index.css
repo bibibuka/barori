@@ -4,6 +4,8 @@
 @import 'swiper/css/pagination';
 /* Локальные шрифты вместо Google Fonts CDN (блок C1 — без трансграничной передачи IP) */
 @import './fonts.css';
+/* Фирменные палитры лендингов направлений — подменяют токены green-* по классу на <html> */
+@import './landing/theme.css';
 
 @theme {
   --font-sans: "Open Sans", sans-serif;

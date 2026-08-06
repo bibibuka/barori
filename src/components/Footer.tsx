@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { Phone, Mail, Clock, MapPin, Globe, ArrowUpRight, Smartphone } from 'lucide-react';
 import { LegalType } from './LegalModal';
 import { trackGoal } from '../utils/analytics';
+import { resetAnalyticsConsent } from '../utils/metrika';
 
 interface FooterProps {
   onOpenLegal: (type: LegalType) => void;
@@ -173,6 +174,10 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
             </button>
             <button onClick={() => handleLegalClick('consent')} className="hover:text-white transition-colors">
               Согласие на обработку ПД
+            </button>
+            {/* Отзыв согласия на аналитические cookie */}
+            <button onClick={resetAnalyticsConsent} className="hover:text-white transition-colors">
+              Настройки cookie
             </button>
           </div>
         </div>

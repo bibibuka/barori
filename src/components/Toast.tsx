@@ -52,7 +52,7 @@ const ToastContainer = ({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: 
   );
 };
 
-const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: number) => void }) => {
+export const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: number) => void }) => {
   const [isExiting, setIsExiting] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -75,6 +75,9 @@ const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: number) =
 
   return (
     <div
+      role={isSuccess ? 'status' : 'alert'}
+      aria-live={isSuccess ? 'polite' : 'assertive'}
+      aria-atomic="true"
       className={`pointer-events-auto flex items-start gap-3 px-5 py-4 rounded-2xl shadow-2xl border backdrop-blur-xl transition-all duration-300 ${
         isExiting
           ? 'opacity-0 translate-x-8 scale-95'
@@ -90,6 +93,8 @@ const ToastItem = ({ toast, onRemove }: { toast: Toast; onRemove: (id: number) =
       </div>
       <p className="flex-1 text-sm font-medium leading-relaxed">{toast.message}</p>
       <button
+        type="button"
+        aria-label="Закрыть уведомление"
         onClick={handleClose}
         className={`flex-shrink-0 p-1 rounded-lg hover:bg-black/5 transition-colors cursor-pointer ${
           isSuccess ? 'text-green-400 hover:text-green-600' : 'text-red-400 hover:text-red-600'

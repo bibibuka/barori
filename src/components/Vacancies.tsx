@@ -7,6 +7,7 @@ import { ArrowRight, Hand, ChevronLeft, ChevronRight, Flame } from 'lucide-react
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../utils/cn';
 import { trackGoal } from '../utils/analytics';
+import { YandexEdaSpotlight } from './YandexEdaSpotlight';
 
 export interface Vacancy {
   id: string;
@@ -411,6 +412,8 @@ export const Vacancies = ({ onOpenModal }: VacanciesProps) => {
           <Hand size={18} />
           <span>Свайпайте влево для просмотра</span>
         </div>
+
+        <YandexEdaSpotlight />
       </div>
 
       <style>{`

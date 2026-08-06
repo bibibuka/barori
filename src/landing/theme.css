@@ -1,0 +1,79 @@
+/* FILE: src/landing/theme.css
+ *
+ * Фирменные палитры лендингов направлений. Разметка везде написана на токенах
+ * green-*, а тема подменяет сами переменные Tailwind — поэтому цвет меняется
+ * одним классом на <html> и без правок в компонентах:
+ *
+ *   dostavka/index.html → class="theme-red"     (доставка — красный)
+ *   eda/index.html      → class="theme-yellow"  (еда — жёлтый)
+ *   taxi/index.html     → class="theme-yellow"  (такси — жёлтый)
+ *   smena/index.html    → class="theme-orange"  (смена — оранжевый)
+ *
+ * Договорённость по шкале, она держит контраст во всех темах:
+ *   50–200  — светлые подложки (чипы, секции, бейджи)
+ *   300–700 — фирменные поверхности: кнопки, панели, выделенные карточки
+ *   800–950 — «чернила»: текст по светлому фону, тёмные подложки
+ * Поэтому 800 в жёлтой теме — не жёлтый, а тёмное золото: жёлтый текст
+ * на белом нечитаем (1.9:1), а так получается 7.4:1.
+ *
+ * --on-accent / --on-accent-soft — цвет текста ПОВЕРХ фирменной поверхности.
+ * Для красного и оранжевого это белый, для жёлтого — почти чёрный.
+ */
+
+html.theme-red {
+  --color-green-50: #fff5f5;
+  --color-green-100: #ffe3e3;
+  --color-green-200: #ffc9c9;
+  --color-green-300: #ffa1a1;
+  --color-green-400: #ff6b6b;
+  --color-green-500: #ff3333;
+  --color-green-600: #e01018;
+  --color-green-700: #b80d14;
+  --color-green-800: #8f0a10;
+  --color-green-900: #6b0a0e;
+  --color-green-950: #3d0507;
+
+  --on-accent: #ffffff;
+  --on-accent-soft: #ffe3e3;
+  --accent-shadow: rgba(224, 16, 24, .24);
+  --accent-grid: rgba(224, 16, 24, .06);
+}
+
+html.theme-orange {
+  --color-green-50: #fff7ed;
+  --color-green-100: #ffebd5;
+  --color-green-200: #ffd5aa;
+  --color-green-300: #ffb775;
+  --color-green-400: #ff8f3c;
+  --color-green-500: #ff6b00;
+  --color-green-600: #c24e00;
+  --color-green-700: #9c3e00;
+  --color-green-800: #7a3100;
+  --color-green-900: #5c2500;
+  --color-green-950: #331400;
+
+  --on-accent: #ffffff;
+  --on-accent-soft: #ffebd5;
+  --accent-shadow: rgba(194, 78, 0, .24);
+  --accent-grid: rgba(194, 78, 0, .06);
+}
+
+html.theme-yellow {
+  --color-green-50: #fffdf0;
+  --color-green-100: #fff8cc;
+  --color-green-200: #fff099;
+  --color-green-300: #ffe666;
+  --color-green-400: #ffdb33;
+  --color-green-500: #fce000;
+  --color-green-600: #f2ce00;
+  --color-green-700: #e0b800;
+  /* дальше — чернила, не жёлтый: см. комментарий про контраст выше */
+  --color-green-800: #6b5000;
+  --color-green-900: #4a3700;
+  --color-green-950: #2b2000;
+
+  --on-accent: #1a1a1a;
+  --on-accent-soft: #4a4200;
+  --accent-shadow: rgba(224, 184, 0, .35);
+  --accent-grid: rgba(150, 120, 0, .07);
+}

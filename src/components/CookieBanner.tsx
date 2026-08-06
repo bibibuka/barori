@@ -1,30 +1,33 @@
 // FILE: src/components/CookieBanner.tsx
 //
-// Ненавязчивое уведомление об использовании cookie и аналитики (блок C3).
-// Закрывает требование информировать пользователя об обработке cookie/счётчиков
-// (ст. 9 ФЗ-152 — информированность субъекта; ст. 10.1 ФЗ-149 о cookie-уведомлении).
+// Уведомление об использовании cookie и аналитики + УПРАВЛЕНИЕ СОГЛАСИЕМ (блоки C3/C4).
+// Информирует субъекта (ст. 9 ФЗ-152, ст. 10.1 ФЗ-149) и решает, грузить ли аналитику.
 //
-// Примечание (блок C4): по умолчанию Яндекс.Метрика инициализируется сразу при
-// загрузке (см. index.html) ради корректной атрибуции трафика. Этот баннер носит
-// информационный характер. Если владелец примет решение откладывать инициализацию
-// Метрики до согласия — перенесите вызов ym(...'init') сюда, в обработчик handleAccept,
-// и зафиксируйте решение в COMPLIANCE.md.
+// C4 закрыт: Яндекс.Метрика больше НЕ инициализируется в <head>. Счётчик подгружается
+// только после нажатия «Принять» (или на повторном визите, если согласие уже сохранено).
+// Кнопка «Только необходимые» отклоняет аналитические cookie — выбор фиксируется в localStorage.
 
 import { useEffect, useState } from 'react';
 import { Cookie, X } from 'lucide-react';
 import { LegalType } from './LegalModal';
 import { trackGoal } from '../utils/analytics';
+import { cn } from '../utils/cn';
+import { CONSENT_STORAGE_KEY, clearMetrikaCookies, loadMetrika, loadMetrikaIfConsented } from '../utils/metrika';
 
-const STORAGE_KEY = 'barori_cookie_consent';
+const STORAGE_KEY = CONSENT_STORAGE_KEY;
 
 interface CookieBannerProps {
   onOpenLegal: (type: LegalType) => void;
+  /** Доп. классы позиционирования — нужны там, где снизу есть закреплённая кнопка (лендинг /dostavka/). */
+  className?: string;
 }
 
-export const CookieBanner = ({ onOpenLegal }: CookieBannerProps) => {
+export const CookieBanner = ({ onOpenLegal, className }: CookieBannerProps) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Согласие могло быть дано в прошлый визит — тогда сразу поднимаем счётчик.
+    loadMetrikaIfConsented();
     try {
       const choice = localStorage.getItem(STORAGE_KEY);
       if (!choice) {
@@ -38,7 +41,7 @@ export const CookieBanner = ({ onOpenLegal }: CookieBannerProps) => {
     }
   }, []);
 
-  const persist = (value: 'accepted' | 'dismissed') => {
+  const persist = (value: 'accepted' | 'declined' | 'dismissed') => {
     try {
       localStorage.setItem(STORAGE_KEY, value);
     } catch {
@@ -48,13 +51,22 @@ export const CookieBanner = ({ onOpenLegal }: CookieBannerProps) => {
   };
 
   const handleAccept = () => {
-    trackGoal('cookie_consent', { action: 'accept' });
+    // Сначала поднимаем счётчик, потом отправляем цель — до согласия ym не существует.
     persist('accepted');
+    loadMetrika();
+    trackGoal('cookie_consent', { action: 'accept' });
+  };
+
+  const handleDecline = () => {
+    // Аналитику не грузим вообще — только технически необходимые cookie.
+    persist('declined');
+    clearMetrikaCookies();
   };
 
   const handleClose = () => {
-    trackGoal('cookie_consent', { action: 'close' });
+    // Закрытие крестиком трактуем как отказ от аналитики (privacy by default).
     persist('dismissed');
+    clearMetrikaCookies();
   };
 
   if (!visible) return null;
@@ -63,9 +75,12 @@ export const CookieBanner = ({ onOpenLegal }: CookieBannerProps) => {
     <div
       role="dialog"
       aria-label="Уведомление об использовании cookie"
-      className="fixed z-[100] bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md
-                 bg-white rounded-2xl shadow-2xl border border-green-100
-                 p-4 sm:p-5 animate-toast-in"
+      className={cn(
+        `fixed z-[100] bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md
+         bg-white rounded-2xl shadow-2xl border border-green-100
+         p-4 sm:p-5 animate-toast-in`,
+        className
+      )}
     >
       <div className="flex items-start gap-3">
         <div className="bg-green-50 p-2 rounded-lg shrink-0">
@@ -73,9 +88,9 @@ export const CookieBanner = ({ onOpenLegal }: CookieBannerProps) => {
         </div>
         <div className="flex-1">
           <p className="text-sm text-gray-600 leading-relaxed">
-            Мы используем файлы cookie и сервисы аналитики (Яндекс.Метрика), чтобы сайт работал
-            корректно и удобно. Продолжая пользоваться сайтом, вы соглашаетесь с обработкой данных
-            согласно{' '}
+            Мы используем технически необходимые файлы cookie, чтобы сайт работал. С вашего согласия
+            дополнительно подключим аналитику (Яндекс.Метрика) — она обрабатывает cookie и IP-адрес.
+            Без согласия аналитика не загружается. Подробнее — в{' '}
             <button
               type="button"
               onClick={() => {
@@ -87,14 +102,22 @@ export const CookieBanner = ({ onOpenLegal }: CookieBannerProps) => {
               Политике обработки ПД
             </button>.
           </p>
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={handleAccept}
               className="bg-green-600 hover:bg-green-700 text-white text-sm font-bold
-                         px-5 py-2 rounded-lg transition-colors shadow-sm shadow-green-200"
+                         px-5 py-2 rounded-lg transition-colors shadow-sm shadow-green-200 cursor-pointer"
             >
               Принять
+            </button>
+            <button
+              type="button"
+              onClick={handleDecline}
+              className="border border-gray-300 text-gray-600 hover:bg-gray-50 text-sm font-bold
+                         px-5 py-2 rounded-lg transition-colors cursor-pointer"
+            >
+              Только необходимые
             </button>
           </div>
         </div>
