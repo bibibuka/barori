@@ -1,6 +1,7 @@
 import { useState, type Dispatch, type FormEvent, type SetStateAction } from 'react';
 import { CheckCircle2, Clock, ShieldCheck } from 'lucide-react';
 import {
+  ChoiceGroup,
   ConsentCheckbox,
   FormSection,
   inputClass,
@@ -8,19 +9,20 @@ import {
   useLeadSubmit,
 } from '../landing/kit';
 import kuraImage from '../assets/kura.webp';
-import type { CampaignContext, CourierFormat, DeliveryDirection } from './campaign';
-import { DELIVERY_DIRECTIONS, DELIVERY_FORMATS } from './directions';
-import { buildCourierPayload, type CourierLeadState, validateCourierLead } from './lead';
+import type { CampaignContext } from './campaign';
+import {
+  buildCourierPayload,
+  type CourierService,
+  type CourierLeadState,
+  SELF_EMPLOYMENT_OPTIONS,
+  validateCourierLead,
+} from './lead';
+import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
-export const FORMAT_OPTIONS: { value: CourierFormat; label: string }[] = [
-  { value: 'Пока не выбрал', label: 'Подобрать формат' },
-  ...DELIVERY_FORMATS.map(format => ({ value: format.value, label: format.label })),
-];
-
-export const DIRECTION_OPTIONS: { value: DeliveryDirection; label: string }[] = [
-  { value: 'Подобрать направление', label: 'Подобрать направление' },
-  ...DELIVERY_DIRECTIONS.map(direction => ({ value: direction.value, label: direction.title })),
-];
+const DELIVERY_SERVICE_OPTIONS = DIRECTION_PREFERENCES.delivery.map(option => ({
+  value: option.label as CourierService,
+  label: option.label,
+}));
 
 export interface CourierFormController {
   state: CourierLeadState;
@@ -35,8 +37,8 @@ export const useCourierLead = (campaign: CampaignContext): CourierFormController
     name: '',
     phone: '',
     city: campaign.city,
-    format: campaign.format,
-    direction: campaign.direction,
+    service: 'Подберите мне',
+    selfEmployment: 'Готов оформить',
     consent: false,
   });
 
@@ -103,13 +105,22 @@ export const CourierLeadForm = ({
       ) : (
         <div className="flex items-center justify-between gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3">
           <div>
-            <p className="text-xs uppercase tracking-wide text-green-800/70 font-semibold">Вы выбрали</p>
-            <p className="font-bold text-green-800 font-oswald text-lg leading-tight">{state.format}</p>
-            <p className="text-xs text-green-800/70">{state.direction}</p>
+            <p className="text-xs uppercase tracking-wide text-green-800/70 font-semibold">Направление</p>
+            <p className="font-bold text-green-800 font-oswald text-lg leading-tight">Курьер / Доставка</p>
+            <p className="text-xs text-green-800/70">Яндекс Доставка, Купер и TopGo</p>
           </div>
           <CheckCircle2 className="text-green-800 shrink-0" size={24} />
         </div>
       )}
+
+      <ChoiceGroup
+        name={`${idPrefix}-service`}
+        label="Какой сервис интересует?"
+        options={DELIVERY_SERVICE_OPTIONS}
+        value={state.service}
+        onChange={value => setField('service', value)}
+        columns={compact ? 1 : 2}
+      />
 
       {/* В hero форма стоит в узкой колонке — там поля идут в один столбец, иначе они схлопываются */}
       <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
@@ -162,30 +173,14 @@ export const CourierLeadForm = ({
         />
       </div>
 
-      <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
-        <div>
-          <label htmlFor={`${idPrefix}-format`} className="block text-sm font-medium text-gray-700 mb-1.5">Как хотите доставлять?</label>
-          <select
-            id={`${idPrefix}-format`}
-            className={inputClass}
-            value={state.format}
-            onChange={event => setField('format', event.target.value as CourierFormat)}
-          >
-            {FORMAT_OPTIONS.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor={`${idPrefix}-direction`} className="block text-sm font-medium text-gray-700 mb-1.5">Направление</label>
-          <select
-            id={`${idPrefix}-direction`}
-            className={inputClass}
-            value={state.direction}
-            onChange={event => setField('direction', event.target.value as DeliveryDirection)}
-          >
-            {DIRECTION_OPTIONS.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </select>
-        </div>
-      </div>
+      <ChoiceGroup
+        name={`${idPrefix}-self-employment`}
+        label="Самозанятость"
+        options={SELF_EMPLOYMENT_OPTIONS}
+        value={state.selfEmployment}
+        onChange={value => setField('selfEmployment', value)}
+        columns={compact ? 1 : 2}
+      />
 
       <ConsentCheckbox
         id={`${idPrefix}-consent`}
@@ -216,12 +211,14 @@ export const CourierFinalForm = (controller: CourierFormController) => (
     title="Подберём доставку под вас"
     lead="Оставьте контакты. Проверим направления в вашем городе и объясним условия конкретного предложения."
     image={kuraImage}
+    minAge={16}
     bullets={[
       { icon: <Clock size={18} />, text: 'Свяжемся в рабочее время с 10:00 до 20:00' },
       { icon: <CheckCircle2 size={18} />, text: 'Подберём формат под ваш транспорт и график' },
       { icon: <ShieldCheck size={18} />, text: 'Документы и статус оформления уточним до подключения' },
     ]}
   >
-    <CourierLeadForm idPrefix="final-courier" {...controller} />
+    {/* Капча монтируется здесь: на первом экране формы больше нет. */}
+    <CourierLeadForm idPrefix="final-courier" captchaMount {...controller} />
   </FormSection>
 );

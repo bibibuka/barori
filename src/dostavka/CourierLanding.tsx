@@ -10,19 +10,17 @@ import {
   Footprints,
   Headphones,
   MapPin,
-  PackageCheck,
   PhoneCall,
   Route,
   ShieldCheck,
   Smartphone,
   Truck,
-  Wrench,
 } from 'lucide-react';
-import { LandingShell, PHONE_HREF, useLanding } from '../landing/kit';
+import { Faq, LandingShell, SectionHead, useLanding } from '../landing/kit';
 import courierImage from '../assets/kura.webp';
 import heroImage from '../assets/delivery-hero.webp';
-import { CourierFinalForm, CourierLeadForm, useCourierLead } from './CourierForm';
-import { formatCampaignHeadline, readCampaignContext, type CourierFormat, type DeliveryDirection } from './campaign';
+import { CourierFinalForm, useCourierLead } from './CourierForm';
+import { formatCampaignHeadline, readCampaignContext } from './campaign';
 import {
   DELIVERY_DIRECTIONS,
   DELIVERY_FORMATS,
@@ -38,12 +36,10 @@ const FORMAT_ICONS: Record<DeliveryFormatCard['id'], ReactNode> = {
 };
 
 const DIRECTION_ICONS: Record<DeliveryDirectionCard['id'], ReactNode> = {
-  food: <PackageCheck size={24} />,
   express: <Boxes size={24} />,
   planned: <Route size={24} />,
   auto: <Car size={24} />,
   cargo: <Truck size={24} />,
-  'velo-helper': <Wrench size={24} />,
 };
 
 const TRUST_ITEMS = [
@@ -56,11 +52,11 @@ const TRUST_ITEMS = [
 const FAQ = [
   {
     q: 'Можно работать без автомобиля?',
-    a: 'Да. Для доставки еды, продуктов и небольших заказов доступны пеший формат, велосипед и самокат. Набор предложений зависит от города.',
+    a: 'Да. Для документов, посылок и небольших заказов доступны пеший формат, велосипед и самокат. Набор предложений зависит от города.',
   },
   {
     q: 'Какие направления можно выбрать?',
-    a: 'Еда и продукты, экспресс-доставка, плановые маршруты, автодоставка, грузовая доставка и велопомощник. Менеджер проверит, какие варианты доступны именно в вашем городе.',
+    a: 'Экспресс-доставка, плановые маршруты, автодоставка и грузовая доставка. Менеджер проверит, какие варианты доступны именно в вашем городе.',
   },
   {
     q: 'Указанный доход гарантирован?',
@@ -68,15 +64,11 @@ const FAQ = [
   },
   {
     q: 'Это оформление по трудовому договору?',
-    a: 'Формат сотрудничества зависит от выбранного сервиса и конкретного предложения. Это может быть договор с самозанятым или ИП, а для отдельных вакансий другой формат. Менеджер сообщит вид договора до оформления.',
+    a: 'Формат сотрудничества зависит от выбранного сервиса и конкретного предложения. Это может быть договор с самозанятым или ИП, а для отдельных предложений другой формат. Менеджер сообщит вид договора до оформления.',
   },
   {
     q: 'Нужна ли самозанятость?',
     a: 'Не для каждого направления действуют одинаковые требования. Если потребуется статус самозанятого, об этом скажут заранее и помогут разобраться с оформлением.',
-  },
-  {
-    q: 'Нужна ли медицинская книжка?',
-    a: 'Она может потребоваться для части предложений по доставке еды и продуктов. Для посылок, обычной и грузовой доставки требования отличаются.',
   },
   {
     q: 'Можно совмещать с учёбой или другой работой?',
@@ -88,38 +80,8 @@ const FAQ = [
   },
 ];
 
-/** Единая шапка секции: кикер с линией, заголовок, подзаголовок. */
-const SectionHead = ({
-  kicker,
-  title,
-  subtitle,
-  className = 'max-w-3xl',
-}: {
-  kicker: string;
-  title: string;
-  subtitle?: string;
-  className?: string;
-}) => (
-  <div className={className}>
-    <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-green-800">
-      <span aria-hidden="true" className="h-px w-8 bg-green-600/45" />
-      {kicker}
-    </p>
-    <h2 className="mt-4 text-[clamp(2rem,5.6vw,3.25rem)] font-bold uppercase leading-[1.02] tracking-[-0.025em] text-slate-950">
-      {title}
-    </h2>
-    {subtitle && <p className="mt-4 max-w-2xl leading-relaxed text-slate-600">{subtitle}</p>}
-  </div>
-);
-
-const Hero = ({
-  headline,
-  controller,
-}: {
-  headline: string;
-  controller: ReturnType<typeof useCourierLead>;
-}) => {
-  const { track, scrollToOrder } = useLanding();
+const Hero = ({ headline }: { headline: string }) => {
+  const { track, scrollToOrder, phone } = useLanding();
 
   return (
     <section
@@ -127,16 +89,17 @@ const Hero = ({
       className="delivery-hero relative overflow-hidden bg-green-50 pb-10 pt-20 lg:min-h-[760px] lg:pb-14 lg:pt-28"
     >
       <div className="delivery-hero-orb pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-green-300/30 blur-3xl" />
-      <div className="delivery-hero-grid container relative mx-auto grid items-center gap-5 lg:grid-cols-[1fr_.7fr_1.04fr] lg:gap-6">
-        <div className="delivery-hero-copy text-center lg:text-left">
+      {/* 12 колонок: текст 5, сцена 7. Заявку с первого экрана уводим в форму внизу (#order). */}
+      <div className="delivery-hero-grid container relative mx-auto grid items-center gap-5 lg:grid-cols-12 lg:gap-10">
+        <div className="delivery-hero-copy text-center lg:col-span-5 lg:text-left">
           <p className="delivery-hero-badge inline-flex items-center rounded-full border border-green-200 bg-white/90 px-4 py-2 text-xs font-bold text-green-800 shadow-sm">
-            Работа и подработка в доставке, 18+
+            Работа и подработка в доставке, 16+
           </p>
           <h1 className="mx-auto mt-4 max-w-3xl text-balance text-[clamp(2.6rem,9vw,4.3rem)] font-bold uppercase leading-[0.92] tracking-[-0.035em] text-slate-950 lg:mx-0 lg:mt-5">
             {headline}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-slate-700 sm:text-lg lg:mx-0 lg:mt-5">
-            Еда, посылки и грузы. Пешком, на самокате, велосипеде или авто. Сравним доступные варианты в вашем городе.
+            Посылки, документы и грузы. Пешком, на самокате, велосипеде или авто. Сравним доступные варианты в вашем городе.
           </p>
           <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row lg:mt-7 lg:justify-start">
             <button
@@ -147,7 +110,7 @@ const Hero = ({
               Подобрать вариант <ArrowRight size={19} />
             </button>
             <a
-              href={PHONE_HREF}
+              href={phone.href}
               onClick={() => track('phone_click', { place: 'hero' })}
               className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-slate-300 bg-white/90 px-7 py-4 text-base font-bold text-slate-800 transition-colors hover:border-green-700 hover:text-green-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
             >
@@ -158,7 +121,7 @@ const Hero = ({
 
         <figure
           data-testid="delivery-route-scene"
-          className="delivery-route-scene relative aspect-[3/2] overflow-hidden rounded-[22px] border border-white/90 bg-green-950 shadow-[0_24px_60px_rgba(15,23,42,.18)] lg:h-[590px] lg:aspect-auto"
+          className="delivery-route-scene relative aspect-[3/2] overflow-hidden rounded-[22px] border border-white/90 bg-green-950 shadow-[0_24px_60px_rgba(15,23,42,.18)] lg:col-span-7 lg:h-[560px] lg:aspect-auto"
         >
           <img
             src={heroImage}
@@ -167,19 +130,20 @@ const Hero = ({
             height="1024"
             fetchPriority="high"
             decoding="async"
-            className="absolute inset-0 h-full w-full object-cover object-center lg:object-[68%_center]"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,38,20,.06)_25%,rgba(3,18,9,.8)_100%)]" />
+          {/* Маршрут идёт горизонтально через середину кадра: слева направо, с двумя перегибами. */}
           <svg
             aria-hidden="true"
-            viewBox="0 0 320 480"
+            viewBox="0 0 480 320"
             preserveAspectRatio="none"
             className="delivery-route-map pointer-events-none absolute inset-0 h-full w-full"
           >
             <path
               className="delivery-route-path"
               pathLength="1"
-              d="M34 420 C 90 350, 35 280, 126 238 S 250 174, 286 68"
+              d="M-8 206 C 84 246, 138 118, 232 148 S 372 214, 488 108"
             />
           </svg>
           <span className="delivery-route-chip delivery-route-chip--foot"><Footprints size={16} /> Пешком</span>
@@ -191,16 +155,13 @@ const Hero = ({
           </figcaption>
         </figure>
 
-        <div id="apply" className="delivery-hero-form scroll-mt-24 rounded-[22px] border border-green-100 bg-white p-5 shadow-[0_24px_70px_rgba(15,23,42,.1)] sm:p-6">
-          <CourierLeadForm idPrefix="hero-courier" captchaMount compact {...controller} />
-        </div>
       </div>
     </section>
   );
 };
 
 const TrustBar = () => (
-  <div className="border-y border-green-100 bg-white">
+  <div className="border-t border-green-100 bg-white">
     <div className="delivery-reveal delivery-trust-bar container mx-auto grid grid-cols-2 gap-x-5 gap-y-6 py-7 lg:grid-cols-4 lg:gap-x-0">
       {TRUST_ITEMS.map(item => (
         <div key={item.title} className="flex items-start gap-3 lg:px-7 lg:first:pl-0 lg:last:pr-0">
@@ -215,44 +176,32 @@ const TrustBar = () => (
   </div>
 );
 
-const FormatSection = ({
-  value,
-  onPick,
-}: {
-  value: CourierFormat;
-  onPick: (format: CourierFormat) => void;
-}) => (
-  <section id="formats" className="scroll-mt-24 bg-white py-16 lg:py-24">
+// Карточки только объясняют форматы: в заявку выбор не идёт, доступность проверяет менеджер.
+const FormatSection = () => (
+  <section id="formats" className="scroll-mt-24 l-tint py-16">
     <div className="delivery-reveal container mx-auto">
       <SectionHead
         kicker="С чего начнём"
-        title="Выберите, на чём удобно работать"
-        subtitle="Это не окончательное решение. После заявки проверим доступные предложения и поможем сравнить их по вашему городу."
+        title="На чём удобно работать"
+        subtitle="Выбирать сейчас ничего не нужно. Оставьте контакты — менеджер проверит, какие форматы открыты в вашем городе, и поможет сравнить."
       />
 
-      <div className="delivery-format-rail mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 md:mt-10 md:grid md:grid-cols-12 md:gap-4 md:overflow-visible md:pb-0">
+      <div className="delivery-format-rail mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 md:mt-10 md:grid md:grid-cols-12 md:gap-4 md:overflow-visible md:pb-0 lg:gap-6">
         {DELIVERY_FORMATS.map((format, index) => {
-          const selected = format.value === value;
+          // Планшет — две пары, десктоп — ровный ряд из четырёх.
           const spans = ['md:col-span-5', 'md:col-span-7', 'md:col-span-7', 'md:col-span-5'];
           return (
-            <button
+            <article
               key={format.id}
-              type="button"
-              aria-pressed={selected}
-              onClick={() => onPick(format.value)}
-              className={`${spans[index]} delivery-format-card group min-w-[82vw] snap-center cursor-pointer rounded-[20px] border p-6 text-left transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 md:min-w-0 ${
-                selected
-                  ? 'border-green-700 bg-green-700 text-[var(--on-accent)] shadow-[0_18px_45px_var(--accent-shadow)]'
-                  : 'border-slate-200 bg-slate-50 text-slate-900 hover:-translate-y-1 hover:border-green-300 hover:bg-white'
-              }`}
+              className={`${spans[index]} delivery-format-card min-w-[82vw] snap-center rounded-[20px] border border-slate-200 l-glass p-6 text-slate-900 transition-all duration-300 md:flex md:min-w-0 md:flex-col lg:col-span-3`}
             >
-              <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${selected ? 'bg-white/15 text-[var(--on-accent)]' : 'bg-white text-green-800 shadow-sm'}`}>
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-green-800 shadow-sm">
                 {FORMAT_ICONS[format.id]}
               </span>
               <span className="mt-5 block font-oswald text-2xl font-bold uppercase">{format.title}</span>
-              <span className={`mt-2 block max-w-xl text-sm leading-relaxed ${selected ? 'text-[var(--on-accent-soft)]' : 'text-slate-600'}`}>{format.description}</span>
-              <span className={`mt-5 block text-xs font-semibold ${selected ? 'text-[var(--on-accent-soft)]' : 'text-green-800'}`}>{selected ? 'Выбрано для заявки' : format.fit}</span>
-            </button>
+              <span className="mt-2 block max-w-xl text-sm leading-relaxed text-slate-600">{format.description}</span>
+              <span className="mt-5 block text-xs font-semibold text-green-800 md:mt-auto md:pt-5">{format.fit}</span>
+            </article>
           );
         })}
       </div>
@@ -262,32 +211,23 @@ const FormatSection = ({
 
 const DirectionCard = ({
   direction,
-  selected,
-  onPick,
-  className,
 }: {
   direction: DeliveryDirectionCard;
-  selected: boolean;
-  onPick: (value: DeliveryDirection) => void;
-  className: string;
 }) => (
-  <article className={`${className} delivery-direction-card relative overflow-hidden rounded-[20px] border p-6 transition-all duration-300 ${
-    selected ? 'border-green-700 bg-green-50 shadow-[0_18px_55px_var(--accent-shadow)]' : 'border-slate-200 bg-white hover:-translate-y-1 hover:shadow-xl'
-  }`}>
-    <div className="flex items-start justify-between gap-4">
-      <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${selected ? 'bg-green-700 text-[var(--on-accent)]' : 'bg-green-50 text-green-800'}`}>
+  <article className="delivery-direction-card relative flex flex-col overflow-hidden rounded-[20px] border border-slate-200 l-glass p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl lg:col-span-6">
+    {/* min-h-12 = высота иконки: бейдж в одну или две строки не сдвигает заголовки соседних карточек. */}
+    <div className="flex min-h-12 items-center justify-between gap-4">
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-green-50 text-green-800">
         {DIRECTION_ICONS[direction.id]}
       </span>
-      <span className={`max-w-[64%] rounded-full px-3 py-1.5 text-right text-[11px] font-bold leading-snug ${
-        selected ? 'bg-green-700 text-[var(--on-accent)]' : 'bg-green-50 text-green-800'
-      }`}>
+      <span className="max-w-[62%] rounded-full bg-green-50 px-3 py-1.5 text-right text-[11px] font-bold leading-snug text-green-800">
         {direction.reward}
       </span>
     </div>
     <h3 className="mt-5 font-oswald text-2xl font-bold uppercase leading-tight text-slate-950 lg:text-3xl">{direction.title}</h3>
     <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600">{direction.lead}</p>
     <p className="mt-4 border-t border-slate-200/80 pt-4 text-xs font-bold text-slate-500">Формат: {direction.formats}</p>
-    <div className="mt-5 space-y-2">
+    <div className="mt-5 grow space-y-2">
       {direction.facts.map(fact => (
         <p key={fact} className="flex items-start gap-2 text-sm text-slate-700">
           <Check size={17} className="mt-0.5 shrink-0 text-green-800" />
@@ -295,63 +235,40 @@ const DirectionCard = ({
         </p>
       ))}
     </div>
-    {direction.href ? (
-      // У направления есть свой лендинг — уводим туда, а не выбираем его в форме этой страницы.
-      <DirectionLink direction={direction} />
-    ) : (
-      <button
-        type="button"
-        onClick={() => onPick(direction.value)}
-        aria-pressed={selected}
-        className={`mt-6 inline-flex cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 ${
-          selected ? 'bg-green-700 text-[var(--on-accent)]' : 'border border-green-700 bg-white text-green-800 hover:bg-green-700 hover:text-[var(--on-accent)]'
-        }`}
-      >
-        {selected ? 'Выбрано' : 'Выбрать'} <ArrowRight size={16} />
-      </button>
-    )}
+    <DirectionApply direction={direction} />
   </article>
 );
 
-const DirectionLink = ({ direction }: { direction: DeliveryDirectionCard }) => {
-  const { track } = useLanding();
+/** Направление в заявку не подставляем — кнопка просто ведёт к форме. */
+const DirectionApply = ({ direction }: { direction: DeliveryDirectionCard }) => {
+  const { track, scrollToOrder } = useLanding();
   return (
-    <a
-      href={direction.href}
-      onClick={() => track('direction_open', { direction: direction.value })}
-      className="mt-6 inline-flex items-center gap-2 rounded-full border border-green-700 bg-white px-5 py-3 text-sm font-bold text-green-800 transition-colors hover:bg-green-700 hover:text-[var(--on-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
+    <button
+      type="button"
+      onClick={() => {
+        track('direction_apply', { direction: direction.value });
+        scrollToOrder('direction_card');
+      }}
+      className="mt-6 inline-flex cursor-pointer items-center gap-2 self-start rounded-full border border-green-700 bg-white px-5 py-3 text-sm font-bold text-green-800 transition-colors hover:bg-green-700 hover:text-[var(--on-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
     >
-      Открыть страницу <ArrowRight size={16} />
-    </a>
+      Оставить заявку <ArrowRight size={16} />
+    </button>
   );
 };
 
-const DirectionsSection = ({
-  value,
-  onPick,
-}: {
-  value: DeliveryDirection;
-  onPick: (direction: DeliveryDirection) => void;
-}) => {
-  const spans = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-7', 'lg:col-span-7', 'lg:col-span-5'];
-
+const DirectionsSection = () => {
   return (
-    <section id="directions" className="scroll-mt-24 bg-green-50/60 py-16 lg:py-24">
+    <section id="directions" className="scroll-mt-24 l-tint py-16">
       <div className="delivery-reveal container mx-auto">
         <SectionHead
           kicker="Направления"
           title="Все направления доставки"
           subtitle="Здесь собрана вся информация с главной страницы. Указанный ориентир не является обещанием конкретного дохода."
         />
-        <div className="delivery-direction-grid mt-10 grid grid-cols-1 gap-4 lg:grid-cols-12">
-          {DELIVERY_DIRECTIONS.map((direction, index) => (
-            <DirectionCard
-              key={direction.id}
-              direction={direction}
-              selected={!direction.href && direction.value === value}
-              onPick={onPick}
-              className={spans[index]}
-            />
+        {/* Четыре карточки = два ровных ряда по две (6+6). */}
+        <div className="delivery-direction-grid mt-10 grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-6">
+          {DELIVERY_DIRECTIONS.map(direction => (
+            <DirectionCard key={direction.id} direction={direction} />
           ))}
         </div>
       </div>
@@ -360,10 +277,10 @@ const DirectionsSection = ({
 };
 
 const ComparisonSection = () => (
-  <section id="compare" className="scroll-mt-24 bg-white py-16 lg:py-24">
+  <section id="compare" className="scroll-mt-24 l-tint py-16">
     <div className="delivery-reveal container mx-auto">
-      <div className="grid items-start gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="lg:sticky lg:top-28">
+      <div className="grid items-start gap-10 lg:grid-cols-12">
+        <div className="lg:sticky lg:top-28 lg:col-span-5">
           <SectionHead
             kicker="Подбор"
             title="Что подойдёт именно вам"
@@ -374,19 +291,18 @@ const ComparisonSection = () => (
             alt="Курьер на городском маршруте"
             loading="lazy"
             decoding="async"
-            className="mt-8 aspect-[16/9] w-full rounded-[20px] object-cover shadow-[0_18px_55px_rgba(15,23,42,.12)]"
+            className="mt-8 aspect-[16/9] w-full rounded-[20px] object-cover shadow-[0_18px_55px_rgba(15,23,42,.12)] lg:aspect-[4/3]"
           />
         </div>
-        <div className="delivery-match-grid grid gap-4 sm:grid-cols-2">
+        <div className="delivery-match-grid grid gap-4 sm:grid-cols-2 lg:col-span-7 lg:gap-6">
           {[
-            { icon: <Footprints size={22} />, title: 'Нет автомобиля', text: 'Пешая доставка, велосипед и самокат для еды, продуктов и небольших заказов.' },
+            { icon: <Footprints size={22} />, title: 'Нет автомобиля', text: 'Пешая доставка, велосипед и самокат для документов, посылок и небольших заказов.' },
             { icon: <Clock3 size={22} />, title: 'Нужна подработка', text: 'Ищем предложения с доступными днями и интервалами, которые можно совмещать.' },
             { icon: <Car size={22} />, title: 'Есть личное авто', text: 'Сравниваем экспресс, плановые рейсы и обычную автодоставку.' },
             { icon: <Truck size={22} />, title: 'Есть грузовой автомобиль', text: 'Проверяем подходящие грузы, маршруты и требования к кузову.' },
-            { icon: <Wrench size={22} />, title: 'Разбираетесь в велосипедах', text: 'Можно рассмотреть направление велопомощника с поддержкой курьеров.' },
             { icon: <Smartphone size={22} />, title: 'Нет опыта', text: 'Для многих направлений опыт не нужен. Поможем разобраться с приложением и стартом.' },
           ].map(item => (
-            <div key={item.title} className="delivery-match-card rounded-[18px] border border-slate-200 bg-slate-50 p-5">
+            <div key={item.title} className="delivery-match-card rounded-[18px] border border-slate-200 l-glass p-5">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-green-800 shadow-sm">{item.icon}</span>
               <h3 className="mt-4 font-oswald text-xl font-bold uppercase text-slate-950">{item.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
@@ -399,11 +315,11 @@ const ComparisonSection = () => (
 );
 
 const SupportSection = () => (
-  <section className="bg-green-50 py-16 lg:py-24">
+  <section className="l-tint py-16">
     <div className="delivery-reveal container mx-auto">
-      <div className="delivery-support-panel overflow-hidden rounded-[20px] border border-green-200 bg-white shadow-[0_24px_70px_var(--accent-shadow)]">
-        <div className="grid lg:grid-cols-[0.72fr_1.28fr]">
-          <div className="bg-green-700 p-7 text-[var(--on-accent)] lg:p-10">
+      <div className="delivery-support-panel overflow-hidden rounded-[20px] border border-green-200 l-glass shadow-[0_24px_70px_var(--accent-shadow)]">
+        <div className="grid lg:grid-cols-12">
+          <div className="bg-green-700 p-7 text-[var(--on-accent)] lg:col-span-5 lg:p-10">
             <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-[var(--on-accent-soft)]">
               <span aria-hidden="true" className="h-px w-8 bg-green-200/50" />
               Барори Парк
@@ -413,7 +329,7 @@ const SupportSection = () => (
               Помогаем понять условия, подготовиться к подключению и решить вопросы после старта.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2">
+          <div className="grid sm:grid-cols-2 lg:col-span-7">
             {[
               { icon: <MapPin size={22} />, title: 'Проверяем город', text: 'Показываем только те направления, которые доступны для вашего региона.' },
               { icon: <ShieldCheck size={22} />, title: 'Объясняем договор', text: 'До оформления сообщаем формат сотрудничества и требования сервиса.' },
@@ -434,14 +350,14 @@ const SupportSection = () => (
 );
 
 const StepsSection = () => (
-  <section id="start" className="scroll-mt-24 bg-white py-16 lg:py-24">
+  <section id="start" className="scroll-mt-24 l-tint py-16">
     <div className="delivery-reveal container mx-auto">
       <SectionHead
         kicker="Как это работает"
         title="От заявки до доступных заказов"
         subtitle="Без длинной анкеты на сайте и без обещаний срока, который зависит от проверки сервиса."
       />
-      <div className="delivery-route-steps mt-10 grid gap-4 md:grid-cols-4">
+      <div className="delivery-route-steps mt-10 grid gap-4 md:grid-cols-4 lg:gap-6">
         {[
           { title: 'Оставьте контакты', text: 'Имя, телефон, город и удобный транспорт.' },
           { title: 'Сравним варианты', text: 'Проверим направления и условия в вашем городе.' },
@@ -460,31 +376,31 @@ const StepsSection = () => (
 );
 
 const RequirementsSection = () => (
-  <section className="bg-green-50/60 py-16 lg:py-24">
-    <div className="delivery-reveal container mx-auto grid items-start gap-10 lg:grid-cols-[0.86fr_1.14fr]">
-      <div>
-        <SectionHead
-          kicker="Требования"
-          title="Что потребуется для старта"
-          subtitle="Базовый список короткий. Дополнительные требования зависят от направления, поэтому их проверяем до оформления."
-        />
-        <div className="mt-7 rounded-[18px] border border-green-200 bg-green-700 p-6 text-[var(--on-accent)]">
-          <p className="font-oswald text-2xl font-bold uppercase">Важно о договоре</p>
-          <p className="mt-2 text-sm leading-relaxed text-[var(--on-accent-soft)]">
-            Отправка заявки не создаёт трудовые отношения. Формат сотрудничества, договор и порядок выплат сообщаются для конкретного предложения.
-          </p>
-        </div>
+  <section className="l-tint py-16">
+    {/* 12 колонок: заголовок и чипы делят первую строку, полоса о договоре идёт под ними —
+        иначе правая колонка кончается раньше левой и под чипами остаётся пустая полоса. */}
+    <div className="delivery-reveal container mx-auto grid items-start gap-10 lg:grid-cols-12">
+      <SectionHead
+        kicker="Требования"
+        title="Что потребуется для старта"
+        subtitle="Базовый список короткий. Дополнительные требования зависят от направления, поэтому их проверяем до оформления."
+        className="lg:col-span-5 lg:row-start-1"
+      />
+      <div className="rounded-[18px] border border-green-200 bg-green-700 p-6 text-[var(--on-accent)] lg:col-span-12 lg:row-start-2">
+        <p className="font-oswald text-2xl font-bold uppercase">Важно о договоре</p>
+        <p className="mt-2 max-w-4xl text-sm leading-relaxed text-[var(--on-accent-soft)]">
+          Отправка заявки не создаёт трудовые отношения. Формат сотрудничества, договор и порядок выплат сообщаются для конкретного предложения.
+        </p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2 lg:col-span-7 lg:col-start-6 lg:row-start-1 lg:gap-4">
         {[
-          'Возраст от 18 лет',
+          'Возраст от 16 лет',
           'Смартфон с доступом в интернет',
           'Документы для выбранного формата оформления',
           'Личный транспорт только для вело-, авто- и грузового формата',
           'Самозанятость, если её требует конкретный сервис',
-          'Медицинская книжка только для части предложений с едой',
         ].map(item => (
-          <div key={item} className="flex items-start gap-3 rounded-[16px] border border-slate-200 bg-white p-4">
+          <div key={item} className="flex items-start gap-3 rounded-[16px] border border-slate-200 l-glass p-4">
             <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-green-800" />
             <span className="text-sm leading-relaxed text-slate-700">{item}</span>
           </div>
@@ -494,46 +410,12 @@ const RequirementsSection = () => (
   </section>
 );
 
-const CourierFaq = () => {
-  const { track } = useLanding();
-
-  return (
-    <section id="faq" className="scroll-mt-24 bg-white py-16 lg:py-24">
-      <div className="delivery-reveal container mx-auto grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
-        <SectionHead
-          kicker="Вопросы"
-          title="Частые вопросы"
-          subtitle="Если вашего вопроса нет в списке, оставьте заявку или позвоните. Консультация бесплатна."
-          className="lg:sticky lg:top-28"
-        />
-        <div className="space-y-3">
-          {FAQ.map(item => (
-            <details
-              key={item.q}
-              onToggle={event => {
-                if (event.currentTarget.open) track('faq_open', { question: item.q });
-              }}
-              className="group rounded-[16px] border border-slate-200 bg-slate-50 px-5 py-4 open:border-green-300 open:bg-white"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-oswald text-lg font-bold uppercase text-slate-900 marker:hidden">
-                {item.q}
-                <span className="text-2xl font-normal text-green-800 transition-transform group-open:rotate-45">+</span>
-              </summary>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">{item.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
 export const CourierPageContent = () => {
   const { track } = useLanding();
   const [campaign] = useState(() => readCampaignContext(typeof window === 'undefined' ? '' : window.location.search));
   const controller = useCourierLead(campaign);
   const hasCampaignHeadline = Boolean(campaign.city || campaign.format !== 'Пока не выбрал');
-  const headline = hasCampaignHeadline ? formatCampaignHeadline({ ...campaign, format: controller.state.format }) : 'Работа в доставке';
+  const headline = hasCampaignHeadline ? formatCampaignHeadline(campaign) : 'Работа в доставке';
 
   useEffect(() => {
     track('view', {
@@ -545,27 +427,17 @@ export const CourierPageContent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const pickFormat = (format: CourierFormat) => {
-    controller.setState(current => ({ ...current, format }));
-    track('format_pick', { format });
-  };
-
-  const pickDirection = (direction: DeliveryDirection) => {
-    controller.setState(current => ({ ...current, direction }));
-    track('direction_pick', { direction });
-  };
-
   return (
     <>
-      <Hero headline={headline} controller={controller} />
+      <Hero headline={headline} />
       <TrustBar />
-      <FormatSection value={controller.state.format} onPick={pickFormat} />
-      <DirectionsSection value={controller.state.direction} onPick={pickDirection} />
+      <FormatSection />
+      <DirectionsSection />
       <ComparisonSection />
       <SupportSection />
       <StepsSection />
       <RequirementsSection />
-      <CourierFaq />
+      <Faq items={FAQ} title="Частые вопросы" />
       <CourierFinalForm {...controller} />
       <style>{`
         @keyframes delivery-copy-in {
@@ -586,11 +458,6 @@ export const CourierPageContent = () => {
         @keyframes delivery-chip-in {
           from { opacity: 0; transform: translateY(12px) scale(.92); }
           to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes delivery-route-pulse {
-          0%, 100% { opacity: .7; transform: scale(.8); }
-          50% { opacity: 1; transform: scale(1.12); }
         }
 
         @keyframes delivery-cta-sweep {
@@ -642,21 +509,6 @@ export const CourierPageContent = () => {
           animation: delivery-route-draw 1.2s cubic-bezier(.16, 1, .3, 1) .25s both;
         }
 
-        .delivery-route-scene::before {
-          position: absolute;
-          z-index: 4;
-          top: 12%;
-          right: 8%;
-          width: 12px;
-          height: 12px;
-          content: '';
-          border: 3px solid rgba(255, 255, 255, .92);
-          border-radius: 999px;
-          background: var(--color-green-600);
-          box-shadow: 0 0 0 7px var(--accent-shadow);
-          animation: delivery-route-pulse 2.4s ease-in-out 1.3s infinite;
-        }
-
         .delivery-route-chip {
           position: absolute;
           z-index: 5;
@@ -676,9 +528,11 @@ export const CourierPageContent = () => {
           animation: delivery-chip-in .55s cubic-bezier(.16, 1, .3, 1) both;
         }
 
-        .delivery-route-chip--foot { top: 14%; left: 6%; animation-delay: .5s; }
-        .delivery-route-chip--bike { top: 35%; left: 41%; animation-delay: .65s; }
-        .delivery-route-chip--car { top: 10%; right: 6%; animation-delay: .8s; }
+        /* Чипы идут по направлению маршрута: слева ниже, справа выше.
+           На мобильном кадр низкий, поэтому держим их выше подписи в нижней трети. */
+        .delivery-route-chip--foot { top: 30%; left: 5%; animation-delay: .5s; }
+        .delivery-route-chip--bike { top: 18%; left: 36%; animation-delay: .65s; }
+        .delivery-route-chip--car { top: 6%; right: 5%; animation-delay: .8s; }
 
         .delivery-primary-cta {
           position: relative;
@@ -711,10 +565,6 @@ export const CourierPageContent = () => {
         .delivery-format-rail::-webkit-scrollbar,
         .delivery-match-grid::-webkit-scrollbar {
           display: none;
-        }
-
-        .delivery-direction-card:nth-child(3n + 1):not(:has(button[aria-pressed='true'])) {
-          background: var(--color-green-50);
         }
 
         .delivery-support-panel {
@@ -776,11 +626,11 @@ export const CourierPageContent = () => {
           }
         }
 
+        /* Значения посчитаны по самой линии: центр чипа = точка пути на этой доле ширины. */
         @media (min-width: 1024px) {
-          .delivery-route-chip--foot { top: 67%; left: 8%; }
-          .delivery-route-chip--bike { top: 40%; left: 35%; }
-          .delivery-route-chip--car { top: 12%; right: 7%; }
-          .delivery-route-scene::before { top: 9%; right: 8%; }
+          .delivery-route-chip--foot { top: 59.5%; left: 7%; }
+          .delivery-route-chip--bike { top: 41%; left: 39.5%; }
+          .delivery-route-chip--car { top: 45%; right: 6%; }
         }
 
         @media (hover: hover) {
@@ -807,7 +657,6 @@ export const CourierPageContent = () => {
           .delivery-route-scene img,
           .delivery-route-path,
           .delivery-route-chip,
-          .delivery-route-scene::before,
           .delivery-primary-cta::after,
           .delivery-direction-card,
           .delivery-match-card,
@@ -831,7 +680,7 @@ export const CourierLanding = () => (
     ctaLabel="Подобрать вариант"
     stickyLabel="Подобрать вариант"
     footerAbout="Подбираем направления доставки в крупных городах России и помогаем разобраться с оформлением и началом работы."
-    legalNote="ООО «БАРОРИ КОР», ИНН 7814820277, ОГРН 1237800027937. Отправка заявки не создаёт трудовые отношения. Формат сотрудничества, вид договора, доступность предложений и размер вознаграждения зависят от выбранного сервиса и города. Информация не является публичной офертой или гарантией дохода. 18+."
+    legalNote="ООО «БАРОРИ КОР», ИНН 7814820277, ОГРН 1237800027937. Отправка заявки не создаёт трудовые отношения. Формат сотрудничества, вид договора, доступность предложений и размер вознаграждения зависят от выбранного сервиса и города. Информация не является публичной офертой или гарантией дохода. 16+."
     nav={[
       { href: '#formats', label: 'Форматы' },
       { href: '#directions', label: 'Направления' },

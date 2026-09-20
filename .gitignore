@@ -1,3 +1,8 @@
 mcp-server.log
 mcp-server-error.log
 .superpowers/
+
+# локальное: PHP-бэкенд с ключами, временные файлы аудитов, питон-окружение
+local/
+.tmp/
+.venv/

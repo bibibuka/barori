@@ -7,6 +7,7 @@
 import { useState, type Dispatch, type FormEvent, type SetStateAction } from 'react';
 import { CheckCircle2, Clock, ShieldCheck } from 'lucide-react';
 import {
+  ChoiceGroup,
   ConsentCheckbox,
   FormSection,
   inputClass,
@@ -14,21 +15,30 @@ import {
   useLeadSubmit,
 } from '../landing/kit';
 import courierImage from '../assets/kura.webp';
+import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
-export type EdaTransport = 'Пешком' | 'Велосипед или самокат' | 'Электротранспорт' | 'Подберём вместе';
+// Форма собирает минимум: контакты, город и статус самозанятого. Остальное — формат
+// передвижения, слоты, документы — менеджер выясняет на звонке, чтобы не хранить лишние
+// сведения о человеке (меньше категорий в уведомлении РКН и меньше того, что надо защищать).
+export type EdaSelfEmployment = 'Уже оформлена' | 'Готов оформить';
+export type EdaTransport = 'Пешком' | 'Велосипед или самокат' | 'Автомобиль' | 'Пока не решил';
 
-export const TRANSPORT_OPTIONS: { value: EdaTransport; label: string }[] = [
-  { value: 'Подберём вместе', label: 'Подберём вместе' },
-  { value: 'Пешком', label: 'Пешком' },
-  { value: 'Велосипед или самокат', label: 'Велосипед или самокат' },
-  { value: 'Электротранспорт', label: 'Электротранспорт' },
+export const SELF_EMPLOYMENT_OPTIONS: { value: EdaSelfEmployment; label: string }[] = [
+  { value: 'Уже оформлена', label: 'Уже оформлена' },
+  { value: 'Готов оформить', label: 'Готов оформить' },
 ];
+
+const TRANSPORT_OPTIONS = DIRECTION_PREFERENCES.eda.map(option => ({
+  value: option.label as EdaTransport,
+  label: option.label,
+}));
 
 export interface EdaLeadState {
   name: string;
   phone: string;
   city: string;
   transport: EdaTransport;
+  selfEmployment: EdaSelfEmployment;
   consent: boolean;
 }
 
@@ -46,10 +56,11 @@ export const buildEdaPayload = (lead: EdaLeadState, attribution: Record<string, 
   name: lead.name.trim(),
   phone: lead.phone.trim(),
   city: lead.city.trim(),
-  courier_format: lead.transport,
+  self_employment: lead.selfEmployment,
   delivery_direction: 'Еда и продукты',
+  delivery_transport: lead.transport,
   ...attribution,
-  message: `Яндекс Еда. Передвижение: ${lead.transport}.`,
+  message: `Яндекс Еда. Транспорт: ${lead.transport}. Самозанятость: ${lead.selfEmployment}.`,
 });
 
 export interface EdaFormController {
@@ -65,7 +76,8 @@ export const useEdaLead = (city: string, attribution: Record<string, string>): E
     name: '',
     phone: '',
     city,
-    transport: 'Подберём вместе',
+    transport: 'Пока не решил',
+    selfEmployment: 'Готов оформить',
     consent: false,
   });
 
@@ -134,11 +146,20 @@ export const EdaLeadForm = ({
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-green-800/70">Направление</p>
             <p className="font-oswald text-lg font-bold leading-tight text-green-800">Курьер Яндекс Еды</p>
-            <p className="text-xs text-green-800/70">{state.transport}</p>
+            <p className="text-xs text-green-800/70">Форматы и слоты подберём на звонке</p>
           </div>
           <CheckCircle2 className="shrink-0 text-green-800" size={24} />
         </div>
       )}
+
+      <ChoiceGroup
+        name={`${idPrefix}-transport`}
+        label="Как будете доставлять?"
+        options={TRANSPORT_OPTIONS}
+        value={state.transport}
+        onChange={value => setField('transport', value)}
+        columns={compact ? 1 : 2}
+      />
 
       {/* В hero форма стоит в узкой колонке — поля идут в один столбец */}
       <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
@@ -191,19 +212,14 @@ export const EdaLeadForm = ({
         />
       </div>
 
-      <div>
-        <label htmlFor={`${idPrefix}-transport`} className="mb-1.5 block text-sm font-medium text-gray-700">Как удобно передвигаться?</label>
-        <select
-          id={`${idPrefix}-transport`}
-          className={inputClass}
-          value={state.transport}
-          onChange={event => setField('transport', event.target.value as EdaTransport)}
-        >
-          {TRANSPORT_OPTIONS.map(option => (
-            <option key={option.value} value={option.value}>{option.label}</option>
-          ))}
-        </select>
-      </div>
+      <ChoiceGroup
+        name={`${idPrefix}-self-employment`}
+        label="Самозанятость"
+        options={SELF_EMPLOYMENT_OPTIONS}
+        value={state.selfEmployment}
+        onChange={value => setField('selfEmployment', value)}
+        columns={compact ? 1 : 2}
+      />
 
       <ConsentCheckbox
         id={`${idPrefix}-consent`}

@@ -1,11 +1,17 @@
-import type { CourierFormat, DeliveryDirection } from './campaign';
+export type CourierSelfEmployment = 'Уже оформлена' | 'Готов оформить';
+export type CourierService = 'Подберите мне' | 'Яндекс Доставка' | 'Купер' | 'TopGo';
+
+export const SELF_EMPLOYMENT_OPTIONS: { value: CourierSelfEmployment; label: string }[] = [
+  { value: 'Уже оформлена', label: 'Уже оформлена' },
+  { value: 'Готов оформить', label: 'Готов оформить' },
+];
 
 export interface CourierLeadState {
   name: string;
   phone: string;
   city: string;
-  format: CourierFormat;
-  direction: DeliveryDirection;
+  service: CourierService;
+  selfEmployment: CourierSelfEmployment;
   consent: boolean;
 }
 
@@ -26,8 +32,8 @@ export const buildCourierPayload = (
   name: lead.name.trim(),
   phone: lead.phone.trim(),
   city: lead.city.trim(),
-  courier_format: lead.format,
-  delivery_direction: lead.direction,
+  department: lead.service,
+  self_employment: lead.selfEmployment,
   ...attribution,
-  message: `Формат: ${lead.format}. Направление: ${lead.direction}.`,
+  message: `Сервис доставки: ${lead.service}. Самозанятость: ${lead.selfEmployment}.`,
 });

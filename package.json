@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "test": "node --test src/components/Toast.test.ts src/components/YandexEdaSpotlight.test.ts src/dostavka/CourierLanding.test.ts src/dostavka/campaign.test.ts src/dostavka/directions.test.ts src/dostavka/lead.test.ts src/dostavka/metadata.test.ts src/eda/EdaLanding.test.ts src/eda/metadata.test.ts",
+    "test": "node --test src/utils/leadResponse.test.ts src/components/Toast.test.ts src/components/YandexEda.test.ts src/dostavka/CourierLanding.test.ts src/dostavka/campaign.test.ts src/dostavka/directions.test.ts src/dostavka/lead.test.ts src/dostavka/metadata.test.ts src/eda/EdaLanding.test.ts src/eda/metadata.test.ts src/landing/metadata.test.ts src/landing/targetForms.test.ts",
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",

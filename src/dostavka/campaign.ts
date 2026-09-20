@@ -17,13 +17,10 @@ const FORMAT_BY_PARAM: Record<string, CourierFormat> = {
 };
 
 const DIRECTION_BY_PARAM: Record<string, DeliveryDirection> = {
-  'yandex-eda': 'Еда и продукты',
-  food: 'Еда и продукты',
   express: 'Экспресс-доставка',
   planned: 'Плановая доставка',
   auto: 'Автодоставка',
   'cargo-delivery': 'Грузовая доставка',
-  'velo-helper': 'Велопомощник',
 };
 
 const ATTRIBUTION_KEYS = [

@@ -15,5 +15,7 @@ interface Window {
     render: (containerId: string, params: any) => number;
     execute: (widgetId?: number) => void;
     reset: (widgetId?: number) => void;
+    destroy: (widgetId?: number) => void;
+    subscribe: (widgetId: number, event: string, callback: () => void) => () => void;
   };
 }

@@ -3,14 +3,20 @@
 // Форма отклика ТОЛЬКО на направление «Водитель такси» (лендинг /taxi/).
 // Должность зашита жёстко, выбора других вакансий нет — страница изолирована.
 
+// Заявка собирает только контакты и город. Наличие автомобиля, стаж и документы
+// менеджер выясняет на звонке — храним минимум сведений о человеке.
 import React, { useState } from 'react';
-import { CheckCircle2, ShieldCheck, Clock, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, Clock } from 'lucide-react';
 import {
   FormSection, ChoiceGroup, ConsentCheckbox, useLeadSubmit, inputClass, useLanding,
 } from '../landing/kit';
+import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
-type CarStatus = 'Своё авто' | 'Пока нет авто';
-type Experience = 'Менее 3 лет' | '3–5 лет' | 'Более 5 лет';
+type TaxiVehicle = 'Свой автомобиль' | 'Нужна аренда' | 'Пока не решил';
+const VEHICLE_OPTIONS = DIRECTION_PREFERENCES.taxi.map(option => ({
+  value: option.label as TaxiVehicle,
+  label: option.label,
+}));
 
 export const TaxiForm = () => {
   const { track } = useLanding();
@@ -18,15 +24,13 @@ export const TaxiForm = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
-  const [car, setCar] = useState<CarStatus | ''>('');
-  const [experience, setExperience] = useState<Experience | ''>('');
-  const [message, setMessage] = useState('');
+  const [vehicle, setVehicle] = useState<TaxiVehicle>('Пока не решил');
   const [consent, setConsent] = useState(false);
 
   const { submit, isLoading, showToast } = useLeadSubmit({
     position: 'Водитель такси',
     leadType: 'Такси (лендинг /taxi/)',
-    onSuccess: () => { setName(''); setPhone(''); setCity(''); setCar(''); setExperience(''); setMessage(''); },
+    onSuccess: () => { setName(''); setPhone(''); setCity(''); },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,16 +46,6 @@ export const TaxiForm = () => {
       showToast('Укажите город — от него зависят условия подключения', 'error');
       return;
     }
-    if (!car) {
-      track('lead_validation_error', { reason: 'car' });
-      showToast('Отметьте, есть ли у вас автомобиль', 'error');
-      return;
-    }
-    if (!experience) {
-      track('lead_validation_error', { reason: 'experience' });
-      showToast('Укажите водительский стаж', 'error');
-      return;
-    }
     if (!consent) {
       track('lead_validation_error', { reason: 'consent' });
       showToast('Нужно согласие на обработку персональных данных', 'error');
@@ -62,16 +56,16 @@ export const TaxiForm = () => {
       name,
       phone,
       city,
-      car_status: car,
-      driving_experience: experience,
-      message: `Авто: ${car}. Стаж: ${experience}.${message ? ' ' + message : ''}`,
+      department: 'Яндекс Такси',
+      vehicle,
+      message: `Заявка на подключение к такси. Автомобиль: ${vehicle}.`,
     }, consent);
   };
 
   return (
     <FormSection
       title="Заявка на подключение к такси"
-      lead="Заполните 5 полей — перезвоним и назовём условия, комиссию и требования именно для вашего города. До подключения, а не после."
+      lead="Три поля — перезвоним и назовём условия, комиссию и требования именно для вашего города. До подключения, а не после."
       bullets={[
         { icon: <Clock size={18} />, text: 'Звонок в течение 15 минут (10:00–20:00)' },
         { icon: <CheckCircle2 size={18} />, text: 'Проверим документы и поможем с самозанятостью' },
@@ -89,6 +83,14 @@ export const TaxiForm = () => {
           </div>
           <CheckCircle2 className="text-green-800 shrink-0" size={24} />
         </div>
+
+        <ChoiceGroup
+          name="taxi-vehicle"
+          label="Какой автомобиль будет у вас?"
+          options={VEHICLE_OPTIONS}
+          value={vehicle}
+          onChange={setVehicle}
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -109,61 +111,9 @@ export const TaxiForm = () => {
             className={inputClass} value={city} onChange={e => setCity(e.target.value)} />
         </div>
 
-        <ChoiceGroup<CarStatus>
-          name="car_status"
-          label="Автомобиль"
-          options={[
-            { value: 'Своё авто', label: 'Своё авто' },
-            { value: 'Пока нет авто', label: 'Пока нет авто' },
-          ]}
-          value={car}
-          onChange={setCar}
-        />
-
-        {/* Аренду автомобилей парк не предоставляет — говорим прямо, не тянем лид зря */}
-        {car === 'Пока нет авто' && (
-          <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-3.5">
-            <AlertTriangle className="text-amber-600 shrink-0 mt-0.5" size={20} />
-            <p className="text-xs sm:text-sm text-amber-900 leading-snug">
-              Для работы в такси нужен свой автомобиль — аренду мы не предоставляем.
-              Заявку можно отправить: менеджер расскажет про другие направления парка,
-              где машина не нужна.
-            </p>
-          </div>
-        )}
-
-        <ChoiceGroup<Experience>
-          name="driving_experience"
-          label="Водительский стаж"
-          options={[
-            { value: 'Менее 3 лет', label: 'Менее 3 лет' },
-            { value: '3–5 лет', label: '3–5 лет' },
-            { value: 'Более 5 лет', label: 'Более 5 лет' },
-          ]}
-          value={experience}
-          onChange={setExperience}
-        />
-
-        {/* Стаж меньше 3 лет — требование сервиса не выполняется, честно предупреждаем сразу */}
-        {experience === 'Менее 3 лет' && (
-          <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-3.5">
-            <AlertTriangle className="text-amber-600 shrink-0 mt-0.5" size={20} />
-            <p className="text-xs sm:text-sm text-amber-900 leading-snug">
-              Сервис требует стаж от 3 лет — с меньшим стажем подключение к такси, скорее всего,
-              будет недоступно. Заявку всё равно можно отправить: менеджер проверит вашу ситуацию
-              и предложит доступные направления парка.
-            </p>
-          </div>
-        )}
-
-        <div>
-          <label htmlFor="tx-message" className="block text-sm font-medium text-gray-700 mb-1.5">
-            Комментарий <span className="text-gray-400 font-normal">(необязательно)</span>
-          </label>
-          <textarea id="tx-message" rows={3}
-            placeholder="Например: марка и год авто, есть ли разрешение на такси, когда удобно позвонить"
-            className={`${inputClass} resize-none`} value={message} onChange={e => setMessage(e.target.value)} />
-        </div>
+        <p className="text-sm text-gray-500 leading-relaxed">
+          Стаж и документы уточним на звонке — в форме оставляем только данные, нужные для подбора подключения.
+        </p>
 
         <ConsentCheckbox checked={consent} onChange={setConsent} place="taxi_form" />
 

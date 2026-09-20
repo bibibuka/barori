@@ -17,6 +17,54 @@ body {
   overflow-x: hidden;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 6rem;
+}
+
+:root { --on-accent: #fff; --on-accent-soft: #f0fdf4; --accent-shadow: rgba(22, 163, 74, .2); }
+label:has(> input[type="radio"]:focus-visible) { outline: 3px solid #2563eb; outline-offset: 3px; }
+input[type="radio"]:focus-visible { outline-offset: 1px; }
+
+:where(a, button, summary, input, select, textarea):focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.lead-form :where(input:not([type="radio"]):not([type="checkbox"]), select, textarea):focus {
+  border-color: #15803d;
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, .18);
+}
+.lead-form :where(input, select, textarea):focus-visible { outline: none; }
+.lead-form input[type="checkbox"]:focus-visible { outline: 2px solid #15803d; outline-offset: 2px; }
+.lead-form label:has(> input[type="radio"]:focus-visible) { outline-color: #15803d; }
+
+a[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+
+.site-header-spacer { height: calc(80px + env(safe-area-inset-top)); }
+.site-landing-main { padding-top: env(safe-area-inset-top); }
+.site-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .25rem 1rem; padding: .125rem .5rem; }
+.site-links a { display: flex; align-items: center; justify-content: center; min-height: 44px; padding: .5rem .75rem; font-size: .875rem; font-weight: 600; border-radius: .5rem; }
+.site-links a[aria-current="page"] { background: #f1f5f9; color: #0f172a; }
+.site-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.site-footer-navigation { margin-bottom: 2rem; color: #cbd5e1; }
+.site-footer-navigation .site-links { justify-content: flex-start; }
+.site-dialog { margin: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; color: inherit; }
+.site-dialog:not(#page-menu) { background: transparent; }
+.site-dialog::backdrop { background: transparent; }
+.site-dialog > div:last-child { overscroll-behavior: contain; }
+
+@media (max-width: 1199px) {
+  .site-header-spacer { height: calc(72px + env(safe-area-inset-top)); }
+}
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea { font-size: 16px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-oswald);
 }
@@ -25,8 +73,51 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* ===== ЛЕНДИНГИ НАПРАВЛЕНИЙ: ФОН СЕКЦИЙ И СТЕКЛО =====
+ * Правила действуют только на /dostavka/, /eda/, /taxi/, /smena/ — тема направления
+ * висит классом на <html>, у основного сайта её нет. Цвета берём из тех же токенов
+ * green-*, которые подменяет landing/theme.css, поэтому фон следует теме направления.
+ *
+ * Идея: секция — тонированное полотно с еле заметной сеткой, блок с текстом — стекло
+ * поверх него. Так блоки перестают сливаться с фоном.
+ */
+html[class*="theme-"] .l-tint {
+  background-color: var(--color-green-50);
+  background-image:
+    linear-gradient(var(--accent-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--accent-grid) 1px, transparent 1px);
+  background-size: 34px 34px;
+  /* Фон у секций общий, поэтому границу между ними показывает волосяная линия —
+     иначе вертикальные отступы читаются как дырка. */
+  border-top: 1px solid rgba(15, 23, 42, .06);
+}
+
+html[class*="theme-"] .l-glass {
+  background-color: rgba(255, 255, 255, .72);
+  /* гасим градиентные заливки карточек — стекло должно быть ровным */
+  background-image: none;
+  border-color: rgba(255, 255, 255, .85);
+  box-shadow: 0 12px 34px rgba(15, 23, 42, .07);
+}
+
+/* Блюр только на десктопе: на телефоне это два десятка слоёв backdrop-filter
+   поверх лент со snap-скроллом — дорого и заметно дёргается. */
+@media (min-width: 1024px) {
+  /* только стандартное свойство: сборщик схлопывает пару «стандарт + -webkit-»
+     в один префиксный вариант, и тогда блюр пропадает в актуальных браузерах */
+  html[class*="theme-"] .l-glass {
+    backdrop-filter: blur(14px);
+  }
+}
+
+@media (hover: hover) {
+  html[class*="theme-"] .l-glass:hover {
+    background-color: rgba(255, 255, 255, .88);
+  }
 }
 
 /* Scroll animations */

@@ -1,27 +1,40 @@
-// FILE: src/landing/kit.tsx
-//
-// Общий каркас изолированных лендингов направлений (/dostavka/, /taxi/, /smena/).
-// Что здесь: оболочка страницы (шапка/футер/липкая кнопка/юрмодалки), общие секции
-// и хук отправки заявки с капчей. Уникальный контент и поля формы — в самих лендингах.
-//
-// ВАЖНО про изоляцию: ни один элемент каркаса не ссылается на основной сайт —
-// логотип не кликабельный, навигация только якорями внутри страницы.
+// Общий каркас страниц: навигация сайта, локальные секции и формы направлений.
 
-import { createContext, useContext, useEffect, useRef, useState, lazy, Suspense } from 'react';
+import { createContext, useContext, useRef, useState, lazy, Suspense } from 'react';
 import { PhoneCall, Clock, MapPin } from 'lucide-react';
 import { ToastProvider, useToast } from '../components/Toast';
+import { TelegramIcon } from '../components/TelegramIcon';
+import { Header } from '../components/Header';
+import { SiteNavigation } from '../components/SiteNavigation';
+import { useSmartCaptcha } from '../hooks/useSmartCaptcha';
+import { requireLeadSuccess } from '../utils/leadResponse';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { trackGoal } from '../utils/analytics';
 import { CONSENT_VERSION } from '../utils/consent';
 import { resetAnalyticsConsent } from '../utils/metrika';
 import logo from '../assets/logo.webp';
+import maxIcon from '../assets/max-icon.svg';
+import vkIcon from '../assets/vk-icon.svg';
 
 type LegalType = import('../components/LegalModal').LegalType;
 const LegalModal = lazy(() => import('../components/LegalModal').then(m => ({ default: m.LegalModal })));
 const CookieBanner = lazy(() => import('../components/CookieBanner').then(m => ({ default: m.CookieBanner })));
 
-export const PHONE_HREF = 'tel:+79219000997';
-export const PHONE_TEXT = '+7 (921) 900 09 97';
+export interface LandingPhone {
+  href: string;
+  text: string;
+}
+
+/** Доставка, еда и такси идут на один номер, смены — на свой. */
+export const PHONE_DELIVERY: LandingPhone = { href: 'tel:+79990330037', text: '+7 (999) 033 00 37' };
+export const PHONE_SMENA: LandingPhone = { href: 'tel:+79219000997', text: '+7 (921) 900 09 97' };
+
+/** Боты те же, что в шапке основного сайта. */
+const MESSENGERS = [
+  { service: 'telegram', href: 'https://t.me/BaroriPark_Bot', title: 'Написать в Telegram', label: 'Пишите в Telegram' },
+  { service: 'vk', href: 'https://vk.com/baroripark', title: 'ВК Бот', icon: vkIcon, label: 'Пишите во ВК' },
+  { service: 'max', href: 'https://max.ru/id7814820277_bot', title: 'Max Бот', icon: maxIcon, label: 'Пишите в Max' },
+] as const;
 
 /* ─────────────────────────────  КОНТЕКСТ  ───────────────────────────── */
 
@@ -30,38 +43,140 @@ interface LandingCtx {
   track: (goal: string, params?: Record<string, string | number | boolean>) => void;
   openLegal: (type: LegalType) => void;
   scrollToOrder: (place: string) => void;
+  /** Телефон страницы: у каждого направления свой номер. */
+  phone: LandingPhone;
 }
 
-const Ctx = createContext<LandingCtx>({ track: () => {}, openLegal: () => {}, scrollToOrder: () => {} });
+const Ctx = createContext<LandingCtx>({
+  track: () => {},
+  openLegal: () => {},
+  scrollToOrder: () => {},
+  phone: PHONE_DELIVERY,
+});
 export const useLanding = () => useContext(Ctx);
+
+/** Иконки мессенджеров — как на основном сайте, рядом с телефоном. */
+export const Messengers = ({ place, className = '', size = 'h-9 w-9', labeled = false }: {
+  place: string; className?: string; size?: string; labeled?: boolean;
+}) => {
+  const { track } = useLanding();
+  if (labeled) {
+    return (
+      <div className={`grid grid-cols-3 gap-2 ${className}`}>
+        {MESSENGERS.map(item => (
+          <a
+            key={item.service}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('messenger_click', { service: item.service, place })}
+            aria-label={item.title}
+            className="flex min-h-20 flex-col items-center justify-center gap-1.5 rounded-xl border border-green-200 bg-white px-1 py-3 text-center shadow-sm active:scale-[0.98]"
+          >
+            <span className="h-14 w-14 overflow-hidden rounded-full">
+              {'icon' in item
+                ? <img src={item.icon} alt="" className="h-full w-full rounded-full object-cover" />
+                : <TelegramIcon className="h-full w-full" />}
+            </span>
+            <span className="text-[11px] font-bold leading-tight text-green-900 sm:text-xs">{item.label}</span>
+          </a>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className={`flex items-center gap-2 ${className}`}>
+      {MESSENGERS.map(item => (
+        <a
+          key={item.service}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track('messenger_click', { service: item.service, place })}
+          title={item.title}
+          aria-label={item.title}
+          className={`${size} shrink-0 overflow-hidden rounded-full shadow-sm transition-transform hover:scale-110 active:scale-95`}
+        >
+          {'icon' in item
+            ? <img src={item.icon} alt="" className="h-full w-full rounded-full object-cover" />
+            : <TelegramIcon className="h-full w-full" />}
+        </a>
+      ))}
+    </div>
+  );
+};
 
 /* ─────────────────────────────  ОБЩИЕ БЛОКИ  ───────────────────────────── */
 
-/** Секция с появлением при скролле (классы из src/index.css). */
+/**
+ * Секция с появлением при скролле (классы из src/index.css).
+ * Вертикальный ритм задан здесь, а не на каждой странице: py-16 на десктопе —
+ * общий шаг для всех лендингов направлений.
+ */
 export const Section = ({ id, className = '', children }: { id?: string; className?: string; children: React.ReactNode }) => {
   const { ref, isVisible } = useScrollAnimation(0.08);
   return (
-    <section id={id} ref={ref} className={`scroll-mt-24 fade-in-up ${isVisible ? 'visible' : ''} ${className}`}>
+    <section id={id} ref={ref} className={`scroll-mt-24 fade-in-up py-14 lg:py-16 ${isVisible ? 'visible' : ''} ${className}`}>
       {children}
     </section>
   );
 };
 
-export const SectionTitle = ({ kicker, title, subtitle }: { kicker?: string; title: string; subtitle?: string }) => (
-  <div className="max-w-3xl mx-auto text-center mb-10">
+/**
+ * Единая шапка секции: кикер с линией, заголовок, подзаголовок.
+ * Один компонент на все четыре лендинга — заголовки везде стоят по левому краю
+ * контейнера и имеют одинаковый ритм (кикер → 16px → h2 → 16px → подзаголовок).
+ */
+export const SectionHead = ({ kicker, title, subtitle, className = 'max-w-3xl' }: {
+  kicker?: string; title: string; subtitle?: string; className?: string;
+}) => (
+  <div className={className}>
     {kicker && (
-      <span className="inline-block mb-3 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider">
+      <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-green-800">
+        <span aria-hidden="true" className="h-px w-8 bg-green-600/45" />
         {kicker}
-      </span>
+      </p>
     )}
-    <h2 className="text-3xl lg:text-4xl font-bold uppercase leading-tight">{title}</h2>
-    {subtitle && <p className="mt-3 text-gray-600 text-base lg:text-lg leading-relaxed">{subtitle}</p>}
+    <h2 className="mt-4 text-[clamp(2rem,5.6vw,3.25rem)] font-bold uppercase leading-[1.02] tracking-[-0.025em] text-slate-950">
+      {title}
+    </h2>
+    {subtitle && <p className="mt-4 max-w-2xl leading-relaxed text-slate-600">{subtitle}</p>}
   </div>
 );
 
+/** Карточка «остались вопросы» — стоит рядом с шапкой FAQ, чтобы верхний ряд был заполнен. */
+const FaqContact = ({ place }: { place: string }) => {
+  const { track, scrollToOrder, phone } = useLanding();
+  return (
+    <div className="lg:col-span-5">
+      <div className="rounded-[18px] border border-green-200 l-glass p-6">
+        <p className="font-oswald text-xl font-bold uppercase text-slate-950">Не нашли свой вопрос?</p>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">Позвоните, напишите в мессенджер или оставьте заявку — ответим и подскажем.</p>
+        <Messengers place={place} className="mt-4" />
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <a
+            href={phone.href}
+            onClick={() => track('phone_click', { place })}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-green-700 px-5 text-sm font-bold text-[var(--on-accent)] transition-colors hover:bg-green-600"
+          >
+            <PhoneCall size={17} /> {phone.text}
+          </a>
+          <button
+            type="button"
+            onClick={() => scrollToOrder(place)}
+            className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full border border-green-700 bg-white px-5 text-sm font-bold text-green-800 transition-colors hover:bg-green-700 hover:text-[var(--on-accent)]"
+          >
+            Оставить заявку
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /** Карточка «иконка + заголовок + текст» — базовый кирпич всех лендингов. */
 export const InfoCard = ({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) => (
-  <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+  <div className="l-glass p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-green-50 text-green-800 flex items-center justify-center mb-4">{icon}</div>
     <h3 className="text-lg font-bold font-oswald uppercase mb-2">{title}</h3>
     <p className="text-gray-600 text-sm leading-relaxed">{text}</p>
@@ -81,29 +196,40 @@ export const OrderButton = ({ place, children, className = '' }: { place: string
   );
 };
 
-/** Аккордеон вопросов на нативном <details> — без JS и без библиотек. */
-export const Faq = ({ id = 'faq', items, kicker = 'Вопросы', title }: {
-  id?: string; items: { q: string; a: string }[]; kicker?: string; title: string;
+/**
+ * Аккордеон вопросов на нативном <details> — без JS и без библиотек.
+ * Раскладка одна на всех четырёх лендингах: шапка 7 + карточка контакта 5,
+ * под ними список в две колонки — так под коротким заголовком не остаётся пустой полосы.
+ */
+export const Faq = ({
+  id = 'faq',
+  items,
+  kicker = 'Вопросы',
+  title,
+  subtitle = 'Если вашего вопроса нет в списке, оставьте заявку или позвоните. Консультация бесплатна.',
+}: {
+  id?: string; items: { q: string; a: string }[]; kicker?: string; title: string; subtitle?: string;
 }) => {
   const { track } = useLanding();
   return (
-    <Section id={id} className="py-14 lg:py-20 bg-white">
-      <div className="container mx-auto">
-        <SectionTitle kicker={kicker} title={title} />
-        <div className="max-w-3xl mx-auto space-y-3">
+    <Section id={id} className="l-tint">
+      <div className="container mx-auto grid items-start gap-10 lg:grid-cols-12">
+        <SectionHead kicker={kicker} title={title} subtitle={subtitle} className="lg:col-span-7" />
+        <FaqContact place="faq" />
+        <div className="space-y-3 lg:col-span-12 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
           {items.map(item => (
             <details
               key={item.q}
-              className="group bg-white border border-gray-200 rounded-2xl px-5 py-4 open:border-green-300 open:bg-green-50/40 transition-colors"
+              className="group rounded-[16px] border border-slate-200 l-glass px-5 py-4 open:border-green-300"
               onToggle={e => {
                 if ((e.currentTarget as HTMLDetailsElement).open) track('faq_open', { question: item.q });
               }}
             >
-              <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-bold font-oswald text-lg text-gray-800 marker:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-oswald text-lg font-bold uppercase text-slate-900 marker:hidden">
                 {item.q}
-                <span className="shrink-0 text-green-800 text-2xl leading-none transition-transform duration-300 group-open:rotate-45">+</span>
+                <span className="shrink-0 text-2xl font-normal leading-none text-green-800 transition-transform duration-300 group-open:rotate-45">+</span>
               </summary>
-              <p className="mt-3 text-gray-600 leading-relaxed text-sm lg:text-base whitespace-pre-line">{item.a}</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 whitespace-pre-line sm:text-base">{item.a}</p>
             </details>
           ))}
         </div>
@@ -114,56 +240,15 @@ export const Faq = ({ id = 'faq', items, kicker = 'Вопросы', title }: {
 
 /* ─────────────────────────────  ШАПКА / ФУТЕР  ───────────────────────────── */
 
-const Header = ({ nav, ctaLabel }: { nav: { href: string; label: string }[]; ctaLabel: string }) => {
-  const { track, scrollToOrder } = useLanding();
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 py-3">
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between gap-3 px-4 lg:px-6 py-2.5 rounded-2xl bg-white/85 backdrop-blur-xl border border-white/60 shadow-lg shadow-green-900/5">
-          {/* Логотип НЕ ссылка — страница изолирована от основного сайта */}
-          <img src={logo} alt="Барори Парк" className="h-8 lg:h-11 w-auto object-contain" />
-
-          <nav className="hidden lg:flex items-center gap-7 font-medium text-gray-700">
-            {nav.map(link => (
-              <a key={link.href} href={link.href} className="relative group py-1">
-                <span className="group-hover:text-green-800 transition-colors">{link.label}</span>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2 lg:gap-4">
-            <a
-              href={PHONE_HREF}
-              onClick={() => track('phone_click', { place: 'header' })}
-              className="flex items-center gap-2 font-bold text-gray-800 hover:text-green-800 transition-colors text-sm lg:text-base"
-            >
-              <span className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0">
-                <PhoneCall size={17} className="text-green-800 animate-phone-ring" />
-              </span>
-              <span className="hidden sm:inline whitespace-nowrap">{PHONE_TEXT}</span>
-            </a>
-            <button
-              onClick={() => scrollToOrder('header')}
-              className="hidden sm:inline-flex cursor-pointer bg-green-600 hover:bg-green-700 text-[var(--on-accent)] px-5 lg:px-6 py-2.5 rounded-xl font-bold transition-colors shadow-lg shadow-green-200 whitespace-nowrap"
-            >
-              {ctaLabel}
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-};
-
 const DEFAULT_LEGAL_NOTE =
   'ООО «БАРОРИ КОР», ИНН 7814820277, ОГРН 1237800027937. Сотрудничество оформляется договором с самозанятым или ИП и не является трудовыми отношениями. Информация на странице не является публичной офертой и гарантией дохода. 18+';
 
 const Footer = ({ about, legalNote }: { about: string; legalNote: string }) => {
-  const { track, openLegal } = useLanding();
+  const { track, openLegal, phone } = useLanding();
   return (
-    <footer className="bg-slate-900 text-white pt-14 pb-24 lg:pb-10">
+    <footer id="contacts" className="bg-slate-900 text-white pt-14 pb-24 lg:pb-10">
       <div className="container mx-auto">
+        <SiteNavigation footer />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           <div>
             <img src={logo} alt="Барори Парк" className="h-12 w-auto object-contain mb-4 brightness-0 invert opacity-90" />
@@ -172,10 +257,11 @@ const Footer = ({ about, legalNote }: { about: string; legalNote: string }) => {
 
           <div className="space-y-4">
             <h3 className="font-bold font-oswald uppercase text-lg">Контакты</h3>
-            <a href={PHONE_HREF} onClick={() => track('phone_click', { place: 'footer' })} className="flex items-center gap-3 hover:text-green-400 transition-colors">
+            <a href={phone.href} onClick={() => track('phone_click', { place: 'footer' })} className="flex items-center gap-3 hover:text-green-400 transition-colors">
               <PhoneCall size={18} className="text-green-500 shrink-0" />
-              <span className="font-bold">{PHONE_TEXT}</span>
+              <span className="font-bold">{phone.text}</span>
             </a>
+            <Messengers place="footer" size="h-10 w-10" />
             <p className="flex items-center gap-3 text-gray-300 text-sm">
               <Clock size={18} className="text-green-500 shrink-0" /> Ежедневно 10:00-20:00
             </p>
@@ -229,6 +315,8 @@ interface ShellProps {
   stickyLabel: string;
   footerAbout: string;
   legalNote?: string;
+  /** По умолчанию — номер доставки/еды/такси; смены передают свой. */
+  phone?: LandingPhone;
   children: React.ReactNode;
 }
 
@@ -239,6 +327,7 @@ export const LandingShell = ({
   stickyLabel,
   footerAbout,
   legalNote = DEFAULT_LEGAL_NOTE,
+  phone = PHONE_DELIVERY,
   children,
 }: ShellProps) => {
   const [legalType, setLegalType] = useState<LegalType>(null);
@@ -246,6 +335,7 @@ export const LandingShell = ({
   const ctx: LandingCtx = {
     track: (goal, params) => trackGoal(`${goalPrefix}_${goal}`, params),
     openLegal: setLegalType,
+    phone,
     scrollToOrder: place => {
       trackGoal(`${goalPrefix}_cta_click`, { place });
       document.getElementById('order')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -256,15 +346,15 @@ export const LandingShell = ({
     <Ctx.Provider value={ctx}>
       <ToastProvider>
         <div className="min-h-screen bg-white">
-          <Header nav={nav} ctaLabel={ctaLabel} />
-          <main>{children}</main>
+          <Header pageLinks={nav} phone={phone} ctaLabel={ctaLabel} onOrder={() => ctx.scrollToOrder('header')} />
+          <main className="site-landing-main">{children}</main>
           <Footer about={footerAbout} legalNote={legalNote} />
 
           {/* Липкая кнопка отклика на мобильных.
               pb учитывает home indicator iPhone — иначе кнопка лежит прямо на нём. */}
           <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-gray-200 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-3">
             <a
-              href={PHONE_HREF}
+              href={phone.href}
               onClick={() => ctx.track('phone_click', { place: 'sticky' })}
               aria-label="Позвонить"
               className="w-12 h-12 rounded-xl bg-green-50 text-green-800 flex items-center justify-center shrink-0 border border-green-200"
@@ -295,8 +385,6 @@ export const LandingShell = ({
 
 /* ─────────────────────────────  ОТПРАВКА ЗАЯВКИ  ───────────────────────────── */
 
-const CAPTCHA_SITEKEY = 'ysc1_ew6LWS0a0XeqfLY7YxmAH4rhPfAEpXi2mnVcvpPg58abfc86';
-
 interface LeadOptions {
   /** Значение position для CRM — совпадает со справочником основной формы. */
   position: string;
@@ -312,38 +400,20 @@ interface LeadOptions {
  * Согласие (факт, редакция, время) фиксируется здесь для всех лендингов одинаково — ст. 9 ФЗ-152.
  */
 export const useLeadSubmit = ({ position, leadType, onSuccess }: LeadOptions) => {
-  const { track } = useLanding();
+  const { track, phone } = useLanding();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  const widgetIdRef = useRef<number | null>(null);
   const payloadRef = useRef<Record<string, string>>({});
   const consentRef = useRef(false);
   const consentTimestampRef = useRef('');
   // Капча зовёт колбэк из замыкания — держим ссылку на актуальную отправку.
   const sendRef = useRef<(token: string) => void>(() => {});
 
-  // Ждём и загрузку скрипта капчи (defer в <head>), и монтирование контейнера.
-  useEffect(() => {
-    const render = () => {
-      if (!window.smartCaptcha || widgetIdRef.current !== null) return;
-      if (!document.getElementById('captcha-container')) return;
-      widgetIdRef.current = window.smartCaptcha.render('captcha-container', {
-        sitekey: CAPTCHA_SITEKEY,
-        invisible: true,
-        callback: (token: string) => sendRef.current(token),
-      });
-    };
-
-    render();
-    if (widgetIdRef.current !== null) return;
-
-    const timer = setInterval(() => {
-      render();
-      if (widgetIdRef.current !== null) clearInterval(timer);
-    }, 300);
-    return () => clearInterval(timer);
-  }, []);
+  const captcha = useSmartCaptcha(token => sendRef.current(token), () => {
+    setIsLoading(false);
+    showToast('Проверка защиты не завершена. Попробуйте ещё раз или позвоните нам.', 'error');
+  });
 
   const send = async (token: string) => {
     setIsLoading(true);
@@ -359,19 +429,24 @@ export const useLeadSubmit = ({ position, leadType, onSuccess }: LeadOptions) =>
       data.append('consent_timestamp', consentTimestampRef.current);
       data.append('smart-token', token);
 
-      const response = await fetch('/local/tools/form-handler.php', { method: 'POST', body: data });
-      if (!response.ok) throw new Error('Server error');
+      const response = await fetch('/local/tools/form-handler.php', { method: 'POST', body: data, signal: AbortSignal.timeout(30000) });
+
+      // Обработчик отвечает 200 даже когда отказал (например, не прошла капча), а на
+      // неправильном пути вместо JSON придёт HTML. Поэтому верим только телу ответа:
+      // иначе человек видит «Заявка принята», а заявки нет ни в Telegram, ни в CRM.
+      await requireLeadSuccess(response);
 
       track('lead_success');
-      showToast(`Заявка принята! Позвоним с номера ${PHONE_TEXT}. Ответьте, пожалуйста.`, 'success');
+      showToast(`Заявка принята! Позвоним с номера ${phone.text}. Ответьте, пожалуйста.`, 'success');
       onSuccess?.();
       return true;
     } catch (error) {
       console.error('Ошибка отправки:', error);
-      showToast(`Что-то пошло не так. Позвоните нам: ${PHONE_TEXT}`, 'error');
+      track('lead_error', { reason: error instanceof Error ? error.message : 'unknown' });
+      showToast(`Заявка не отправлена. Позвоните нам: ${phone.text}`, 'error');
       return false;
     } finally {
-      if (window.smartCaptcha && widgetIdRef.current !== null) window.smartCaptcha.reset(widgetIdRef.current);
+      captcha.reset();
       setIsLoading(false);
     }
   };
@@ -388,19 +463,17 @@ export const useLeadSubmit = ({ position, leadType, onSuccess }: LeadOptions) =>
       showToast('Нужно согласие на обработку персональных данных', 'error');
       return;
     }
+    if (!payload.name?.trim() || !payload.city?.trim() || !/^[+0-9() .\-]+$/.test(payload.phone ?? '') || !/^\d{10,15}$/.test((payload.phone ?? '').replace(/\D/g, ''))) {
+      showToast('Укажите имя, город и корректный телефон: от 10 до 15 цифр', 'error');
+      return;
+    }
     payloadRef.current = payload;
     consentRef.current = consent;
     consentTimestampRef.current = new Date().toISOString();
     track('lead_submit');
     setIsLoading(true);
 
-    if (window.smartCaptcha && widgetIdRef.current !== null) {
-      window.smartCaptcha.execute(widgetIdRef.current);
-    } else {
-      console.error('Капча не загружена');
-      showToast('Ошибка защиты от спама. Обновите страницу или позвоните нам.', 'error');
-      setIsLoading(false);
-    }
+    captcha.execute();
   };
 
   return { submit, isLoading, showToast };
@@ -429,8 +502,8 @@ export const ChoiceGroup = <T extends string>({ name, label, options, value, onC
     : 'border-gray-300 text-gray-600 hover:border-green-400';
 
   return (
-    <div>
-      {label && <span className="block text-sm font-medium text-gray-700 mb-1.5">{label}</span>}
+    <fieldset>
+      <legend className={label ? 'block text-sm font-medium text-gray-700 mb-1.5' : 'sr-only'}>{label || name}</legend>
       <div className={`grid gap-2 ${columns === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
         {options.map(option => (
           <label
@@ -451,7 +524,7 @@ export const ChoiceGroup = <T extends string>({ name, label, options, value, onC
           </label>
         ))}
       </div>
-    </div>
+    </fieldset>
   );
 };
 
@@ -495,18 +568,26 @@ export const ConsentCheckbox = ({
 };
 
 /** Общая обёртка секции формы: слева продающий блок, справа поля. */
-export const FormSection = ({ title, lead, bullets, image, children }: {
-  title: string; lead: string; bullets: { icon: React.ReactNode; text: string }[]; image?: string; children: React.ReactNode;
+export const FormSection = ({ title, lead, bullets, image, minAge = 18, children }: {
+  title: string; lead: string; bullets: { icon: React.ReactNode; text: string }[]; image?: string;
+  /** По умолчанию заявки только от совершеннолетних; в доставке есть направления с 16 лет. */
+  minAge?: 16 | 18;
+  children: React.ReactNode;
 }) => (
-  <section id="order" className="scroll-mt-24 py-14 lg:py-20 bg-gradient-to-br from-green-50 via-green-50/40 to-white">
+  <section id="order" className="scroll-mt-24 py-14 lg:py-16 bg-gradient-to-br from-green-50 via-green-50/40 to-white">
     <div className="container mx-auto">
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl shadow-green-900/10 overflow-hidden flex flex-col lg:flex-row border border-green-100">
-        <div className="lg:w-2/5 relative bg-green-700 p-6 lg:p-8 flex flex-col justify-center overflow-hidden">
+      {/* На десктопе карточка занимает всю ширину контейнера и делится 5/7, как остальные секции. */}
+      <div className="max-w-5xl mx-auto lg:max-w-none bg-white rounded-3xl shadow-2xl shadow-green-900/10 overflow-hidden flex flex-col lg:flex-row border border-green-100">
+        <div className="lg:w-5/12 relative bg-green-700 p-6 lg:p-10 flex flex-col justify-center overflow-hidden">
           {image && (
             <img src={image} alt="" loading="lazy" decoding="async" aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-overlay" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-green-900/80 via-green-800/40 to-transparent" />
+          {/* Затемнение фото зависит от чернил темы: под белый текст тёмное, под тёмный — светлое. */}
+          <div
+            className="absolute inset-0"
+            style={{ backgroundImage: 'var(--accent-scrim, linear-gradient(to top, rgba(15,23,42,.8), rgba(15,23,42,.4) 55%, transparent))' }}
+          />
           <div className="relative z-10 text-[var(--on-accent)]">
             <h2 className="text-3xl lg:text-4xl font-bold font-oswald uppercase leading-tight mb-3 drop-shadow">{title}</h2>
             <p className="text-[var(--on-accent-soft)] mb-6 leading-relaxed">{lead}</p>
@@ -521,10 +602,14 @@ export const FormSection = ({ title, lead, bullets, image, children }: {
           </div>
         </div>
 
-        <div className="lg:w-3/5 p-5 lg:p-8">
+        <div className="lg:w-7/12 p-5 lg:p-10">
           <div className="flex items-center gap-2 mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-red-700">
-            <span className="shrink-0 inline-flex items-center rounded-full bg-red-600 text-white font-bold leading-none text-xs px-2 py-1">18+</span>
-            <p className="text-xs sm:text-sm font-semibold leading-snug">Заявки принимаем только от совершеннолетних.</p>
+            <span className="shrink-0 inline-flex items-center rounded-full bg-red-600 text-white font-bold leading-none text-xs px-2 py-1">{minAge}+</span>
+            <p className="text-xs sm:text-sm font-semibold leading-snug">
+              {minAge === 18
+                ? 'Заявки принимаем только от совершеннолетних.'
+                : 'Заявки принимаем с 16 лет. До 18 лет — с согласия законного представителя.'}
+            </p>
           </div>
           {children}
         </div>

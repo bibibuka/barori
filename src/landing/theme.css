@@ -4,76 +4,120 @@
  * green-*, а тема подменяет сами переменные Tailwind — поэтому цвет меняется
  * одним классом на <html> и без правок в компонентах:
  *
- *   dostavka/index.html → class="theme-red"     (доставка — красный)
- *   eda/index.html      → class="theme-yellow"  (еда — жёлтый)
- *   taxi/index.html     → class="theme-yellow"  (такси — жёлтый)
- *   smena/index.html    → class="theme-orange"  (смена — оранжевый)
+ *   dostavka/index.html → class="theme-dostavka"
+ *   eda/index.html      → class="theme-eda"
+ *   taxi/index.html     → class="theme-taxi"
+ *   smena/index.html    → class="theme-smena"
+ *   info/index.html     → class="theme-info" (зелень основного сайта)
+ *
+ * Значения сняты с сайтов самих сервисов (computed styles и заливки логотипов),
+ * а не подобраны на глаз:
+ *   Доставка — #ff4c00 акцент, #e13100 и #ff7751 грани логотипа (dostavka.yandex.ru)
+ *   Еда      — #ffc807 звезда логотипа (reg.eda.yandex.ru)
+ *   Такси    — #fce000 главная кнопка (taxi.yandex.ru)
+ *   Смена    — #ff6c02 фон страницы (smena.yandex.ru)
  *
  * Договорённость по шкале, она держит контраст во всех темах:
  *   50–200  — светлые подложки (чипы, секции, бейджи)
  *   300–700 — фирменные поверхности: кнопки, панели, выделенные карточки
+ *             (600 = точный цвет сервиса, 700 = он же на пару процентов темнее)
  *   800–950 — «чернила»: текст по светлому фону, тёмные подложки
  * Поэтому 800 в жёлтой теме — не жёлтый, а тёмное золото: жёлтый текст
  * на белом нечитаем (1.9:1), а так получается 7.4:1.
  *
  * --on-accent / --on-accent-soft — цвет текста ПОВЕРХ фирменной поверхности.
- * Для красного и оранжевого это белый, для жёлтого — почти чёрный.
+ * У Яндекса на жёлтом и оранжевом текст тёмный (#21201f), белый по такому фону
+ * не читается; белые чернила остаются только в красной теме доставки.
+ *
+ * --accent-scrim — затемнение фотографии в блоке заявки. Оно зависит от чернил:
+ * под белый текст нужен тёмный градиент, под тёмный — светлый.
  */
 
-html.theme-red {
-  --color-green-50: #fff5f5;
-  --color-green-100: #ffe3e3;
-  --color-green-200: #ffc9c9;
-  --color-green-300: #ffa1a1;
-  --color-green-400: #ff6b6b;
-  --color-green-500: #ff3333;
-  --color-green-600: #e01018;
-  --color-green-700: #b80d14;
-  --color-green-800: #8f0a10;
-  --color-green-900: #6b0a0e;
-  --color-green-950: #3d0507;
+html.theme-dostavka {
+  --color-green-50: #fff3ee;
+  --color-green-100: #ffe2d7;
+  --color-green-200: #ffc2ae;
+  --color-green-300: #ff9b7e;
+  --color-green-400: #ff7751; /* блик логотипа */
+  --color-green-500: #ff4c00; /* фирменный акцент сервиса */
+  --color-green-600: #e13100; /* тёмная грань логотипа: белый текст 4.5:1 */
+  --color-green-700: #c62d00;
+  --color-green-800: #9c2100;
+  --color-green-900: #6f1700;
+  --color-green-950: #3d0c00;
 
   --on-accent: #ffffff;
-  --on-accent-soft: #ffe3e3;
-  --accent-shadow: rgba(224, 16, 24, .24);
-  --accent-grid: rgba(224, 16, 24, .06);
+  --on-accent-soft: #ffe2d7;
+  --accent-shadow: rgba(255, 76, 0, .26);
+  --accent-grid: rgba(255, 76, 0, .07);
+  --accent-scrim: linear-gradient(to top, rgba(61, 12, 0, .85), rgba(140, 30, 0, .45) 55%, transparent);
 }
 
-html.theme-orange {
-  --color-green-50: #fff7ed;
-  --color-green-100: #ffebd5;
-  --color-green-200: #ffd5aa;
-  --color-green-300: #ffb775;
-  --color-green-400: #ff8f3c;
-  --color-green-500: #ff6b00;
-  --color-green-600: #c24e00;
-  --color-green-700: #9c3e00;
-  --color-green-800: #7a3100;
-  --color-green-900: #5c2500;
-  --color-green-950: #331400;
-
-  --on-accent: #ffffff;
-  --on-accent-soft: #ffebd5;
-  --accent-shadow: rgba(194, 78, 0, .24);
-  --accent-grid: rgba(194, 78, 0, .06);
-}
-
-html.theme-yellow {
-  --color-green-50: #fffdf0;
-  --color-green-100: #fff8cc;
-  --color-green-200: #fff099;
-  --color-green-300: #ffe666;
-  --color-green-400: #ffdb33;
-  --color-green-500: #fce000;
-  --color-green-600: #f2ce00;
-  --color-green-700: #e0b800;
+html.theme-eda {
+  --color-green-50: #fffbee;
+  --color-green-100: #fff4cc;
+  --color-green-200: #ffe999;
+  --color-green-300: #ffdd66;
+  --color-green-400: #ffd233;
+  --color-green-500: #ffcf1f;
+  --color-green-600: #ffc807; /* звезда логотипа Еды */
+  --color-green-700: #f0ba00;
   /* дальше — чернила, не жёлтый: см. комментарий про контраст выше */
   --color-green-800: #6b5000;
   --color-green-900: #4a3700;
   --color-green-950: #2b2000;
 
-  --on-accent: #1a1a1a;
-  --on-accent-soft: #4a4200;
-  --accent-shadow: rgba(224, 184, 0, .35);
+  --on-accent: #21201f;
+  --on-accent-soft: #4a3700;
+  --accent-shadow: rgba(255, 200, 7, .35);
   --accent-grid: rgba(150, 120, 0, .07);
+  --accent-scrim: linear-gradient(to top, rgba(255, 255, 255, .9), rgba(255, 255, 255, .5) 55%, transparent);
+}
+
+html.theme-taxi {
+  --color-green-50: #fffdf0;
+  --color-green-100: #fff9c7;
+  --color-green-200: #fff28f;
+  --color-green-300: #ffeb52;
+  --color-green-400: #ffe52b;
+  --color-green-500: #fee810;
+  --color-green-600: #fce000; /* главная кнопка Яндекс Go */
+  --color-green-700: #ecd200;
+  --color-green-800: #6b5000;
+  --color-green-900: #4a3700;
+  --color-green-950: #2b2000;
+
+  --on-accent: #21201f;
+  --on-accent-soft: #4a4200;
+  --accent-shadow: rgba(252, 224, 0, .35);
+  --accent-grid: rgba(150, 120, 0, .07);
+  --accent-scrim: linear-gradient(to top, rgba(255, 255, 255, .9), rgba(255, 255, 255, .5) 55%, transparent);
+}
+
+html.theme-smena {
+  --color-green-50: #fff5eb;
+  --color-green-100: #ffe8d1;
+  --color-green-200: #ffcfa3;
+  --color-green-300: #ffb87d;
+  --color-green-400: #ff9c4d;
+  --color-green-500: #ff8a2b;
+  --color-green-600: #ff7a12; /* оранжевый Смены (#ff6c02), осветлён по просьбе */
+  --color-green-700: #f96d00;
+  --color-green-800: #8f3600;
+  --color-green-900: #6b2800;
+  --color-green-950: #3b1600;
+
+  --on-accent: #21201f;
+  --on-accent-soft: #3d1800;
+  --accent-shadow: rgba(255, 122, 18, .3);
+  --accent-grid: rgba(255, 122, 18, .07);
+  --accent-scrim: linear-gradient(to top, rgba(255, 255, 255, .9), rgba(255, 255, 255, .5) 55%, transparent);
+}
+
+html.theme-info {
+  --on-accent: #ffffff;
+  --on-accent-soft: #dcfce7;
+  --accent-shadow: rgba(22, 163, 74, .26);
+  --accent-grid: rgba(22, 163, 74, .07);
+  --accent-scrim: linear-gradient(to top, rgba(20, 83, 45, .85), rgba(22, 101, 52, .4) 55%, transparent);
 }

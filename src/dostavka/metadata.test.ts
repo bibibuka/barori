@@ -8,10 +8,15 @@ const description = html.match(/<meta name="description"\s+content="([^"]+)"/i)?
 
 test('advertises every transport format in the delivery search snippet', () => {
   assert.equal(title, 'Работа в доставке: пешком, на самокате или авто | Барори Парк');
-  assert.match(description, /еда, продукты, посылки и грузы/i);
+  assert.match(description, /посылки, документы и грузы/i);
   assert.match(description, /пешком, на велосипеде, самокате или автомобиле/i);
 });
 
 test('does not publish a prohibited brand name or guaranteed income in metadata', () => {
   assert.doesNotMatch(`${title} ${description}`, /Яндекс Доставка|гарантированн|зарплат/i);
+});
+
+// Страница только про доставку: еда уехала на свой лендинг /eda/.
+test('keeps food delivery out of the delivery page metadata', () => {
+  assert.doesNotMatch(`${title} ${description}`, /(?<![а-яё])ед[аыой]|продукт/i);
 });

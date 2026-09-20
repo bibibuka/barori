@@ -24,7 +24,7 @@ export const ScrollCar = () => {
   const xRange = useTransform(scaleX, [0, 1], ["0%", "90%"]);
 
   return (
-    <div className="fixed bottom-0 left-0 w-full z-40 pointer-events-none h-16 overflow-hidden">
+    <div className="hidden lg:block fixed bottom-0 left-0 w-full z-40 pointer-events-none h-16 overflow-hidden">
       {/* Track line (road) */}
       <div className="absolute bottom-0 w-full h-2 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-400">
         {/* Road markings */}

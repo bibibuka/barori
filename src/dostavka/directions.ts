@@ -6,12 +6,10 @@ export type CourierFormat =
   | 'Пока не выбрал';
 
 export type DeliveryDirection =
-  | 'Еда и продукты'
   | 'Экспресс-доставка'
   | 'Плановая доставка'
   | 'Автодоставка'
   | 'Грузовая доставка'
-  | 'Велопомощник'
   | 'Подобрать направление';
 
 export interface DeliveryFormatCard {
@@ -24,19 +22,13 @@ export interface DeliveryFormatCard {
 }
 
 export interface DeliveryDirectionCard {
-  id: 'food' | 'express' | 'planned' | 'auto' | 'cargo' | 'velo-helper';
+  id: 'express' | 'planned' | 'auto' | 'cargo';
   value: Exclude<DeliveryDirection, 'Подобрать направление'>;
   title: string;
   lead: string;
   reward: string;
   formats: string;
   facts: readonly string[];
-  /**
-   * Если у направления есть собственный лендинг — карточка ведёт туда, а не выбирает
-   * направление в форме. При переезде страницы на поддомен поменять здесь
-   * и в src/components/YandexEdaSpotlight.tsx.
-   */
-  href?: string;
 }
 
 export const DELIVERY_FORMATS: readonly DeliveryFormatCard[] = [
@@ -46,7 +38,7 @@ export const DELIVERY_FORMATS: readonly DeliveryFormatCard[] = [
     label: 'Пешком',
     title: 'Пеший курьер',
     description: 'Небольшие заказы рядом с домом. Автомобиль и водительские права не нужны.',
-    fit: 'Еда, продукты и небольшие посылки',
+    fit: 'Документы и небольшие посылки',
   },
   {
     id: 'bike',
@@ -54,7 +46,7 @@ export const DELIVERY_FORMATS: readonly DeliveryFormatCard[] = [
     label: 'Велосипед или самокат',
     title: 'Вело и самокат',
     description: 'Быстрый формат для коротких городских маршрутов и большего числа точек.',
-    fit: 'Еда, продукты, экспресс и велопомощь',
+    fit: 'Экспресс-доставка по городу',
   },
   {
     id: 'auto',
@@ -75,21 +67,6 @@ export const DELIVERY_FORMATS: readonly DeliveryFormatCard[] = [
 ] as const;
 
 export const DELIVERY_DIRECTIONS: readonly DeliveryDirectionCard[] = [
-  {
-    id: 'food',
-    value: 'Еда и продукты',
-    title: 'Еда и продукты',
-    href: '/eda/',
-    lead: 'Заказы из ресторанов, магазинов и дарксторов. Можно подобрать формат без автомобиля.',
-    reward: 'Условия зависят от сервиса и города',
-    formats: 'Пешком, велосипед, самокат или автомобиль',
-    facts: [
-      'Можно начать без опыта',
-      'Свободные слоты: от 1 часа при выполненном заказе',
-      'Плановые слоты: обычно 4-12 часов',
-      'Для части предложений может понадобиться медицинская книжка',
-    ],
-  },
   {
     id: 'express',
     value: 'Экспресс-доставка',
@@ -140,19 +117,6 @@ export const DELIVERY_DIRECTIONS: readonly DeliveryDirectionCard[] = [
       'Доставка грузов получателю',
       'Поддержание чистоты автомобиля',
       'Вежливое общение с клиентами',
-    ],
-  },
-  {
-    id: 'velo-helper',
-    value: 'Велопомощник',
-    title: 'Велопомощник',
-    lead: 'Поддержка курьеров на территории доставки и помощь с велосипедами.',
-    reward: 'Ориентир от 4 000 ₽ за день',
-    formats: 'Велосипедная инфраструктура',
-    facts: [
-      'Дежурство на территории доставки',
-      'Помощь курьерам с поломками',
-      'Инструктаж по ПДД',
     ],
   },
 ] as const;

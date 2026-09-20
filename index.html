@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <!-- Yandex.Metrika: счётчик НЕ инициализируется здесь.
        Он подгружается из src/utils/metrika.ts только после согласия в cookie-баннере
@@ -195,6 +195,18 @@
             "name": "Барори Парк",
             "url": "https://baroripark.ru/"
           }
+        },
+        {
+          "@type": "Service",
+          "position": 6,
+          "name": "Тарифы парка и снижение комиссии за смены",
+          "serviceType": "Прозрачные тарифы: Такси 3%, Доставка 3–5%, ТопГоу 7%, Еда 5–10%, Купер 5%, Смена 4–10%",
+          "areaServed": "Россия",
+          "provider": {
+            "@type": "Organization",
+            "name": "Барори Парк",
+            "url": "https://baroripark.ru/"
+          }
         }
       ]
     }
@@ -236,6 +248,9 @@
     }
     </script>
 
+
+
+
   <!-- 4. JobPosting — Яндекс Смена -->
   <script type="application/ld+json">
     {
@@ -275,7 +290,6 @@
       }
     }
     </script>
-
   <!-- 5. JobPosting — Водитель такси -->
   <script type="application/ld+json">
     {
@@ -314,7 +328,6 @@
       }
     }
     </script>
-
   <!-- 5. JobPosting — Курьер (Экспресс доставка) -->
   <script type="application/ld+json">
     {
@@ -406,6 +419,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Нет. Мы также работаем как таксопарк и курьерский парк: подключаем к Яндекс Такси, Яндекс Доставке, Купер и другим направлениям."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Какие комиссии и тарифы действуют в Барори Парк?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "В Барори Парк действуют прозрачные ставки: Такси — 3%, Доставка — 3–5%, ТопГоу — фикс 7%, Яндекс Еда — 5–10%, Купер — 5%, Яндекс Смена — 4–10%. Процент комиссии снижается автоматически по мере выхода на смены."
           }
         },
         {

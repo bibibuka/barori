@@ -1,6 +1,6 @@
 // FILE: src/components/LegalModal.tsx
 
-import { useEffect } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import { X, FileText } from 'lucide-react';
 
 export type LegalType = 'offer' | 'policy' | 'consent' | null;
@@ -11,16 +11,7 @@ interface LegalModalProps {
 }
 
 export const LegalModal = ({ type, onClose }: LegalModalProps) => {
-  useEffect(() => {
-    if (type) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [type]);
+  const dialogRef = useModalDialog(!!type);
 
   if (!type) return null;
 
@@ -1004,7 +995,7 @@ E-mail: info@baroripark.ru</p>
   if (!data) return null;
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+    <dialog ref={dialogRef} onCancel={onClose} aria-labelledby="legal-title" className="site-dialog fixed inset-0 z-[110] flex items-center justify-center p-4">
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -1012,7 +1003,7 @@ E-mail: info@baroripark.ru</p>
       ></div>
 
       {/* Content */}
-      <div className="relative bg-white rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 max-h-[90vh] flex flex-col">
+      <div className="relative bg-white rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 max-h-[90dvh] flex flex-col">
         
         {/* Header */}
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
@@ -1020,11 +1011,12 @@ E-mail: info@baroripark.ru</p>
             <div className="bg-gray-100 p-2 rounded-lg">
                 <FileText className="text-gray-600" size={24} />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold font-oswald uppercase text-gray-800 pr-8">
+            <h2 id="legal-title" className="text-xl sm:text-2xl font-bold font-oswald uppercase text-gray-800 pr-8">
               {data.title}
             </h2>
           </div>
           <button
+            aria-label="Закрыть окно"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-200 rounded-full p-2 transition-colors absolute right-4 top-4 sm:static"
           >
@@ -1048,6 +1040,6 @@ E-mail: info@baroripark.ru</p>
         </div>
 
       </div>
-    </div>
+    </dialog>
   );
 };

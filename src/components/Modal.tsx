@@ -1,5 +1,5 @@
 // FILE: src/components/Modal.tsx
-import { useEffect } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import { X } from 'lucide-react';
 import { Vacancy } from './Vacancies';
 
@@ -11,21 +11,12 @@ interface ModalProps {
 }
 
 export const Modal = ({ isOpen, onClose, vacancy, onApply }: ModalProps) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'; // Блокируем скролл основной страницы
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  const dialogRef = useModalDialog(isOpen && !!vacancy);
 
   if (!isOpen || !vacancy) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+    <dialog ref={dialogRef} onCancel={onClose} aria-labelledby="vacancy-title" className="site-dialog fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       {/* Overlay (Затемнение) */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -33,10 +24,11 @@ export const Modal = ({ isOpen, onClose, vacancy, onApply }: ModalProps) => {
       ></div>
 
       {/* Content (Само окно) */}
-      <div className="relative bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-300">
-        
+      <div className="relative bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90dvh] animate-in fade-in zoom-in duration-300">
+
         {/* Кнопка закрытия (фиксирована поверх картинки) */}
         <button
+          aria-label="Закрыть окно"
           onClick={onClose}
           className="absolute top-4 right-4 z-20 bg-white/80 hover:bg-white text-gray-500 hover:text-gray-800 rounded-full p-2 transition-colors shadow-sm backdrop-blur-md"
         >
@@ -60,7 +52,7 @@ export const Modal = ({ isOpen, onClose, vacancy, onApply }: ModalProps) => {
             <span className="text-xs font-bold text-green-600 uppercase tracking-wider bg-green-50 px-2 py-1 rounded-md">
               {vacancy.category}
             </span>
-            <h3 className="text-2xl font-bold font-oswald mt-2 text-gray-900 leading-tight">
+            <h3 id="vacancy-title" className="text-2xl font-bold font-oswald mt-2 text-gray-900 leading-tight">
               {vacancy.title}
             </h3>
           </div>
@@ -86,7 +78,7 @@ export const Modal = ({ isOpen, onClose, vacancy, onApply }: ModalProps) => {
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
-                <span className="text-gray-600 text-sm leading-relaxed">Возраст от 18 лет</span>
+                <span className="text-gray-600 text-sm leading-relaxed">Возраст от 18 лет — в доставке есть направления с 16 лет</span>
               </li>
             </ul>
           </div>
@@ -107,6 +99,6 @@ export const Modal = ({ isOpen, onClose, vacancy, onApply }: ModalProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };

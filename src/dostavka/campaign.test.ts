@@ -13,16 +13,16 @@ test('returns safe defaults without campaign parameters', () => {
 });
 
 test('maps recognised format and direction aliases', () => {
-  const context = readCampaignContext('?format=auto&direction=yandex-eda');
+  const context = readCampaignContext('?format=auto&direction=express');
 
   assert.equal(context.format, 'Автокурьер');
-  assert.equal(context.direction, 'Еда и продукты');
+  assert.equal(context.direction, 'Экспресс-доставка');
 });
 
-test('maps the bike helper advertising alias', () => {
-  const context = readCampaignContext('?direction=velo-helper');
-
-  assert.equal(context.direction, 'Велопомощник');
+// Велопомощник и еда с лендинга убраны, но старые объявления ещё могут вести с этими алиасами.
+test('falls back to the picker for a retired direction alias', () => {
+  assert.equal(readCampaignContext('?direction=velo-helper').direction, 'Подобрать направление');
+  assert.equal(readCampaignContext('?direction=yandex-eda').direction, 'Подобрать направление');
 });
 
 test('trims display values and limits city length', () => {

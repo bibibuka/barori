@@ -1,3 +1,4 @@
+import { SiteNavigation } from './SiteNavigation';
 // FILE: src/components/Footer.tsx
 import { useEffect, useRef } from 'react';
 import { Phone, Mail, Clock, MapPin, Globe, ArrowUpRight, Smartphone } from 'lucide-react';
@@ -58,8 +59,9 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
   };
 
   return (
-    <footer className="bg-slate-900 text-white pt-20 pb-8">
+    <footer id="contacts" className="bg-slate-900 text-white pt-20 pb-8">
       <div className="container mx-auto">
+        <SiteNavigation footer />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           {/* Left Column: Contacts & Digital Card */}
           <div className="flex flex-col gap-10 lg:gap-12">
@@ -166,6 +168,9 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
             <p>&copy; 2026 Барори Парк. Все права защищены.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-6">
+            <a href="/info/" className="hover:text-white transition-colors">
+              Условия с 1 сентября 2026
+            </a>
             <button onClick={() => handleLegalClick('offer')} className="hover:text-white transition-colors">
               Публичная оферта
             </button>

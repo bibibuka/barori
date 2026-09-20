@@ -7,8 +7,8 @@ const validLead = {
   name: 'Иван Иванов',
   phone: '+7 999 000-00-00',
   city: 'Казань',
-  format: 'Велокурьер' as const,
-  direction: 'Экспресс-доставка' as const,
+  service: 'Купер' as const,
+  selfEmployment: 'Готов оформить' as const,
   consent: true,
 };
 
@@ -27,10 +27,17 @@ test('builds a readable CRM payload with campaign attribution', () => {
     name: 'Иван Иванов',
     phone: '+7 999 000-00-00',
     city: 'Казань',
-    courier_format: 'Велокурьер',
-    delivery_direction: 'Экспресс-доставка',
+    department: 'Купер',
+    self_employment: 'Готов оформить',
     utm_source: 'yandex',
     yclid: '123',
-    message: 'Формат: Велокурьер. Направление: Экспресс-доставка.',
+    message: 'Сервис доставки: Купер. Самозанятость: Готов оформить.',
   });
+});
+
+test('keeps the lead down to contacts, city, service and self-employment', () => {
+  assert.deepEqual(
+    Object.keys(buildCourierPayload(validLead, {})).sort(),
+    ['city', 'department', 'message', 'name', 'phone', 'self_employment'],
+  );
 });

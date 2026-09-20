@@ -10,18 +10,26 @@ import {
   Fuel, Car, FileCheck, ShieldCheck, Star, Quote, XCircle, Headphones, Building2,
 } from 'lucide-react';
 import {
-  LandingShell, Section, SectionTitle, InfoCard, OrderButton, Faq, useLanding, PHONE_HREF,
+  LandingShell, Section, SectionHead, InfoCard, OrderButton, Faq, ChoiceGroup, useLanding,
 } from '../landing/kit';
 import { TaxiForm } from './TaxiForm';
 
-// Ставка за час «грязными» — ориентир для калькулятора, не гарантия дохода.
-// Основана на вилке основного сайта (от 7 000 ₽ за смену 10–12 часов).
-const HOUR_RATE = 700;
+// Ставка за час «грязными» (оборот на линии до комиссии и топлива) — ориентир, не гарантия дохода.
+// Считана обратным ходом из рыночных данных по СПб на 2026 год: 4 500–8 000 ₽ чистыми
+// за 12-часовую смену на своём авто → при топливе ~1 200 ₽ и комиссии ~25% это 650–1 000 ₽/час.
+// Берём середину; 12 часов по этой ставке дают верх вилки на первом экране.
+const HOUR_RATE = 800;
+
+// Пиковый день — вечерние часы, непогода, повышенный спрос: по данным петербургских парков
+// это 880–1 100 ₽/час на линии. Берём 1 000 — тогда 12 часов дают верх вилки первого экрана.
+const PEAK_HOUR_RATE = 1000;
+
+type DayKind = 'Обычный день' | 'Пиковый день';
 
 /* ─────────────────────────────  ПЕРВЫЙ ЭКРАН  ───────────────────────────── */
 
 const Hero = () => {
-  const { track, scrollToOrder } = useLanding();
+  const { track, scrollToOrder, phone } = useLanding();
   return (
     <section className="relative pt-28 lg:pt-32 pb-14 lg:pb-20 overflow-hidden bg-gradient-to-br from-green-50 via-green-50/40 to-white">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -33,7 +41,7 @@ const Hero = () => {
         <div className="text-center lg:text-left">
           <span className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white border border-green-200 text-green-800 text-xs sm:text-sm font-bold shadow-sm">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            Таксопарк Барори Парк — подключение к Яндекс Такси
+            Таксопарк Барори Парк — подключение к Яндекс Такси, 18+
           </span>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase leading-tight mb-4">
@@ -48,7 +56,7 @@ const Hero = () => {
           <div className="inline-flex flex-col items-center lg:items-start bg-white rounded-2xl border border-green-100 shadow-lg shadow-green-900/5 px-6 py-4 mb-6">
             <span className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Доход за смену</span>
             <span className="text-4xl lg:text-5xl font-bold font-oswald text-green-800 leading-none">
-              4 500 – 9 000 ₽<span className="text-lg align-super text-gray-300">*</span>
+              4 500 – 12 000 ₽<span className="text-lg align-super text-gray-300">*</span>
             </span>
             <span className="text-sm text-gray-500 mt-2">смена 6–12 часов, до вычета топлива и комиссии</span>
           </div>
@@ -62,7 +70,7 @@ const Hero = () => {
               <ChevronRight size={20} />
             </button>
             <a
-              href={PHONE_HREF}
+              href={phone.href}
               onClick={() => track('phone_click', { place: 'hero' })}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg border-2 border-green-600 text-green-800 hover:bg-green-600 hover:text-[var(--on-accent)] transition-colors"
             >
@@ -77,13 +85,14 @@ const Hero = () => {
           </p>
 
           <p className="mt-3 text-xs text-gray-400 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-            *Ориентир по средним ставкам за час на линии. Не является гарантией дохода: итог зависит
+            *Нижняя граница — короткая смена в обычный день, верхняя — полная смена в пиковый:
+            вечерние часы, непогода, повышенный спрос. Не является гарантией дохода: итог зависит
             от города, класса автомобиля, времени работы, спроса и количества заказов.
           </p>
         </div>
 
         {/* Правая колонка — карточка «что вы получаете» вместо фотостока */}
-        <div className="bg-white rounded-3xl border border-green-100 shadow-2xl shadow-green-900/10 p-6 lg:p-8">
+        <div className="l-glass rounded-3xl border border-green-100 shadow-2xl shadow-green-900/10 p-6 lg:p-8">
           <h2 className="text-xl font-bold font-oswald uppercase mb-5 text-gray-800">Что вы получаете при подключении</h2>
           <ul className="space-y-4">
             {[
@@ -117,7 +126,7 @@ const Hero = () => {
 
 const TrustBar = () => (
   <div className="bg-green-700 text-[var(--on-accent)]">
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-6 lg:py-7">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {[
           { icon: <Wallet size={22} />, title: 'Выплаты каждый день', text: 'по вашему запросу' },
@@ -144,23 +153,44 @@ const Money = () => {
   const [hours, setHours] = useState(10);
   const [days, setDays] = useState(5);
   const [fuel, setFuel] = useState(1200);
+  const [day, setDay] = useState<DayKind>('Пиковый день');
 
+  const isPeak = day === 'Пиковый день';
   const round = (n: number) => Math.round(n / 100) * 100;
-  const gross = round(HOUR_RATE * hours);
+  const gross = round((isPeak ? PEAK_HOUR_RATE : HOUR_RATE) * hours);
   const net = Math.max(0, round(gross - fuel));
-  const week = round(net * days);
+  // Неделя и месяц всегда по обычной ставке: месяца из одних пиковых дней не бывает,
+  // иначе итоговая цифра превращается в рекламное обещание.
+  const baseNet = Math.max(0, round(round(HOUR_RATE * hours) - fuel));
+  const week = round(baseNet * days);
   const month = round(week * 4.3);
 
   return (
-    <Section id="money" className="py-14 lg:py-20 bg-white">
+    <Section id="money" className="l-tint">
       <div className="container mx-auto">
-        <SectionTitle
+        <SectionHead
           kicker="Деньги"
           title="Сколько зарабатывает водитель"
           subtitle="Покажем честно: сначала доход на линии, потом минус топливо. Комиссию парка менеджер называет на звонке — до подключения, а не после."
         />
 
-        <div className="max-w-4xl mx-auto rounded-3xl border border-green-100 bg-gradient-to-br from-green-50 to-white p-6 lg:p-8 shadow-xl shadow-green-900/5">
+        <div className="mt-10 max-w-4xl mx-auto lg:max-w-none rounded-3xl border border-green-100 l-glass p-6 lg:p-10 shadow-xl shadow-green-900/5">
+          <div className="mb-6 max-w-md">
+            <ChoiceGroup
+              name="taxi-day-kind"
+              label="Какой день считаем"
+              options={[
+                { value: 'Обычный день' as DayKind, label: 'Обычный день' },
+                { value: 'Пиковый день' as DayKind, label: 'Пиковый день' },
+              ]}
+              value={day}
+              onChange={setDay}
+            />
+            <p className="mt-2 text-xs text-gray-500 leading-relaxed">
+              Пиковый день — вечерние часы, непогода и повышенный спрос: ставка на линии выше, но такие дни бывают не каждую смену.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
             <div>
               <div className="flex justify-between items-baseline mb-2">
@@ -192,7 +222,7 @@ const Money = () => {
             {[
               { label: 'Смена на линии', value: gross, note: 'до расходов' },
               { label: 'Минус топливо', value: net, note: 'за смену' },
-              { label: 'За неделю', value: week, note: `${days} смен` },
+              { label: 'За неделю', value: week, note: isPeak ? `${days} смен, по обычным дням` : `${days} смен` },
               { label: 'За месяц', value: month, note: 'до комиссии и налога', accent: true },
             ].map(box => (
               <div key={box.label}
@@ -209,9 +239,10 @@ const Money = () => {
           <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 mb-6">
             <Fuel className="text-amber-600 shrink-0 mt-0.5" size={20} />
             <p className="text-sm text-amber-900 leading-relaxed">
-              В расчёте не учтены комиссия парка и сервиса, налог самозанятого, обслуживание
-              и амортизация автомобиля. Точные условия по вашему городу менеджер называет
-              <strong> до подключения</strong> — чтобы вы считали по реальным цифрам, а не по рекламным.
+              Это ориентир, а не гарантия дохода. В расчёте не учтены комиссия парка и сервиса,
+              налог самозанятого, обслуживание и амортизация автомобиля. Точные условия по вашему
+              городу менеджер называет <strong>до подключения</strong> — чтобы вы считали
+              по реальным цифрам, а не по рекламным.
             </p>
           </div>
 
@@ -225,16 +256,16 @@ const Money = () => {
 /* ───────────────────  ПОЧЕМУ ЧЕРЕЗ ПАРК, А НЕ САМОМУ  ─────────────────── */
 
 const WhyPark = () => (
-  <Section id="why" className="py-14 lg:py-20 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
+  <Section id="why" className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle
+      <SectionHead
         kicker="Сравнение"
         title="Самому или через таксопарк"
         subtitle="Подключиться к сервису можно и напрямую. Вопрос в том, кто будет решать всё остальное."
       />
 
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="rounded-3xl border-2 border-gray-200 bg-white p-6 lg:p-7">
+      <div className="mt-10 max-w-4xl mx-auto lg:max-w-none grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
+        <div className="flex flex-col rounded-3xl border-2 border-gray-200 l-glass p-6 lg:p-8">
           <div className="flex items-center gap-3 mb-5">
             <span className="w-11 h-11 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center shrink-0">
               <XCircle size={22} />
@@ -255,7 +286,7 @@ const WhyPark = () => (
           </ul>
         </div>
 
-        <div className="rounded-3xl border-2 border-green-600 bg-white p-6 lg:p-7 shadow-xl shadow-green-900/10">
+        <div className="flex flex-col rounded-3xl border-2 border-green-600 l-glass p-6 lg:p-8 shadow-xl shadow-green-900/10">
           <div className="flex items-center gap-3 mb-5">
             <span className="w-11 h-11 rounded-xl bg-green-600 text-[var(--on-accent)] flex items-center justify-center shrink-0">
               <Building2 size={22} />
@@ -274,7 +305,7 @@ const WhyPark = () => (
               </li>
             ))}
           </ul>
-          <div className="mt-6">
+          <div className="mt-6 lg:mt-auto lg:pt-8">
             <OrderButton place="compare" className="w-full text-base">Подключиться через парк</OrderButton>
           </div>
         </div>
@@ -286,19 +317,16 @@ const WhyPark = () => (
 /* ─────────────────────────────  ТРЕБОВАНИЯ  ───────────────────────────── */
 
 const Requirements = () => (
-  <Section className="py-14 lg:py-20 bg-white">
+  <Section className="l-tint">
     <div className="container mx-auto">
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        <div>
-          <span className="inline-block mb-3 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider">
-            Требования
-          </span>
-          <h2 className="text-3xl lg:text-4xl font-bold uppercase leading-tight mb-4">Что нужно для старта</h2>
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            Требования к водителям такси задаёт сервис и закон, а не мы. Поэтому проверяем всё
-            на первом звонке — чтобы вы не тратили день на поездку в офис зря.
-          </p>
-          <div className="rounded-2xl bg-green-50 border border-green-100 p-5">
+      <div className="max-w-5xl mx-auto lg:max-w-none grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
+        <div className="lg:col-span-5">
+          <SectionHead
+            kicker="Требования"
+            title="Что нужно для старта"
+            subtitle="Требования к водителям такси задаёт сервис и закон, а не мы. Поэтому проверяем всё на первом звонке — чтобы вы не тратили день на поездку в офис зря."
+          />
+          <div className="mt-7 rounded-2xl bg-green-100 border border-green-200 p-5">
             <p className="font-bold text-green-800 font-oswald text-xl uppercase mb-1">Нужен свой автомобиль</p>
             <p className="text-gray-600 text-sm">
               Аренду машин мы не предоставляем — работа только на своём авто. Если машины нет,
@@ -307,29 +335,33 @@ const Requirements = () => (
           </div>
         </div>
 
-        <ul className="space-y-3">
+        <ul className="space-y-3 lg:col-span-7">
           {[
-            'Возраст от 21 года',
-            'Водительский стаж от 3 лет',
+            // Возраст и стаж — не наши условия: 3 года стажа требует закон о такси (ФЗ-580),
+            // возраст от 21 — сервис. Пишем источник требования, иначе это ограничение
+            // дискриминационного характера в объявлении о работе (ст. 13.11.1 КоАП).
+            'Возраст от 21 года — требование сервиса Яндекс Про',
+            'Водительский стаж от 3 лет — требование закона о такси',
             'Водительское удостоверение, действующее в России',
             'Свой автомобиль в нормальном состоянии (аренду парк не предоставляет)',
             'Смартфон для приложения Яндекс Про',
             'Самозанятость или ИП — поможем оформить, если статуса ещё нет',
           ].map(item => (
-            <li key={item} className="flex items-start gap-3 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+            <li key={item} className="flex items-start gap-3 l-glass p-4 rounded-xl border border-gray-100 shadow-sm">
               <CheckCircle2 className="text-green-800 shrink-0 mt-0.5" size={20} />
               <span className="text-gray-700 text-sm lg:text-base leading-relaxed">{item}</span>
             </li>
           ))}
-          <li className="flex items-start gap-3 bg-amber-50 p-4 rounded-xl border border-amber-200">
-            <ShieldCheck className="text-amber-600 shrink-0 mt-0.5" size={20} />
-            <span className="text-amber-900 text-sm leading-relaxed">
-              Для легальной перевозки пассажиров нужны разрешение на такси и полис ОСАГО
-              с соответствующей целью использования. Расскажем, как это устроено в вашем регионе,
-              и поможем разобраться с порядком оформления.
-            </span>
-          </li>
         </ul>
+
+        <div className="flex items-start gap-3 bg-amber-50 p-4 rounded-xl border border-amber-200 lg:col-span-12">
+          <ShieldCheck className="text-amber-600 shrink-0 mt-0.5" size={20} />
+          <span className="text-amber-900 text-sm leading-relaxed">
+            Для легальной перевозки пассажиров нужны разрешение на такси и полис ОСАГО
+            с соответствующей целью использования. Расскажем, как это устроено в вашем регионе,
+            и поможем разобраться с порядком оформления.
+          </span>
+        </div>
       </div>
     </div>
   </Section>
@@ -338,17 +370,17 @@ const Requirements = () => (
 /* ─────────────────────────────  КАК НАЧАТЬ  ───────────────────────────── */
 
 const Start = () => (
-  <Section id="start" className="py-14 lg:py-20 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
+  <Section id="start" className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle kicker="Старт" title="Как подключиться: 4 шага" subtitle="От заявки до первого заказа — обычно один день." />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <SectionHead kicker="Старт" title="Как подключиться: 4 шага" subtitle="От заявки до первого заказа — обычно один день." />
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
         {[
           { n: '01', title: 'Заявка', text: 'Форма внизу страницы: имя, телефон, город, авто и стаж. Полминуты.' },
           { n: '02', title: 'Звонок за 15 минут', text: 'Проверим документы, назовём условия и комиссию по вашему городу. Без давления.' },
           { n: '03', title: 'Оформление', text: 'Помогаем с самозанятостью и документами, подключаем к сервису и настраиваем Яндекс Про.' },
           { n: '04', title: 'Первая смена', text: 'Выходите на линию, когда удобно, и запрашиваете выплату — хоть в тот же день.' },
         ].map(step => (
-          <div key={step.n} className="relative p-6 rounded-2xl bg-white border border-gray-100 shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300">
+          <div key={step.n} className="relative p-6 rounded-2xl l-glass border border-gray-100 shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300">
             <span className="text-4xl font-bold font-oswald text-green-800/20 leading-none">{step.n}</span>
             <h3 className="text-lg font-bold font-oswald uppercase mt-3 mb-2">{step.title}</h3>
             <p className="text-gray-600 text-sm leading-relaxed">{step.text}</p>
@@ -365,20 +397,20 @@ const Start = () => (
 /* ─────────────────────────────  ЧЕСТНО  ───────────────────────────── */
 
 const Honest = () => (
-  <Section className="py-14 lg:py-20 bg-slate-900 text-white">
+  <Section className="bg-slate-900 text-white">
     <div className="container mx-auto">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto lg:max-w-none">
         <div className="flex items-center gap-3 mb-5">
           <span className="w-11 h-11 rounded-xl bg-green-600/20 flex items-center justify-center shrink-0">
             <ShieldCheck className="text-green-400" size={24} />
           </span>
           <h2 className="text-2xl lg:text-3xl font-bold uppercase font-oswald leading-tight">Честно: как это оформляется</h2>
         </div>
-        <p className="text-gray-300 leading-relaxed mb-6">
+        <p className="text-gray-300 leading-relaxed mb-6 lg:max-w-3xl">
           Водители сотрудничают с парком <strong className="text-white">как самозанятые или ИП по договору</strong>,
           а не по трудовому. Говорим об этом до подключения, а не после первой смены.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
           {[
             { title: 'Вы сами планируете работу', text: 'Нет обязательных смен и плана по заказам: не вышли на линию — это не прогул.' },
             { title: 'Налог — 4% и 6%', text: 'Считает приложение «Мой налог». Никаких деклараций, бухгалтера и походов в ФНС.' },
@@ -415,12 +447,12 @@ const REVIEWS = [
 ];
 
 const Reviews = () => (
-  <Section className="py-14 lg:py-20 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
+  <Section className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle kicker="Отзывы" title="Что говорят водители и курьеры парка" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <SectionHead kicker="Отзывы" title="Что говорят водители и курьеры парка" />
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
         {REVIEWS.map(review => (
-          <div key={review.name} className="relative bg-white p-6 rounded-2xl border border-gray-100 shadow-lg">
+          <div key={review.name} className="relative l-glass p-6 rounded-2xl border border-gray-100 shadow-lg">
             <Quote size={34} className="text-green-200/70 absolute top-4 right-4" />
             <div className="flex items-center gap-3 mb-4">
               <div role="img" aria-label={review.name} className="w-12 h-12 rounded-full bg-green-50 border-2 border-green-600 flex items-center justify-center text-2xl">
@@ -445,14 +477,14 @@ const Reviews = () => (
 /* ─────────────────────────────  ПРЕИМУЩЕСТВА  ───────────────────────────── */
 
 const Benefits = () => (
-  <Section className="py-14 lg:py-20 bg-white">
+  <Section className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle
+      <SectionHead
         kicker="Почему мы"
         title="Почему водители остаются в парке"
         subtitle="Мы зарабатываем, когда вы работаете спокойно и долго. Поэтому вкладываемся в поддержку, а не в красивые обещания."
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
         {[
           { icon: <Wallet size={24} />, title: 'Деньги по запросу', text: 'Выплаты хоть каждый день — не нужно ждать конца недели или месяца.' },
           { icon: <Headphones size={24} />, title: 'Разбираем блокировки', text: 'Спорный заказ, жалоба пассажира, падение рейтинга — пишем в сервис и решаем мы.' },

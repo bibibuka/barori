@@ -10,6 +10,12 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   base: "",
   plugins: [react(), tailwindcss()],
+  server: {
+    fs: {
+      // Vite cannot execute PHP: keep backend source private during local previews.
+      deny: ['.env', '.env.*', '*.{crt,pem}', '**/.git/**', '**/*.php'],
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -26,7 +32,7 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "assets",
     rollupOptions: {
-      // Многостраничная сборка: основной сайт + изолированные лендинги направлений.
+      // Единый многостраничный сайт с отдельным HTML для каждого адреса.
       // dostavka/index.html → dist/dostavka/index.html (URL https://baroripark.ru/dostavka/)
       input: {
         // ключ "index" — чтобы главный бандл остался index-*.js, как до многостраничности
@@ -35,6 +41,8 @@ export default defineConfig({
         eda: path.resolve(__dirname, "eda/index.html"),
         taxi: path.resolve(__dirname, "taxi/index.html"),
         smena: path.resolve(__dirname, "smena/index.html"),
+        tariffs: path.resolve(__dirname, "tariffs/index.html"),
+        info: path.resolve(__dirname, "info/index.html"),
       },
       output: {
         manualChunks: {

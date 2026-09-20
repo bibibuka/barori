@@ -8,7 +8,7 @@ const description = html.match(/<meta name="description"\s+content="([^"]+)"/i)?
 
 test('advertises the delivery formats of the food direction', () => {
   assert.match(title, /курьером Яндекс Еды/i);
-  assert.match(description, /пешком, на велосипеде или электротранспорте/i);
+  assert.match(description, /пешком, на велосипеде, электротранспорте или авто/i);
   assert.match(description, /слоты/i);
 });
 

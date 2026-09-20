@@ -1,6 +1,6 @@
 // FILE: src/components/KnowledgeModal.tsx
 
-import { useEffect } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import { X, ExternalLink, BookOpen } from 'lucide-react';
 
 interface KnowledgeModalProps {
@@ -9,16 +9,7 @@ interface KnowledgeModalProps {
 }
 
 export const KnowledgeModal = ({ isOpen, onClose }: KnowledgeModalProps) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  const dialogRef = useModalDialog(isOpen);
 
   if (!isOpen) return null;
 
@@ -57,7 +48,7 @@ export const KnowledgeModal = ({ isOpen, onClose }: KnowledgeModalProps) => {
   ];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <dialog ref={dialogRef} onCancel={onClose} aria-labelledby="knowledge-title" className="site-dialog fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -65,7 +56,7 @@ export const KnowledgeModal = ({ isOpen, onClose }: KnowledgeModalProps) => {
       ></div>
 
       {/* Content */}
-      <div className="relative bg-white rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 max-h-[90vh] flex flex-col">
+      <div className="relative bg-white rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 max-h-[90dvh] flex flex-col">
         
         {/* Header */}
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
@@ -73,9 +64,10 @@ export const KnowledgeModal = ({ isOpen, onClose }: KnowledgeModalProps) => {
             <div className="bg-green-50 p-2 rounded-lg">
                 <BookOpen className="text-green-600" size={24} />
             </div>
-            <h2 className="text-2xl font-bold font-oswald uppercase text-gray-800">База знаний</h2>
+            <h2 id="knowledge-title" className="text-2xl font-bold font-oswald uppercase text-gray-800">База знаний</h2>
           </div>
           <button
+            aria-label="Закрыть окно"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors"
           >
@@ -96,7 +88,10 @@ export const KnowledgeModal = ({ isOpen, onClose }: KnowledgeModalProps) => {
                   {category.links.map((link, i) => (
                     <a
                       key={i}
-                      href={link.url}
+                      href={link.url === '#' ? undefined : link.url}
+                      role="link"
+                      aria-disabled={link.url === '#' || undefined}
+                      title={link.url === '#' ? 'Ссылка на материал пока не добавлена' : undefined}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-green-500 transition-all duration-300 flex items-start justify-between gap-3"
@@ -119,6 +114,6 @@ export const KnowledgeModal = ({ isOpen, onClose }: KnowledgeModalProps) => {
         </div>
 
       </div>
-    </div>
+    </dialog>
   );
 };

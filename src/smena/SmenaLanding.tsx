@@ -5,7 +5,6 @@
 // «Яндекс Смена» — сначала объясняем механику простыми словами, только потом продаём.
 // Каркас — из src/landing/kit.tsx, ссылок на основной сайт нет.
 
-import { useState } from 'react';
 import {
   PhoneCall, Wallet, CalendarClock, MapPin, ChevronRight, CheckCircle2, Smartphone,
   ShieldCheck, Clock, Star, Quote, ShoppingCart, Package, ChefHat, Sparkles,
@@ -13,14 +12,14 @@ import {
   MessageCircle, HeartPulse, ThumbsUp,
 } from 'lucide-react';
 import {
-  LandingShell, Section, SectionTitle, InfoCard, OrderButton, Faq, useLanding, PHONE_HREF,
+  LandingShell, Section, SectionHead, InfoCard, OrderButton, Faq, useLanding, PHONE_SMENA,
 } from '../landing/kit';
 import { SmenaForm } from './SmenaForm';
 
 /* ─────────────────────────────  ПЕРВЫЙ ЭКРАН  ───────────────────────────── */
 
 const Hero = () => {
-  const { track, scrollToOrder } = useLanding();
+  const { track, scrollToOrder, phone } = useLanding();
   return (
     <section className="relative pt-28 lg:pt-32 pb-14 lg:pb-20 overflow-hidden bg-gradient-to-br from-green-50 via-green-50/40 to-white">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -32,11 +31,11 @@ const Hero = () => {
         <div className="text-center lg:text-left">
           <span className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white border border-green-200 text-green-800 text-xs sm:text-sm font-bold shadow-sm">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            Яндекс Смена — подработка без трудоустройства
+            Яндекс Смена — подработка без трудоустройства, 18+
           </span>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase leading-tight mb-4">
-            Подработка на 4–12 часов: <span className="text-green-800">деньги в тот же день</span>
+            Подработка на 4–12 часов: <span className="text-green-800">деньги обычно на следующий день</span>
           </h1>
 
           <p className="text-lg text-gray-600 mb-6 leading-relaxed">
@@ -47,7 +46,7 @@ const Hero = () => {
           <div className="inline-flex flex-col items-center lg:items-start bg-white rounded-2xl border border-green-100 shadow-lg shadow-green-900/5 px-6 py-4 mb-6">
             <span className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Оплата за смену</span>
             <span className="text-4xl lg:text-5xl font-bold font-oswald text-green-800 leading-none">
-              2 000 – 5 000 ₽<span className="text-lg align-super text-gray-300">*</span>
+              2 000 – 4 000 ₽<span className="text-lg align-super text-gray-300">*</span>
             </span>
             <span className="text-sm text-gray-500 mt-2">зависит от вида смены, города и её длительности</span>
           </div>
@@ -61,7 +60,7 @@ const Hero = () => {
               <ChevronRight size={20} />
             </button>
             <a
-              href={PHONE_HREF}
+              href={phone.href}
               onClick={() => track('phone_click', { place: 'hero' })}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg border-2 border-green-600 text-green-800 hover:bg-green-600 hover:text-[var(--on-accent)] transition-colors"
             >
@@ -81,7 +80,7 @@ const Hero = () => {
         </div>
 
         {/* Правая колонка — «как это работает» в четырёх шагах прямо на первом экране */}
-        <div className="bg-white rounded-3xl border border-green-100 shadow-2xl shadow-green-900/10 p-6 lg:p-8">
+        <div className="l-glass rounded-3xl border border-green-100 shadow-2xl shadow-green-900/10 p-6 lg:p-8">
           <h2 className="text-xl font-bold font-oswald uppercase mb-1 text-gray-800">Если совсем коротко</h2>
           <p className="text-sm text-gray-500 mb-5">Четыре шага — и деньги у вас на карте</p>
           <ol className="space-y-4">
@@ -89,7 +88,7 @@ const Hero = () => {
               { n: 1, icon: <Smartphone size={20} />, text: 'Открываете приложение и видите список смен рядом с домом' },
               { n: 2, icon: <CalendarClock size={20} />, text: 'Выбираете день, время и место — что удобно именно вам' },
               { n: 3, icon: <CheckCircle2 size={20} />, text: 'Приходите и отрабатываете смену: от 4 до 12 часов' },
-              { n: 4, icon: <Wallet size={20} />, text: 'Получаете оплату — обычно в тот же или на следующий день' },
+              { n: 4, icon: <Wallet size={20} />, text: 'Получаете оплату — обычно на следующий день' },
             ].map(step => (
               <li key={step.n} className="flex gap-4 items-start">
                 <span className="w-11 h-11 shrink-0 rounded-xl bg-green-600 text-[var(--on-accent)] flex items-center justify-center font-bold font-oswald">
@@ -118,7 +117,7 @@ const Hero = () => {
 
 const TrustBar = () => (
   <div className="bg-green-700 text-[var(--on-accent)]">
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-6 lg:py-7">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {[
           { icon: <Wallet size={22} />, title: 'Оплата за смену', text: 'а не два раза в месяц' },
@@ -142,15 +141,16 @@ const TrustBar = () => (
 /* ───────────────────  ЧТО ЭТО ТАКОЕ: ГЛАВНЫЙ БЛОК  ─────────────────── */
 
 const WhatIsIt = () => (
-  <Section id="what" className="py-14 lg:py-20 bg-white">
+  <Section id="what" className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle
+      <SectionHead
         kicker="Объясняем"
         title="Что такое Яндекс Смена простыми словами"
       />
 
-      <div className="max-w-4xl mx-auto">
-        <div className="rounded-3xl bg-gradient-to-br from-green-50 to-white border border-green-100 p-6 lg:p-8 mb-6">
+      {/* На десктопе объяснение и таблица идут рядом (5/7), а не одной узкой колонкой. */}
+      <div className="mt-10 max-w-4xl mx-auto lg:max-w-none lg:grid lg:grid-cols-12 lg:items-start lg:gap-10">
+        <div className="rounded-3xl l-glass border border-green-100 p-6 lg:p-8 mb-6 lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:mb-0">
           <div className="flex items-start gap-4">
             <span className="w-12 h-12 shrink-0 rounded-xl bg-green-600 text-[var(--on-accent)] flex items-center justify-center">
               <HelpCircle size={24} />
@@ -171,7 +171,7 @@ const WhatIsIt = () => (
         </div>
 
         {/* Сравнение с обычной работой — снимает главное непонимание */}
-        <div className="rounded-3xl border border-gray-200 overflow-hidden bg-white shadow-lg">
+        <div className="rounded-3xl border border-gray-200 overflow-hidden l-glass shadow-lg lg:col-span-7 lg:col-start-6 lg:row-start-1">
           <div className="grid grid-cols-2">
             <div className="bg-gray-50 px-4 py-3 border-b border-r border-gray-200">
               <p className="font-bold font-oswald uppercase text-gray-500 text-sm lg:text-base">Обычная работа</p>
@@ -184,7 +184,7 @@ const WhatIsIt = () => (
             ['Собеседование и ожидание ответа', 'Выбрали смену в приложении и вышли'],
             ['Трудовой договор, трудовая книжка', 'Самозанятость — оформляется за 15 минут'],
             ['График ставит начальник', 'График ставите вы: день, время, место'],
-            ['Зарплата два раза в месяц', 'Оплата за смену — обычно в тот же день'],
+            ['Зарплата два раза в месяц', 'Оплата за смену — обычно на следующий день'],
             ['Не понравилось — надо увольняться', 'Не понравилось — просто не берёте смены там'],
             ['Отработка две недели', 'Никакой отработки: смена закончилась — вы свободны'],
           ].map(([left, right], i) => (
@@ -201,7 +201,7 @@ const WhatIsIt = () => (
           ))}
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center lg:col-span-12 lg:col-start-1 lg:row-start-2 lg:text-left">
           <OrderButton place="what_is_it">Понятно, хочу смену<ChevronRight size={20} /></OrderButton>
           <p className="mt-3 text-xs text-gray-400">
             Остались вопросы — задайте их менеджеру, он объяснит на пальцах и без давления.
@@ -224,19 +224,22 @@ const SHIFTS = [
   { icon: <Croissant size={24} />, title: 'Выпечка', pay: 'от 2 500 ₽', text: 'Формовка теста, выпечка, выкладка продукции на витрину. Тёплое место в холодное время года.' },
   { icon: <Brush size={24} />, title: 'Уборка и мытьё посуды', pay: 'от 3 000 ₽', text: 'Уборка торговых и сервисных зон, мытьё посуды и инвентаря. Без общения с покупателями.' },
   { icon: <Sparkles size={24} />, title: 'Пункт выдачи заказов', pay: 'от 2 000 ₽', text: 'Приём и выдача заказов, ведение документации, порядок в пункте. Спокойный темп.' },
+  { icon: <Store size={24} />, title: 'Обслуживание за прилавком', pay: 'от 2 800 ₽', text: 'Выкладка и нарезка товара. Обслуживание посетителей. Обновление ценников.' },
+  { icon: <Package size={24} />, title: 'Фасовка продукции', pay: 'от 3 000 ₽', text: 'Сортировка овощей и фруктов. Стикеровка. Поддержание чистоты.' },
+  { icon: <Boxes size={24} />, title: 'Прессовка материалов', pay: 'до 2 300 ₽', text: 'Прессовка картона и плёнки. Работа на пресс-машине. Соблюдение техники безопасности.' },
 ];
 
 const ShiftTypes = () => (
-  <Section id="shifts" className="py-14 lg:py-20 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
+  <Section id="shifts" className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle
+      <SectionHead
         kicker="Виды смен"
         title="Какие смены бывают"
         subtitle="Список зависит от вашего города и дня. Начать можно с самой простой смены, а дальше выбирать то, что понравилось."
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
         {SHIFTS.map(shift => (
-          <div key={shift.title} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+          <div key={shift.title} className="l-glass p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
             <div className="w-12 h-12 rounded-xl bg-green-50 text-green-800 flex items-center justify-center mb-4">
               {shift.icon}
             </div>
@@ -260,14 +263,14 @@ const ShiftTypes = () => (
 /* ─────────────────────────────  КОМУ ПОДХОДИТ  ───────────────────────────── */
 
 const ForWhom = () => (
-  <Section className="py-14 lg:py-20 bg-white">
+  <Section className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle
+      <SectionHead
         kicker="Кому подходит"
         title="Кто берёт смены чаще всего"
         subtitle="Формат удобен там, где обычная работа не подходит по графику или по срокам."
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
         {[
           { icon: <GraduationCap size={24} />, title: 'Студентам', text: 'Смены между парами и на выходных, без ущерба учёбе и без записи в трудовой.' },
           { icon: <Briefcase size={24} />, title: 'Между работами', text: 'Ищете постоянное место — берите смены, чтобы не сидеть без денег во время поиска.' },
@@ -282,14 +285,14 @@ const ForWhom = () => (
 /* ─────────────────────────────  ПЕРВАЯ СМЕНА  ───────────────────────────── */
 
 const FirstShift = () => (
-  <Section id="start" className="py-14 lg:py-20 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
+  <Section id="start" className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle
+      <SectionHead
         kicker="Первый раз"
         title="Как пройдёт ваша первая смена"
         subtitle="Самый частый страх — «я приду и не буду понимать, что делать». Вот как это выглядит на самом деле."
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 lg:gap-6">
         {[
           { n: '01', title: 'Заявка и звонок', text: 'Оставляете заявку — менеджер звонит, объясняет формат и помогает с самозанятостью.' },
           { n: '02', title: 'Доступ к сменам', text: 'Помогаем оформиться и получить доступ, показываем, где смотреть смены и как их брать.' },
@@ -297,7 +300,7 @@ const FirstShift = () => (
           { n: '04', title: 'На месте', text: 'Приходите к указанному времени, вас встречают и объясняют задачу. Опыт не нужен.' },
           { n: '05', title: 'Оплата', text: 'Смена закрыта — оплата уходит вам. Дальше решаете сами, брать ли ещё.' },
         ].map(step => (
-          <div key={step.n} className="relative p-5 rounded-2xl bg-white border border-gray-100 shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300">
+          <div key={step.n} className="relative p-5 rounded-2xl l-glass border border-gray-100 shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300">
             <span className="text-3xl font-bold font-oswald text-green-800/20 leading-none">{step.n}</span>
             <h3 className="text-base font-bold font-oswald uppercase mt-2 mb-2 leading-tight">{step.title}</h3>
             <p className="text-gray-600 text-sm leading-relaxed">{step.text}</p>
@@ -314,19 +317,16 @@ const FirstShift = () => (
 /* ─────────────────────────────  ТРЕБОВАНИЯ  ───────────────────────────── */
 
 const Requirements = () => (
-  <Section className="py-14 lg:py-20 bg-white">
+  <Section className="l-tint">
     <div className="container mx-auto">
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        <div>
-          <span className="inline-block mb-3 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider">
-            Требования
-          </span>
-          <h2 className="text-3xl lg:text-4xl font-bold uppercase leading-tight mb-4">Что нужно, чтобы начать</h2>
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            Резюме, опыт и знакомства не нужны. Нужны совершеннолетие, документы и желание выйти
-            на смену — остальное поможем оформить.
-          </p>
-          <div className="rounded-2xl bg-green-50 border border-green-100 p-5">
+      <div className="max-w-5xl mx-auto lg:max-w-none grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
+        <div className="lg:col-span-5">
+          <SectionHead
+            kicker="Требования"
+            title="Что нужно, чтобы начать"
+            subtitle="Резюме, опыт и знакомства не нужны. Нужны совершеннолетие, документы и желание выйти на смену — остальное поможем оформить."
+          />
+          <div className="mt-7 rounded-2xl bg-green-100 border border-green-200 p-5">
             <p className="font-bold text-green-800 font-oswald text-xl uppercase mb-1">Медкнижка — бесплатно</p>
             <p className="text-gray-600 text-sm">
               Нужна для смен, где есть контакт с продуктами и едой. Оформление берём на себя,
@@ -335,27 +335,29 @@ const Requirements = () => (
           </div>
         </div>
 
-        <ul className="space-y-3">
+        <ul className="space-y-3 lg:col-span-7">
           {[
-            'Возраст 18 лет и старше',
-            'Паспорт и ИНН',
+            'Возраст 18 лет и старше — есть отдельные задания с 16 лет, но их немного: уточните у менеджера',
+            'Паспорт и СНИЛС',
             'Самозанятость — оформим вместе бесплатно, если статуса ещё нет',
             'Смартфон с интернетом — смены выбираются в приложении',
             'Готовность прийти вовремя: смену ждут и на неё рассчитывают',
+            'Иностранным гражданам — при полном пакете документов на работу в России, уточните у менеджера',
           ].map(item => (
-            <li key={item} className="flex items-start gap-3 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+            <li key={item} className="flex items-start gap-3 l-glass p-4 rounded-xl border border-gray-100 shadow-sm">
               <CheckCircle2 className="text-green-800 shrink-0 mt-0.5" size={20} />
               <span className="text-gray-700 text-sm lg:text-base leading-relaxed">{item}</span>
             </li>
           ))}
-          <li className="flex items-start gap-3 bg-amber-50 p-4 rounded-xl border border-amber-200">
-            <ShieldCheck className="text-amber-600 shrink-0 mt-0.5" size={20} />
-            <span className="text-amber-900 text-sm leading-relaxed">
-              Набор доступных смен и требования к документам зависят от города и заказчика.
-              Менеджер проверит вашу ситуацию бесплатно и скажет прямо, что доступно сейчас.
-            </span>
-          </li>
         </ul>
+
+        <div className="flex items-start gap-3 bg-amber-50 p-4 rounded-xl border border-amber-200 lg:col-span-12">
+          <ShieldCheck className="text-amber-600 shrink-0 mt-0.5" size={20} />
+          <span className="text-amber-900 text-sm leading-relaxed">
+            Набор доступных смен и требования к документам зависят от города и заказчика.
+            Менеджер проверит вашу ситуацию бесплатно и скажет прямо, что доступно сейчас.
+          </span>
+        </div>
       </div>
     </div>
   </Section>
@@ -364,14 +366,14 @@ const Requirements = () => (
 /* ─────────────────────────────  ПОЧЕМУ ЧЕРЕЗ НАС  ───────────────────────────── */
 
 const WhyUs = () => (
-  <Section id="why" className="py-14 lg:py-20 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
+  <Section id="why" className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle
+      <SectionHead
         kicker="Почему мы"
         title="Зачем оформляться через Барори Парк"
         subtitle="Приложение — это инструмент. Мы — те, кто помогает разобраться с оформлением и не остаться один на один с проблемой."
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
         {[
           { icon: <Smartphone size={24} />, title: 'Поможем оформиться', text: 'Самозанятость, документы, доступ к сменам и настройка приложения — проведём по шагам.' },
           { icon: <HeartPulse size={24} />, title: 'Медкнижка за наш счёт', text: 'Без неё не пустят на пищевые смены. Оформление оплачиваем мы.' },
@@ -388,24 +390,24 @@ const WhyUs = () => (
 /* ─────────────────────────────  ЧЕСТНО  ───────────────────────────── */
 
 const Honest = () => (
-  <Section className="py-14 lg:py-20 bg-slate-900 text-white">
+  <Section className="bg-slate-900 text-white">
     <div className="container mx-auto">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto lg:max-w-none">
         <div className="flex items-center gap-3 mb-5">
           <span className="w-11 h-11 rounded-xl bg-green-600/20 flex items-center justify-center shrink-0">
             <ShieldCheck className="text-green-400" size={24} />
           </span>
           <h2 className="text-2xl lg:text-3xl font-bold uppercase font-oswald leading-tight">Честно: как это оформляется</h2>
         </div>
-        <p className="text-gray-300 leading-relaxed mb-6">
+        <p className="text-gray-300 leading-relaxed mb-6 lg:max-w-3xl">
           Смены — это <strong className="text-white">не трудоустройство</strong>. Вы работаете как
-          самозанятый исполнитель и берёте отдельные смены. Рассказываем сразу, чтобы вы решали
-          с открытыми глазами.
+          самозанятый исполнитель и берёте отдельные смены. Даём полную информацию — а вы уже
+          принимаете решение.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
           {[
             { title: 'Записи в трудовой книжке нет', text: 'Стаж по такой работе не идёт. Зато нет и обязательств: не хотите — не выходите.' },
-            { title: 'Налог — 4% и 6%', text: 'Считает приложение «Мой налог» автоматически. Декларации сдавать не нужно.' },
+            { title: 'Налог — 6%', text: 'Смены оплачивает компания, поэтому ставка самозанятого фиксированная — 6%. Считает приложение «Мой налог», декларации сдавать не нужно.' },
             { title: 'Отпускных и больничных нет', text: 'Так устроен режим самозанятости по закону — это обратная сторона свободного графика.' },
             { title: 'Смены нужно закрывать', text: 'Взяли смену — на вас рассчитывают. Постоянные неявки закроют доступ к сменам.' },
           ].map(item => (
@@ -439,12 +441,12 @@ const REVIEWS = [
 ];
 
 const Reviews = () => (
-  <Section className="py-14 lg:py-20 bg-white">
+  <Section className="l-tint">
     <div className="container mx-auto">
-      <SectionTitle kicker="Отзывы" title="Что говорят исполнители" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <SectionHead kicker="Отзывы" title="Что говорят исполнители" />
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
         {REVIEWS.map(review => (
-          <div key={review.name} className="relative bg-white p-6 rounded-2xl border border-gray-100 shadow-lg">
+          <div key={review.name} className="relative l-glass p-6 rounded-2xl border border-gray-100 shadow-lg">
             <Quote size={34} className="text-green-200/70 absolute top-4 right-4" />
             <div className="flex items-center gap-3 mb-4">
               <div role="img" aria-label={review.name} className="w-12 h-12 rounded-full bg-green-50 border-2 border-green-600 flex items-center justify-center text-2xl">
@@ -479,11 +481,15 @@ const FAQ = [
   },
   {
     q: 'Обязательно ли оформлять самозанятость?',
-    a: 'Да, работа на сменах устроена как сотрудничество с самозанятым. Если статуса нет — оформим вместе бесплатно через приложение «Мой налог», это около 15 минут и без похода в налоговую.',
+    a: 'Для граждан России — да: работа на сменах устроена как сотрудничество с самозанятым. Если статуса нет, оформим вместе бесплатно через приложение «Мой налог», это около 15 минут и без похода в налоговую. Для иностранных граждан возможен другой вариант оформления при полном пакете документов — уточните у менеджера.',
+  },
+  {
+    q: 'Я гражданин другой страны. Можно брать смены?',
+    a: 'Да, вариант есть — при полном пакете документов, дающих право работать в России. Набор документов зависит от вашего статуса, поэтому менеджер бесплатно проверит вашу ситуацию и скажет прямо, что доступно сейчас.',
   },
   {
     q: 'Когда я получу деньги за смену?',
-    a: 'Обычно оплата приходит в день смены или на следующий день. Точные сроки зависят от заказчика и способа выплаты — менеджер скажет, как это работает по вашим сменам.',
+    a: 'Обычно оплата приходит на следующий день после смены. Точные сроки зависят от заказчика и способа выплаты — менеджер скажет, как это работает по вашим сменам.',
   },
   {
     q: 'Сколько смен можно брать?',
@@ -503,7 +509,7 @@ const FAQ = [
   },
   {
     q: 'Идёт ли стаж и будет ли запись в трудовой книжке?',
-    a: 'Нет. Это не трудовые отношения, а сотрудничество с самозанятым: записи в трудовой книжке и трудового стажа по таким сменам не будет. Взамен — свободный график и оплата сразу после смены.',
+    a: 'Нет. Это не трудовые отношения, а сотрудничество с самозанятым: записи в трудовой книжке и трудового стажа по таким сменам не будет. Взамен — свободный график и оплата за каждую отработанную смену.',
   },
   {
     q: 'Смены есть только в Москве и Санкт-Петербурге?',
@@ -514,11 +520,10 @@ const FAQ = [
 /* ─────────────────────────────  СТРАНИЦА  ───────────────────────────── */
 
 export const SmenaLanding = () => {
-  const [shiftType, setShiftType] = useState('Любые смены');
-
   return (
     <LandingShell
       goalPrefix="smena"
+      phone={PHONE_SMENA}
       ctaLabel="Взять смену"
       stickyLabel="Оставить заявку на смены"
       footerAbout="Помогаем оформиться и начать брать смены: самозанятость, медкнижка, доступ к сменам и поддержка на связи."
@@ -540,7 +545,7 @@ export const SmenaLanding = () => {
       <Honest />
       <Reviews />
       <Faq items={FAQ} title="Частые вопросы о сменах" />
-      <SmenaForm shiftType={shiftType} onShiftTypeChange={setShiftType} />
+      <SmenaForm />
     </LandingShell>
   );
 };

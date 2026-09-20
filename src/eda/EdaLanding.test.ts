@@ -22,6 +22,7 @@ test('renders the Yandex Eda offer with transport formats and slot types', () =>
   assert.match(html, /Пешком/);
   assert.match(html, /Велосипед или самокат/);
   assert.match(html, /Электротранспорт/);
+  assert.match(html, /Автомобиль/);
   assert.match(html, /Свободный слот/);
   assert.match(html, /Плановый слот/);
   assert.match(html, /обычно 4–12 часов/i);
@@ -52,7 +53,7 @@ test('ships motion with a reduced-motion fallback and safe-area scroll padding',
 });
 
 test('validates the lead before it can reach the CRM', () => {
-  const base = { name: 'Иван', phone: '+79990000000', city: 'Казань', transport: 'Пешком', consent: true };
+  const base = { name: 'Иван', phone: '+79990000000', city: 'Казань', transport: 'Велосипед или самокат', selfEmployment: 'Готов оформить', consent: true };
 
   assert.equal(validateEdaLead(base), null);
   assert.match(validateEdaLead({ ...base, name: ' ' }), /имя и телефон/i);
@@ -64,14 +65,31 @@ test('validates the lead before it can reach the CRM', () => {
 
 test('builds a payload the operator can route to the Yandex Eda direction', () => {
   const payload = buildEdaPayload(
-    { name: ' Иван ', phone: ' +7 999 000-00-00 ', city: ' Казань ', transport: 'Электротранспорт', consent: true },
+    { name: ' Иван ', phone: ' +7 999 000-00-00 ', city: ' Казань ', transport: 'Автомобиль', selfEmployment: 'Уже оформлена', consent: true },
     { utm_source: 'yandex' },
   );
 
   assert.equal(payload.name, 'Иван');
   assert.equal(payload.city, 'Казань');
-  assert.equal(payload.courier_format, 'Электротранспорт');
+  assert.equal(payload.self_employment, 'Уже оформлена');
   assert.equal(payload.delivery_direction, 'Еда и продукты');
+  assert.equal(payload.delivery_transport, 'Автомобиль');
   assert.equal(payload.utm_source, 'yandex');
   assert.match(payload.message, /Яндекс Еда/);
+});
+
+test('asks only for the fields the operator really needs', () => {
+  const payload = buildEdaPayload(
+    { name: 'Иван', phone: '+79990000000', city: 'Казань', transport: 'Пешком', selfEmployment: 'Готов оформить', consent: true },
+    {},
+  );
+
+  assert.deepEqual(
+    Object.keys(payload).sort(),
+    ['city', 'delivery_direction', 'delivery_transport', 'message', 'name', 'phone', 'self_employment'],
+  );
+});
+
+test('asks for transport directly in both Yandex Eda forms', () => {
+  assert.equal((html.match(/Как будете доставлять/g) ?? []).length, 2);
 });

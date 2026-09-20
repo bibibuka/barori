@@ -8,33 +8,30 @@ import { CheckCircle2, ShieldCheck, Clock } from 'lucide-react';
 import {
   FormSection, ChoiceGroup, ConsentCheckbox, useLeadSubmit, inputClass, useLanding,
 } from '../landing/kit';
+import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
-const SHIFT_TYPES = [
-  'Любые смены',
-  'Магазин и касса',
-  'Склад и сборка',
-  'Кухня и выпечка',
-] as const;
+type ShiftPreference = 'Любая доступная' | 'Сборка' | 'Касса' | 'Склад и выкладка' | 'Кухня' | 'Клининг';
+const SHIFT_OPTIONS = DIRECTION_PREFERENCES.smena.map(option => ({
+  value: option.label as ShiftPreference,
+  label: option.label,
+}));
 
-interface SmenaFormProps {
-  shiftType: string;
-  onShiftTypeChange: (value: string) => void;
-}
-
-export const SmenaForm = ({ shiftType, onShiftTypeChange }: SmenaFormProps) => {
+// Заявка собирает контакты, город и статус самозанятого. Вид смен и пожелания
+// по графику выясняет менеджер на звонке — лишних сведений о человеке не храним.
+export const SmenaForm = () => {
   const { track } = useLanding();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
-  const [message, setMessage] = useState('');
+  const [shiftPreference, setShiftPreference] = useState<ShiftPreference>('Любая доступная');
   const [selfEmployment, setSelfEmployment] = useState<'' | 'has' | 'ready'>('');
   const [consent, setConsent] = useState(false);
 
   const { submit, isLoading, showToast } = useLeadSubmit({
     position: 'Яндекс Смена',
     leadType: 'Яндекс Смена (лендинг /smena/)',
-    onSuccess: () => { setName(''); setPhone(''); setCity(''); setMessage(''); setSelfEmployment(''); },
+    onSuccess: () => { setName(''); setPhone(''); setCity(''); setSelfEmployment(''); },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -61,20 +58,22 @@ export const SmenaForm = ({ shiftType, onShiftTypeChange }: SmenaFormProps) => {
       return;
     }
 
+    const status = selfEmployment === 'has' ? 'Уже оформлена' : 'Готов оформить';
     submit({
       name,
       phone,
       city,
-      shift_type: shiftType,
-      self_employment: selfEmployment === 'has' ? 'Уже оформлена' : 'Готов оформить',
-      message: `Интересуют: ${shiftType}.${message ? ' ' + message : ''}`,
+      department: 'Яндекс Смена',
+      shift_preference: shiftPreference,
+      self_employment: status,
+      message: `Интересующие смены: ${shiftPreference}. Самозанятость: ${status}.`,
     }, consent);
   };
 
   return (
     <FormSection
       title="Заявка на смены"
-      lead="Заполните 4 поля — менеджер позвонит, объяснит формат простыми словами и подскажет, какие смены есть в вашем городе."
+      lead="Четыре поля — менеджер позвонит, объяснит формат простыми словами и подскажет, какие смены есть в вашем городе."
       bullets={[
         { icon: <Clock size={18} />, text: 'Звонок в течение 15 минут (10:00–20:00)' },
         { icon: <CheckCircle2 size={18} />, text: 'Поможем с самозанятостью и медкнижкой' },
@@ -92,6 +91,14 @@ export const SmenaForm = ({ shiftType, onShiftTypeChange }: SmenaFormProps) => {
           </div>
           <CheckCircle2 className="text-green-800 shrink-0" size={24} />
         </div>
+
+        <ChoiceGroup
+          name="shift-preference"
+          label="Какие смены интересуют?"
+          options={SHIFT_OPTIONS}
+          value={shiftPreference}
+          onChange={setShiftPreference}
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -112,14 +119,6 @@ export const SmenaForm = ({ shiftType, onShiftTypeChange }: SmenaFormProps) => {
             className={inputClass} value={city} onChange={e => setCity(e.target.value)} />
         </div>
 
-        <ChoiceGroup
-          name="shift_type"
-          label="Какие смены интересны?"
-          options={SHIFT_TYPES.map(t => ({ value: t, label: t }))}
-          value={shiftType as (typeof SHIFT_TYPES)[number]}
-          onChange={onShiftTypeChange}
-        />
-
         <div className="rounded-xl border border-amber-300 bg-amber-50 p-3.5 space-y-2.5">
           <p className="text-xs sm:text-sm text-amber-900 leading-snug">
             Смены оформляются как сотрудничество с самозанятым — это <strong>обязательное условие</strong>.
@@ -137,14 +136,9 @@ export const SmenaForm = ({ shiftType, onShiftTypeChange }: SmenaFormProps) => {
           />
         </div>
 
-        <div>
-          <label htmlFor="sm-message" className="block text-sm font-medium text-gray-700 mb-1.5">
-            Комментарий <span className="text-gray-400 font-normal">(необязательно)</span>
-          </label>
-          <textarea id="sm-message" rows={3}
-            placeholder="Например: могу только по вечерам, удобно звонить после 18:00"
-            className={`${inputClass} resize-none`} value={message} onChange={e => setMessage(e.target.value)} />
-        </div>
+        <p className="text-sm text-gray-500 leading-relaxed">
+          Когда удобно выходить и какие задания доступны рядом, уточним на звонке.
+        </p>
 
         <ConsentCheckbox checked={consent} onChange={setConsent} place="smena_form" />
 

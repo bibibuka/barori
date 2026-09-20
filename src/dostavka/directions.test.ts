@@ -6,7 +6,7 @@ import { DELIVERY_DIRECTIONS, DELIVERY_FORMATS } from './directions.ts';
 test('exposes every delivery route promised on the main site', () => {
   assert.deepEqual(
     DELIVERY_DIRECTIONS.map(direction => direction.id),
-    ['food', 'express', 'planned', 'auto', 'cargo', 'velo-helper'],
+    ['express', 'planned', 'auto', 'cargo'],
   );
 
   const visibleContent = JSON.stringify(DELIVERY_DIRECTIONS);
@@ -14,10 +14,14 @@ test('exposes every delivery route promised on the main site', () => {
   assert.match(visibleContent, /от 6 000 ₽ за день/);
   assert.match(visibleContent, /от 7 000 ₽ за день/);
   assert.match(visibleContent, /До 10 заказов на рейс/);
-  assert.match(visibleContent, /Помощь курьерам с поломками/);
-  assert.match(visibleContent, /Свободные слоты: от 1 часа при выполненном заказе/);
-  assert.match(visibleContent, /Плановые слоты: обычно 4-12 часов/);
+  assert.doesNotMatch(visibleContent, /Велопомощник/);
   assert.doesNotMatch(visibleContent, /Яндекс Доставка/);
+});
+
+// Еда живёт на отдельном лендинге /eda/ — на странице доставки её нет.
+test('leaves food delivery to its own landing', () => {
+  const content = JSON.stringify([...DELIVERY_DIRECTIONS, ...DELIVERY_FORMATS]);
+  assert.doesNotMatch(content, /(?<![а-яё])ед[аыой]|продукт|\/eda\//i);
 });
 
 test('offers delivery on foot, bike, scooter, car and cargo vehicle', () => {
