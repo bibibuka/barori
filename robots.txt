@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /node_modules/
+Disallow: /src/
+
+User-agent: Yandex
+Allow: /
+Disallow: /node_modules/
+Disallow: /src/
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid&fbclid&from&open /
+
+Sitemap: https://baroripark.ru/sitemap.xml

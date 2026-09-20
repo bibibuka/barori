@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- Yandex.Metrika: счётчик НЕ инициализируется здесь.
+       Он подгружается из src/utils/metrika.ts только после согласия в cookie-баннере
+       (блоки C4/F12 в COMPLIANCE.md) — до согласия cookie и IP не обрабатываются. -->
+
+
+  <title>Барори Парк — подработка в такси на выходных, Яндекс Смена и доставка</title>
+  <meta name="description"
+    content="Подключиться к Яндекс Такси, Яндекс Смена, Купер, Яндекс доставка в разных регионах. Подработка и работа на выходных, курьерский парк, помощь с оформлением, документами и выплатами." />
+  <meta name="keywords"
+    content="подработка в Яндекс Такси на выходных, подключение Яндекс Такси, таксопарк, курьерский парк, подключение к доставке, Яндекс Смена, смены такси, подработка на выходных, работа в такси для граждан СНГ, ежедневные выплаты, Барори Парк" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#16a34a" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://baroripark.ru/" />
+
+  <!-- Open Graph (для соцсетей) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:site_name" content="Барори Парк" />
+  <meta property="og:title" content="Барори Парк — подработка в такси, Яндекс Смена и доставка" />
+  <meta property="og:description"
+    content="Подключиться к Яндекс Такси, Яндекс Смена, Купер, Яндекс доставка в разных регионах. Подработка и работа на выходных, курьерский парк, помощь с оформлением, документами и выплатами." />
+  <meta property="og:url" content="https://baroripark.ru/" />
+  <meta property="og:image" content="https://baroripark.ru/bitrix/templates/barorikorNEW/img/IMG_4314.jfif.jpeg" />
+  <meta property="og:image:alt" content="Барори Парк — подключение к Яндекс Смена, такси и доставке" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Барори Парк — подработка в такси, Яндекс Смена и доставка" />
+  <meta name="twitter:description" content="Подработка на выходных, ежедневные выплаты, оформление и поддержка исполнителей в разных регионах." />
+  <meta name="twitter:image" content="https://baroripark.ru/bitrix/templates/barorikorNEW/img/IMG_4314.jfif.jpeg" />
+
+  <!-- ====== Верификация вебмастеров ====== -->
+  <!-- Google Search Console -->
+  <meta name="google-site-verification" content="3IrbLpHqamGsrXBl07eMdayJaGZpaA3n1MjaGXT1izM" />
+  <!-- Yandex Webmaster -->
+  <meta name="yandex-verification" content="e6c1f1836eb3b09f" />
+
+  <!-- Шрифты Oswald + Open Sans размещены локально (см. src/fonts.css и /public/fonts).
+       Внешние ссылки на Google Fonts CDN удалены, чтобы исключить трансграничную
+       передачу IP-адреса пользователя в Google (блок C1, ст. 12 ФЗ-152). -->
+
+  <!-- DNS-prefetch для внешних ресурсов -->
+  <link rel="dns-prefetch" href="https://mc.yandex.ru">
+  <link rel="dns-prefetch" href="https://static.rustore.ru">
+  <link rel="dns-prefetch" href="https://smartcaptcha.yandexcloud.net">
+
+  <!-- Preconnect для лого партнёров, которые остаются хотлинками (Partners.tsx) -->
+  <link rel="preconnect" href="https://s.rbk.ru" crossorigin>
+  <link rel="preconnect" href="https://www.retail.ru" crossorigin>
+
+  <!-- Preload критичных шрифтов над первым экраном (H1 = Oswald 700, текст = Open Sans 400) -->
+  <link rel="preload" href="./fonts/oswald-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/open-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- !!! ВОТ ЭТА ВАЖНАЯ СТРОЧКА ДЛЯ КАПЧИ !!! -->
+  <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
+
+  <!-- ====== Schema.org JSON-LD Structured Data ====== -->
+
+  <!-- 1. Organization -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Барори Парк",
+      "alternateName": "Barori Park",
+      "url": "https://baroripark.ru",
+      "logo": "https://baroripark.ru/favicon.ico",
+      "description": "Единый центр подключения к Яндекс Смена, Яндекс Такси, доставке и курьерским сервисам в разных регионах России.",
+      "telephone": "+7 (921) 900-09-97",
+      "email": "info@baroripark.ru",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Планерная, 15Б, этаж 2, офис 2/13",
+        "addressLocality": "Санкт-Петербург",
+        "addressCountry": "RU"
+      },
+      "sameAs": [
+        "https://t.me/BaroriPark_Bot",
+        "https://my.etag.store/baroripark"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+7-921-900-09-97",
+        "contactType": "customer service",
+        "availableLanguage": ["Russian", "Tajik", "Uzbek", "Kyrgyz", "English", "Arabic", "Persian"],
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+          "opens": "10:00",
+          "closes": "20:00"
+        }
+      }
+    }
+    </script>
+
+  <!-- 2. WebSite (с поиском) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Барори Парк",
+      "url": "https://baroripark.ru",
+      "inLanguage": "ru"
+    }
+    </script>
+
+  <!-- 3. LocalBusiness -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Барори Парк",
+          "item": "https://baroripark.ru/"
+        }
+      ]
+    }
+    </script>
+
+  <!-- 3.1. Services -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Направления Барори Парк",
+      "itemListElement": [
+        {
+          "@type": "Service",
+          "position": 1,
+          "name": "Подключение к Яндекс Смена",
+          "serviceType": "Подключение исполнителей к Яндекс Смена",
+          "areaServed": "Россия",
+          "provider": {
+            "@type": "Organization",
+            "name": "Барори Парк",
+            "url": "https://baroripark.ru/"
+          }
+        },
+        {
+          "@type": "Service",
+          "position": 2,
+          "name": "Подключение водителей к Яндекс Такси",
+          "serviceType": "Таксопарк",
+          "areaServed": "Россия",
+          "provider": {
+            "@type": "Organization",
+            "name": "Барори Парк",
+            "url": "https://baroripark.ru/"
+          }
+        },
+        {
+          "@type": "Service",
+          "position": 3,
+          "name": "Курьерский парк и доставка",
+          "serviceType": "Курьерский парк",
+          "areaServed": "Россия",
+          "provider": {
+            "@type": "Organization",
+            "name": "Барори Парк",
+            "url": "https://baroripark.ru/"
+          }
+        },
+        {
+          "@type": "Service",
+          "position": 4,
+          "name": "Подработка в Яндекс Такси на выходных",
+          "serviceType": "Подключение к такси для подработки на выходных",
+          "areaServed": "Россия",
+          "provider": {
+            "@type": "Organization",
+            "name": "Барори Парк",
+            "url": "https://baroripark.ru/"
+          }
+        },
+        {
+          "@type": "Service",
+          "position": 5,
+          "name": "Помощь с подключением для граждан СНГ",
+          "serviceType": "Консультация по документам и подключению к такси или доставке",
+          "areaServed": "Россия",
+          "provider": {
+            "@type": "Organization",
+            "name": "Барори Парк",
+            "url": "https://baroripark.ru/"
+          }
+        },
+        {
+          "@type": "Service",
+          "position": 6,
+          "name": "Тарифы парка и снижение комиссии за смены",
+          "serviceType": "Прозрачные тарифы: Такси 3%, Доставка 3–5%, ТопГоу 7%, Еда 5–10%, Купер 5%, Смена 4–10%",
+          "areaServed": "Россия",
+          "provider": {
+            "@type": "Organization",
+            "name": "Барори Парк",
+            "url": "https://baroripark.ru/"
+          }
+        }
+      ]
+    }
+    </script>
+
+  <!-- 3.2. LocalBusiness -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Барори Парк",
+      "image": "https://baroripark.ru/bitrix/templates/barorikorNEW/img/IMG_4314.jfif.jpeg",
+      "url": "https://baroripark.ru",
+      "telephone": "+7-921-900-09-97",
+      "email": "info@baroripark.ru",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Планерная, 15Б",
+        "addressLocality": "Санкт-Петербург",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 59.995476,
+        "longitude": 30.234526
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "10:00",
+        "closes": "20:00"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "4",
+        "bestRating": "5"
+      }
+    }
+    </script>
+
+
+
+
+  <!-- 4. JobPosting — Яндекс Смена -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": "Исполнитель Яндекс Смена",
+      "description": "Подработка через Яндекс Смена с ежедневными выплатами. Смены от 4 часов, задания рядом с домом, оформление и поддержка Барори Парк в доступных регионах.",
+      "datePosted": "2026-05-11",
+      "validThrough": "2026-12-31",
+      "employmentType": ["PART_TIME", "CONTRACTOR"],
+      "directApply": true,
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "Барори Парк",
+        "sameAs": "https://baroripark.ru"
+      },
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "RU"
+        }
+      },
+      "applicantLocationRequirements": {
+        "@type": "Country",
+        "name": "Россия"
+      },
+      "baseSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "RUB",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": 5000,
+          "maxValue": 5000,
+          "unitText": "DAY"
+        }
+      }
+    }
+    </script>
+  <!-- 5. JobPosting — Водитель такси -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": "Водитель такси",
+      "description": "Работа водителем такси через Яндекс Такси. Возможна подработка на выходных, гибкий график, выплаты и помощь с подключением через таксопарк. Возраст от 21 года, стаж от 3 лет.",
+      "datePosted": "2026-01-01",
+      "validThrough": "2026-12-31",
+      "employmentType": "FULL_TIME",
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "Барори Парк",
+        "sameAs": "https://baroripark.ru"
+      },
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "RU"
+        }
+      },
+      "applicantLocationRequirements": {
+        "@type": "Country",
+        "name": "Россия"
+      },
+      "baseSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "RUB",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": 7000,
+          "minValue": 7000,
+          "unitText": "DAY"
+        }
+      }
+    }
+    </script>
+  <!-- 5. JobPosting — Курьер (Экспресс доставка) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": "Курьер экспресс-доставки",
+      "description": "Работа курьером экспресс-доставки на авто, велосипеде или пешком. Гибкий график, подработка на выходных, выплаты и помощь с подключением к доставке. Опыт не требуется.",
+      "datePosted": "2026-01-01",
+      "validThrough": "2026-12-31",
+      "employmentType": ["FULL_TIME", "PART_TIME"],
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "Барори Парк",
+        "sameAs": "https://baroripark.ru"
+      },
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "RU"
+        }
+      },
+      "applicantLocationRequirements": {
+        "@type": "Country",
+        "name": "Россия"
+      },
+      "baseSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "RUB",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": 4000,
+          "minValue": 4000,
+          "unitText": "DAY"
+        }
+      }
+    }
+    </script>
+
+  <!-- 6. FAQPage -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Как подключиться к Яндекс Смена через Барори Парк?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Оставьте заявку на сайте или напишите в мессенджер. Менеджер уточнит город, документы и удобный формат занятости, после чего поможет пройти оформление."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Какие выплаты доступны на сменах?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "По направлению Яндекс Смена выплаты могут поступать ежедневно. Итоговая сумма зависит от выбранных заданий, длительности смены и условий конкретного партнера."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Можно ли брать смены рядом с домом?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Да, одно из преимуществ направления - возможность выбирать задания и смены в удобных районах, если они доступны в вашем городе."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Можно ли подрабатывать в Яндекс Такси только на выходных?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Да, многие водители рассматривают такси как подработку на выходных или в свободные дни. Менеджер подскажет, какие условия подключения доступны в вашем регионе."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Можно ли подключиться к такси или доставке гражданам СНГ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Возможность подключения зависит от документов, прав, статуса пребывания и требований конкретного сервиса. Барори Парк помогает разобраться с условиями перед стартом."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Барори Парк подключает только к Яндекс Смена?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Нет. Мы также работаем как таксопарк и курьерский парк: подключаем к Яндекс Такси, Яндекс Доставке, Купер и другим направлениям."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Какие комиссии и тарифы действуют в Барори Парк?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "В Барори Парк действуют прозрачные ставки: Такси — 3%, Доставка — 3–5%, ТопГоу — фикс 7%, Яндекс Еда — 5–10%, Купер — 5%, Яндекс Смена — 4–10%. Процент комиссии снижается автоматически по мере выхода на смены."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Нужен ли опыт для старта?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Для многих смен и курьерских направлений опыт не требуется. По водительским направлениям могут быть требования к возрасту, стажу и документам."
+          }
+        }
+      ]
+    }
+    </script>
+
+  <script type="module" crossorigin src="./assets/index-DxJqU-iO.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/vendor-motion-CgKT7xo3.js">
+  <link rel="modulepreload" crossorigin href="./assets/vendor-react-Cc8UVYhI.js">
+  <link rel="modulepreload" crossorigin href="./assets/metrika-7Ip_zQOo.js">
+  <link rel="modulepreload" crossorigin href="./assets/message-circle-DQ4w6m0_.js">
+  <link rel="modulepreload" crossorigin href="./assets/headphones-Dzzuqhyp.js">
+  <link rel="modulepreload" crossorigin href="./assets/sparkles-DY6Hv_xM.js">
+  <link rel="modulepreload" crossorigin href="./assets/file-check-BIiQc1OA.js">
+  <link rel="modulepreload" crossorigin href="./assets/shield-check-D9STWs3o.js">
+  <link rel="modulepreload" crossorigin href="./assets/building-2-5m3g-7tU.js">
+  <link rel="modulepreload" crossorigin href="./assets/arrow-right-Buag0msf.js">
+  <link rel="modulepreload" crossorigin href="./assets/zap-B5FnXKwM.js">
+  <link rel="modulepreload" crossorigin href="./assets/Tariffs-skpLbCRA.js">
+  <link rel="modulepreload" crossorigin href="./assets/file-text-CabelCAX.js">
+  <link rel="modulepreload" crossorigin href="./assets/wallet-CEvEe9Mz.js">
+  <link rel="modulepreload" crossorigin href="./assets/workDirections-Cwyv3eJy.js">
+  <link rel="modulepreload" crossorigin href="./assets/smartphone-CEtgAw12.js">
+  <link rel="stylesheet" crossorigin href="./assets/metrika-BtsAbprI.css">
+</head>
+
+<body>
+  <!-- Yandex.Metrika counter (noscript) -->
+  <div id="root"></div>
+</body>
+
+</html>
