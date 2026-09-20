@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- Yandex.Metrika: счётчик НЕ инициализируется здесь.
+       Он подгружается из src/utils/metrika.ts только после согласия в cookie-баннере
+       (блоки C4/F12 в COMPLIANCE.md) — до согласия cookie и IP не обрабатываются. -->
+
+  <title>Тарифы и комиссии парка — подключение к Такси, Доставке, Сменам, ТопГоу | Барори Парк</title>
+  <meta name="description"
+    content="Честные тарифы и комиссии парка: Такси 3%, Доставка 3–5%, Смены 4–10%, Еда 5–10%, Купер 5%, ТопГоу 7%. Выбор типа занятости (СМЗ / ИП / Парковый). Чем больше смен — тем ниже комиссия парка." />
+  <meta name="keywords"
+    content="тарифы барори парк, комиссия парка такси, комиссия самозанятый такси, процент парка доставка, яндекс смена комиссия, купер комиссия парка, топгоу подключение, снижение комиссии за смены, моментальные выплаты, таксопарк санкт-петербург" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://baroripark.ru/tariffs/" />
+
+  <!-- Страница для трафика и прямого перехода по тарифам -->
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#16a34a" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:site_name" content="Барори Парк" />
+  <meta property="og:url" content="https://baroripark.ru/tariffs/" />
+  <meta property="og:title" content="Тарифы и комиссии парка — Барори Парк" />
+  <meta property="og:description"
+    content="Честные ставки без скрытых списаний: Такси 3%, Доставка от 3%, Смены от 4%, Еда от 5%, Купер 5%, ТопГоу 7%. Автоматическое снижение процента с ростом выполненных смен." />
+  <meta property="og:image" content="https://baroripark.ru/bitrix/templates/barorikorNEW/img/IMG_4314.jfif.jpeg" />
+  <meta property="og:image:alt" content="Барори Парк — тарифы и комиссии" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Тарифы и комиссии парка — Барори Парк" />
+  <meta name="twitter:description"
+    content="Честные ставки без скрытых комиссий. Выплаты 24/7, снижение процента за смены." />
+  <meta name="twitter:image" content="https://baroripark.ru/bitrix/templates/barorikorNEW/img/IMG_4314.jfif.jpeg" />
+
+  <!-- Верификация поисковых систем -->
+  <meta name="google-site-verification" content="3IrbLpHqamGsrXBl07eMdayJaGZpaA3n1MjaGXT1izM" />
+  <meta name="yandex-verification" content="e6c1f1836eb3b09f" />
+
+  <!-- Шрифты локальные (см. src/fonts.css и /public/fonts) — без трансграничной передачи IP -->
+  <link rel="dns-prefetch" href="https://mc.yandex.ru">
+  <link rel="preconnect" href="https://smartcaptcha.yandexcloud.net" crossorigin>
+  <link rel="preload" href="../fonts/oswald-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/open-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Яндекс SmartCaptcha для формы заявки -->
+  <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
+
+  <!-- ====== Schema.org JSON-LD Structured Data ====== -->
+  
+  <!-- 1. Breadcrumbs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Главная",
+        "item": "https://baroripark.ru/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Тарифы и комиссии парка",
+        "item": "https://baroripark.ru/tariffs/"
+      }
+    ]
+  }
+  </script>
+
+  <!-- 2. Services & Price Tariffs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Тарифы и комиссии Барори Парк",
+    "description": "Прозрачные условия подключения к сервисам для самозанятых, ИП и парковых исполнителей.",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "position": 1,
+        "name": "Тариф Яндекс Такси",
+        "description": "Подключение к Яндекс Про с фиксированной комиссией 3% для самозанятых и ИП.",
+        "price": "3",
+        "priceCurrency": "RUB",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/PercentageUnit",
+          "unitText": "3% фиксированная комиссия"
+        }
+      },
+      {
+        "@type": "Offer",
+        "position": 2,
+        "name": "Тариф Яндекс Доставка",
+        "description": "Подключение к Яндекс Доставке со снижением комиссии от 5% до 3% при активных сменах.",
+        "price": "3",
+        "priceCurrency": "RUB",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/PercentageUnit",
+          "unitText": "от 3% до 5%"
+        }
+      },
+      {
+        "@type": "Offer",
+        "position": 3,
+        "name": "Тариф ТопГоу (TopGo)",
+        "description": "Единая фиксированная комиссия 7% с первой смены для самозанятых и парковых сотрудников.",
+        "price": "7",
+        "priceCurrency": "RUB",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/PercentageUnit",
+          "unitText": "7% фиксированная комиссия"
+        }
+      },
+      {
+        "@type": "Offer",
+        "position": 4,
+        "name": "Тариф Яндекс Еда",
+        "description": "Доставка готовых блюд из ресторанов. Снижение комиссии с 10% до 5%.",
+        "price": "5",
+        "priceCurrency": "RUB",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/PercentageUnit",
+          "unitText": "от 5% до 10%"
+        }
+      },
+      {
+        "@type": "Offer",
+        "position": 5,
+        "name": "Тариф Купер",
+        "description": "Доставка заказов из магазинов. Единая ставка 5%.",
+        "price": "5",
+        "priceCurrency": "RUB",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/PercentageUnit",
+          "unitText": "5% фиксированная комиссия"
+        }
+      },
+      {
+        "@type": "Offer",
+        "position": 6,
+        "name": "Тариф Яндекс Смена",
+        "description": "Смены в ритейле и на складах со снижением комиссии с 10% до 4%.",
+        "price": "4",
+        "priceCurrency": "RUB",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/PercentageUnit",
+          "unitText": "от 4% до 10%"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- 3. FAQPage Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Как работает снижение процента за смены?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "При подключении вы начинаете с базовой стартовой ставки. По мере выхода на смены и выполнения заказов комиссия автоматически снижается до минимальной (например, до 3% в Такси и Доставке, до 4% в Сменах)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Есть ли скрытые списания или комиссии за вывод денег?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Нет. Комиссия парка прозрачна и фиксируется до начала работы в договоре-оферте. Никаких скрытых платежей, платных звонков кураторам или скрытых удержаний."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "В каких сервисах действует фиксированная ставка?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "В сервисе Такси для СМЗ действует 3%, в Купер — 5%, а в логистическом сервисе ТопГоу — единая фиксированная ставка 7% с первой смены без изменений."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Как быстро я смогу выйти на линию после заявки?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Менеджер связывается с вами в течение 15 минут, помогает проверить документы и настроить приложение. Большинство исполнителей выходят на первую смену уже в день обращения."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Нужно ли оформлять самозанятость?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Вы можете работать как самозанятый/ИП (все 6 направлений со сниженными ставками), так и в качестве паркового сотрудника (доступны ТопГоу и Яндекс Смена без оформления СМЗ)."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="module" crossorigin src="../assets/tariffs-DtH98Sg3.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/vendor-motion-CgKT7xo3.js">
+  <link rel="modulepreload" crossorigin href="../assets/vendor-react-Cc8UVYhI.js">
+  <link rel="modulepreload" crossorigin href="../assets/metrika-7Ip_zQOo.js">
+  <link rel="modulepreload" crossorigin href="../assets/useScrollAnimation-B3pXjT2K.js">
+  <link rel="modulepreload" crossorigin href="../assets/kit-e7A4jjHD.js">
+  <link rel="modulepreload" crossorigin href="../assets/headphones-Dzzuqhyp.js">
+  <link rel="modulepreload" crossorigin href="../assets/sparkles-DY6Hv_xM.js">
+  <link rel="modulepreload" crossorigin href="../assets/building-2-5m3g-7tU.js">
+  <link rel="modulepreload" crossorigin href="../assets/shield-check-D9STWs3o.js">
+  <link rel="modulepreload" crossorigin href="../assets/arrow-right-Buag0msf.js">
+  <link rel="modulepreload" crossorigin href="../assets/zap-B5FnXKwM.js">
+  <link rel="modulepreload" crossorigin href="../assets/Tariffs-skpLbCRA.js">
+  <link rel="modulepreload" crossorigin href="../assets/circle-check-CrFG7VBZ.js">
+  <link rel="modulepreload" crossorigin href="../assets/chevron-right-C7z91Cmz.js">
+  <link rel="modulepreload" crossorigin href="../assets/wallet-CEvEe9Mz.js">
+  <link rel="stylesheet" crossorigin href="../assets/metrika-BtsAbprI.css">
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>

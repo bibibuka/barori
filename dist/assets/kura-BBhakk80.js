@@ -1,1 +1,0 @@
-import{c as r}from"./metrika-DdrcEB8v.js";const e=[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"m12 5 7 7-7 7",key:"xquz4c"}]],t=r("arrow-right",e),a=""+new URL("kura-D-ljwG9g.webp",import.meta.url).href;export{t as A,a as c};
