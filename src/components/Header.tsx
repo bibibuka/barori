@@ -91,16 +91,7 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
     <>
       <header ref={headerRef} className="classic-header">
         <div className="classic-header__row">
-          <div className="classic-header__brand">
-            <a href={siteUrl('/')} className="classic-header__logo" aria-label="Барори Парк — главная"><img src={logo} alt="Барори Парк" /></a>
-            <div className="classic-header__social">
-              {messengers.map(item => (
-                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.label} title={`Написать в ${item.label}`} onClick={() => trackGoal('messenger_click', { service: item.label, place: 'header' })}>
-                  {item.icon ? <img src={item.icon} alt="" /> : <TelegramIcon />}
-                </a>
-              ))}
-            </div>
-          </div>
+          <a href={siteUrl('/')} className="classic-header__logo" aria-label="Барори Парк — главная"><img src={logo} alt="Барори Парк" /></a>
           <nav className="classic-header__desktop-nav" aria-label="Основная навигация">
             <details className="classic-header__dropdown" onBlur={event => {
               if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
@@ -118,6 +109,13 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
           </nav>
           <div className="classic-header__actions">
             <div className="classic-header__contact">
+              <div className="classic-header__social">
+                {messengers.map(item => (
+                  <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.label} title={`Написать в ${item.label}`} onClick={() => trackGoal('messenger_click', { service: item.label, place: 'header' })}>
+                    {item.icon ? <img src={item.icon} alt="" /> : <TelegramIcon />}
+                  </a>
+                ))}
+              </div>
               <a className="classic-header__phone" href={phone.href} aria-label={`Позвонить: ${phone.text}`} onClick={() => trackGoal('phone_click', { place: 'header' })}>
                 <Phone className="classic-header__phone-icon" size={19} />
                 <span className="classic-header__phone-text" aria-hidden="true">
