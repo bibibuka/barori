@@ -375,7 +375,7 @@ export const LandingShell = ({
 
           <Suspense fallback={null}>
             {/* поднимаем над закреплённой кнопкой на мобильных */}
-            <CookieBanner onOpenLegal={setLegalType} className="bottom-24 lg:bottom-4" />
+            <CookieBanner onOpenLegal={setLegalType} className="bottom-[calc(6rem+env(safe-area-inset-bottom))] lg:bottom-[calc(1rem+env(safe-area-inset-bottom))]" />
           </Suspense>
         </div>
       </ToastProvider>

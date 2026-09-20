@@ -83,7 +83,7 @@
   .classic-header__desktop-nav, .classic-header__social, .classic-header__row::before { display: none; }
   .classic-header__menu-button { display: flex; }
   .classic-header__phone svg { display: block; }
-  .classic-header__actions { gap: 16px; }
+  .classic-header__actions { gap: 16px; margin-left: auto; }
 }
 @media (max-width: 639px) {
   .classic-header { padding: calc(6px + env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) 0 max(8px, env(safe-area-inset-left)); }

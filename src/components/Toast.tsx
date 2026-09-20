@@ -44,7 +44,7 @@ const ToastContainer = ({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: 
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-24 right-4 z-[100] flex flex-col gap-3 pointer-events-none" style={{ maxWidth: '400px', width: 'calc(100% - 2rem)' }}>
+    <div className="fixed top-[calc(6rem+env(safe-area-inset-top))] right-[max(1rem,env(safe-area-inset-right))] z-[100] flex flex-col gap-3 pointer-events-none" style={{ maxWidth: '400px', width: 'calc(100% - 2rem)' }}>
       {toasts.map(toast => (
         <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
       ))}

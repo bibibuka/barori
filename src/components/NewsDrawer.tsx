@@ -241,7 +241,7 @@ export const NewsDrawer: React.FC = () => {
       {/* Drawer Panel: на мобилках снизу (Bottom Sheet) или на весь экран, на десктопе справа */}
       <aside
         className={`fixed z-[120] bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out
-          inset-x-0 bottom-0 max-h-[90vh] rounded-t-3xl sm:rounded-t-none
+          inset-x-0 bottom-0 max-h-[90dvh] rounded-t-3xl sm:rounded-t-none
           sm:inset-y-0 sm:right-0 sm:left-auto sm:w-full sm:max-w-lg sm:max-h-full sm:rounded-none
           ${isOpen 
             ? 'translate-y-0 sm:translate-y-0 sm:translate-x-0' 
@@ -392,7 +392,7 @@ export const NewsDrawer: React.FC = () => {
         </div>
 
         {/* Drawer Bottom Contact Banner */}
-        <div className="p-4 sm:p-5 border-t border-gray-200 bg-white">
+        <div className="p-4 sm:p-5 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-[calc(1.25rem+env(safe-area-inset-bottom))] border-t border-gray-200 bg-white">
           <div className="bg-gradient-to-r from-gray-950 via-slate-900 to-gray-950 rounded-2xl p-3.5 sm:p-4 text-white flex items-center justify-between gap-3 border border-gray-800 shadow-lg">
             <div>
               <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider">
