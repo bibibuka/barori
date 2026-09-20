@@ -11,6 +11,7 @@ import {
   Send,
 } from 'lucide-react';
 import { trackGoal } from '../utils/analytics';
+import { siteUrl } from '../utils/siteUrl';
 
 export interface NewsItem {
   id: string;
@@ -166,7 +167,7 @@ export const NewsDrawer: React.FC = () => {
       if (tariffsSection) {
         tariffsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else {
-        window.location.href = '/tariffs/';
+        window.location.href = siteUrl('/tariffs/');
       }
     } else if (item.actionType === 'order') {
       const orderSection = document.getElementById('order');

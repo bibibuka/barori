@@ -1,6 +1,7 @@
 import { ArrowRight, Bike, CalendarDays, CarFront, PackageCheck } from 'lucide-react';
 import { WORK_DIRECTIONS, type WorkDirection } from '../content/workDirections';
 import { trackGoal } from '../utils/analytics';
+import { siteUrl } from '../utils/siteUrl';
 
 export type Vacancy = WorkDirection;
 export const vacanciesData = WORK_DIRECTIONS;
@@ -86,7 +87,7 @@ export const Vacancies = () => (
                 <p className="mt-4 text-sm leading-relaxed text-slate-500">{vacancy.formats.join(' · ')}</p>
 
                 <a
-                  href={vacancy.href}
+                  href={siteUrl(vacancy.href)}
                   onClick={() => trackGoal('vacancy_direction_click', { direction: vacancy.id })}
                   className={`mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-center font-bold text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${styles.link}`}
                 >

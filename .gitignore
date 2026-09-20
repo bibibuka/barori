@@ -6,3 +6,5 @@ mcp-server-error.log
 local/
 .tmp/
 .venv/
+# сборка превью для GitHub Pages (npm run deploy)
+dist-pages/

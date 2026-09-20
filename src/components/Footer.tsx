@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Phone, Mail, Clock, MapPin, Globe, ArrowUpRight, Smartphone } from 'lucide-react';
 import { LegalType } from './LegalModal';
 import { trackGoal } from '../utils/analytics';
+import { siteUrl } from '../utils/siteUrl';
 import { resetAnalyticsConsent } from '../utils/metrika';
 
 interface FooterProps {
@@ -168,7 +169,7 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
             <p>&copy; 2026 Барори Парк. Все права защищены.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-6">
-            <a href="/info/" className="hover:text-white transition-colors">
+            <a href={siteUrl('/info/')} className="hover:text-white transition-colors">
               Условия с 1 сентября 2026
             </a>
             <button onClick={() => handleLegalClick('offer')} className="hover:text-white transition-colors">

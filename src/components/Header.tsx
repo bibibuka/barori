@@ -7,6 +7,7 @@ import { TelegramIcon } from './TelegramIcon';
 import { SiteNavigation, sitePages } from './SiteNavigation';
 import { useModalDialog } from '../hooks/useModalDialog';
 import { trackGoal } from '../utils/analytics';
+import { currentSitePath, siteUrl } from '../utils/siteUrl';
 import './Header.css';
 
 const KnowledgeModal = lazy(() => import('./KnowledgeModal').then(m => ({ default: m.KnowledgeModal })));
@@ -31,7 +32,7 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useModalDialog(menuOpen, menuButtonRef);
   const headerRef = useRef<HTMLElement>(null);
-  const path = window.location.pathname.replace(/index\.html$/, '').replace(/\/?$/, '/');
+  const path = currentSitePath();
   const closeDropdowns = () => headerRef.current?.querySelectorAll('details[open]').forEach(menu => menu.removeAttribute('open'));
 
   useEffect(() => {
@@ -90,20 +91,29 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
     <>
       <header ref={headerRef} className="classic-header">
         <div className="classic-header__row">
-          <a href="/" className="classic-header__logo" aria-label="Барори Парк — главная"><img src={logo} alt="Барори Парк" /></a>
+          <div className="classic-header__brand">
+            <a href={siteUrl('/')} className="classic-header__logo" aria-label="Барори Парк — главная"><img src={logo} alt="Барори Парк" /></a>
+            <div className="classic-header__social">
+              {messengers.map(item => (
+                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.label} title={`Написать в ${item.label}`} onClick={() => trackGoal('messenger_click', { service: item.label, place: 'header' })}>
+                  {item.icon ? <img src={item.icon} alt="" /> : <TelegramIcon />}
+                </a>
+              ))}
+            </div>
+          </div>
           <nav className="classic-header__desktop-nav" aria-label="Основная навигация">
             <details className="classic-header__dropdown" onBlur={event => {
               if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
             }}>
               <summary>Направления <ChevronDown size={15} /></summary>
               <div className="classic-header__popup">
-                {sitePages.slice(1, 5).map(page => <a key={page.href} href={page.href} aria-current={path === page.href ? 'page' : undefined}>{page.label}</a>)}
-                <a className="classic-header__separated" href="/#vacancies">Все вакансии</a>
+                {sitePages.slice(1, 5).map(page => <a key={page.href} href={siteUrl(page.href)} aria-current={path === page.href ? 'page' : undefined}>{page.label}</a>)}
+                <a className="classic-header__separated" href={siteUrl('/#vacancies')}>Все вакансии</a>
               </div>
             </details>
-            <a href="/tariffs/" aria-current={path === '/tariffs/' ? 'page' : undefined}>Тарифы</a>
-            <a href="/info/" aria-current={path === '/info/' ? 'page' : undefined}>Условия</a>
-            <a href="/#about">О нас</a>
+            <a href={siteUrl('/tariffs/')} aria-current={path === '/tariffs/' ? 'page' : undefined}>Тарифы</a>
+            <a href={siteUrl('/info/')} aria-current={path === '/info/' ? 'page' : undefined}>Условия</a>
+            <a href={siteUrl('/#about')}>О нас</a>
             <button type="button" onClick={openKnowledge}>База знаний</button>
           </nav>
           <div className="classic-header__actions">
@@ -118,16 +128,6 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
                   ))}
                 </span>
               </a>
-              <details className="classic-header__dropdown classic-header__contact-menu" onBlur={event => {
-                if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
-              }}>
-                <summary aria-label="Способы связи"><ChevronDown size={17} /></summary>
-                <div className="classic-header__popup classic-header__popup--contacts">
-                  <p>Напишите нам</p>
-                  {contactLinks}
-                  <a className="classic-header__separated" href="#contacts">Контакты и офис</a>
-                </div>
-              </details>
             </div>
             {orderLink()}
             <button ref={menuButtonRef} type="button" className="classic-header__menu-button" aria-label="Открыть меню" aria-expanded={menuOpen} aria-controls="site-menu" onClick={() => setMenuOpen(true)}><Menu size={25} /></button>
@@ -136,11 +136,11 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
       </header>
       {menuOpen && (
         <dialog ref={menuRef} id="site-menu" className="classic-menu" aria-label="Меню сайта" onCancel={event => { event.preventDefault(); setMenuOpen(false); }}>
-          <div className="classic-menu__top"><a href="/" aria-label="Барори Парк — главная"><img src={logo} alt="Барори Парк" /></a><button type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}><X size={25} /></button></div>
+          <div className="classic-menu__top"><a href={siteUrl('/')} aria-label="Барори Парк — главная"><img src={logo} alt="Барори Парк" /></a><button type="button" aria-label="Закрыть меню" onClick={() => setMenuOpen(false)}><X size={25} /></button></div>
           <div className="classic-menu__body">
             <SiteNavigation />
             <div className="classic-menu__secondary" onClick={() => setMenuOpen(false)}>
-              <a href="/#about">О нас</a><a href="/#vacancies">Вакансии</a><button type="button" onClick={openKnowledge}>База знаний</button>
+              <a href={siteUrl('/#about')}>О нас</a><a href={siteUrl('/#vacancies')}>Вакансии</a><button type="button" onClick={openKnowledge}>База знаний</button>
             </div>
             {pageLinks.length > 0 && <details className="classic-menu__sections"><summary>На этой странице</summary>{pageLinks.map(link => <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>{link.label}</a>)}</details>}
             <div className="classic-menu__contacts"><a className="classic-menu__phone" href={phone.href} onClick={() => trackGoal('phone_click', { place: 'mobile_menu' })}>{phone.text}</a>{contactLinks}<a href="#contacts" onClick={() => setMenuOpen(false)}>Контакты и офис</a></div>

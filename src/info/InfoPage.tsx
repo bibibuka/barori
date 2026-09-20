@@ -6,6 +6,7 @@ import {
   useLanding,
   PHONE_SMENA,
 } from '../landing/kit';
+import { siteUrl } from '../utils/siteUrl';
 
 const Head = ({ title, tone = 'green' }: { title: string; tone?: 'green' | 'amber' | 'sky' }) => (
   <h2 className={`text-balance text-[clamp(1.35rem,4vw,1.75rem)] font-bold uppercase leading-tight tracking-[-0.02em] ${tone === 'amber' ? 'text-amber-800' : tone === 'sky' ? 'text-sky-800' : 'text-green-800'}`}>
@@ -172,7 +173,7 @@ const Contact = () => {
         >
           <PhoneCall size={17} /> {phone.text}
         </a>
-        <a href="/" className="mt-4 inline-block text-sm font-semibold text-green-800 hover:text-green-700">
+        <a href={siteUrl('/')} className="mt-4 inline-block text-sm font-semibold text-green-800 hover:text-green-700">
           На главную
         </a>
       </div>
