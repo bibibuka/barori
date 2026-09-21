@@ -39,6 +39,10 @@
 .classic-header__popup > a { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; font-size: 14px; font-weight: 500; border-radius: 4px; }
 .classic-header__popup a:hover { background: #f2f7f3; }
 .classic-header__separated { border-top: 1px solid #e7ebe8; margin-top: 6px; }
+.classic-header__contact-tab { display: none; }
+.classic-header__popup-phone { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; font-size: 15px; font-weight: 700; border-radius: 4px; }
+.classic-header__popup-phone svg { color: #15803d; flex-shrink: 0; }
+.classic-header__popup-phone:hover { background: #f2f7f3; }
 .classic-header__messengers { display: flex; flex-direction: column; }
 .classic-header__messengers a { display: flex; align-items: center; gap: 12px; padding: 8px 12px; min-height: 44px; font-size: 14px; border-radius: 4px; }
 .classic-header__messengers img, .classic-header__messengers svg { width: 24px; height: 24px; flex-shrink: 0; }
@@ -84,6 +88,10 @@
   .classic-header__menu-button { display: flex; }
   .classic-header__phone svg { display: block; }
   .classic-header__actions { gap: 16px; margin-left: auto; }
+  .classic-header__contact-tab { display: block; position: static; }
+  .classic-header__contact-tab > summary { gap: 6px; padding: 0 14px; border-radius: 999px; background: #f0f5f2; font-size: 14px; font-weight: 600; }
+  .classic-header__contact-tab[open] > summary { background: #e3eee8; }
+  .classic-header__popup--tab { left: 0; right: 0; min-width: 0; padding: 10px; border-radius: 16px; }
 }
 @media (max-width: 639px) {
   .classic-header { padding: calc(6px + env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) 0 max(8px, env(safe-area-inset-left)); }
@@ -92,9 +100,13 @@
   .classic-header__logo img { width: 88px; }
   .classic-header__actions { gap: 6px; }
   .classic-header__actions > .classic-header__cta, .classic-header__phone span { display: none; }
+  .classic-header__contact-tab > summary { padding: 0 12px; }
   .classic-header__phone { width: 44px; justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   .classic-header__phone-icon, .classic-header__phone-character, .classic-header__cta::after { animation: none; }
   .classic-header__social a { transition: none; }
+}
+@media (max-width: 359px) {
+  .classic-header__phone { display: none; }
 }

@@ -92,6 +92,17 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
       <header ref={headerRef} className="classic-header">
         <div className="classic-header__row">
           <a href={siteUrl('/')} className="classic-header__logo" aria-label="Барори Парк — главная"><img src={logo} alt="Барори Парк" /></a>
+          <details className="classic-header__dropdown classic-header__contact-tab" onBlur={event => {
+            if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
+          }}>
+            <summary>Связаться <ChevronDown size={15} /></summary>
+            <div className="classic-header__popup classic-header__popup--tab">
+              <a className="classic-header__popup-phone" href={phone.href} onClick={() => trackGoal('phone_click', { place: 'header_contacts' })}>
+                <Phone size={20} aria-hidden="true" />{phone.text}
+              </a>
+              {contactLinks}
+            </div>
+          </details>
           <nav className="classic-header__desktop-nav" aria-label="Основная навигация">
             <details className="classic-header__dropdown" onBlur={event => {
               if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
@@ -128,7 +139,7 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
               </a>
             </div>
             {orderLink()}
-            <button ref={menuButtonRef} type="button" className="classic-header__menu-button" aria-label="Открыть меню" aria-expanded={menuOpen} aria-controls="site-menu" onClick={() => setMenuOpen(true)}><Menu size={25} /></button>
+            <button ref={menuButtonRef} type="button" className="classic-header__menu-button" aria-label="Открыть меню" aria-expanded={menuOpen} aria-controls="site-menu" onClick={() => { closeDropdowns(); setMenuOpen(true); }}><Menu size={25} /></button>
           </div>
         </div>
       </header>
