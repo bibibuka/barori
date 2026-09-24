@@ -1,0 +1,151 @@
+/* Direction pages use the home page's paper, quiet cards and generous rhythm.
+   All colors come from the existing per-page theme tokens. */
+.service-site .direction-hero .service-hero-grid { align-items:center; }
+.service-site .direction-hero-eyebrow { text-transform:none; letter-spacing:.025em; font-size:13px; line-height:1.6; }
+.service-site .direction-hero-title { max-width:760px; }
+.service-site .direction-hero .service-lead { margin:22px 0 25px; }
+.service-site .direction-income { display:flex; flex-direction:column; align-items:flex-start; gap:3px; margin:28px 0; padding:22px 25px; border:1px solid var(--color-green-200); border-radius:22px; background:var(--service-tint); }
+.service-site .direction-income > span:first-child { font-size:13px; letter-spacing:.035em; color:var(--service-muted); }
+.service-site .direction-income > span:nth-child(2) { font-size:clamp(29px,3.2vw,43px); font-weight:700; line-height:1.15; letter-spacing:-.055em; color:var(--service-ink); }
+.service-site .direction-income > span:last-child { font-size:14px; line-height:1.65; color:var(--service-muted); }
+.service-site .direction-hero-actions { display:flex; flex-wrap:wrap; gap:12px; }
+.service-site :is(.direction-primary-button,.direction-secondary-button) { display:inline-flex; align-items:center; justify-content:center; min-height:58px; gap:12px; padding:14px 25px; border-radius:100px; font-size:15px; font-weight:700; line-height:1.4; text-align:center; cursor:pointer; transition:background .2s,transform .2s,border-color .2s; }
+.service-site :is(.direction-primary-button,.direction-secondary-button) > svg { flex-shrink:0; }
+.service-site .direction-primary-button { background:var(--service-accent); color:var(--on-accent); border:1px solid transparent; }
+.service-site .direction-primary-button:hover { background:var(--color-green-500); transform:translateY(-2px); }
+.service-site .direction-secondary-button { color:var(--service-ink); background:#ffffff80; border:1px solid var(--color-green-200); }
+.service-site .direction-secondary-button:hover { background:var(--service-tint); border-color:var(--color-green-800); }
+.service-site .direction-summary { position:relative; padding:36px; border:1px solid var(--color-green-200); border-radius:72px 28px 28px 28px; background:var(--color-green-100); box-shadow:none; }
+.service-site .direction-summary > h2 { max-width:390px; font-size:clamp(24px,2.6vw,32px); line-height:1.25; letter-spacing:-.04em; color:var(--service-ink); }
+.service-site .direction-summary > p { color:var(--service-muted); line-height:1.6; }
+.service-site .direction-summary-list { display:flex; flex-direction:column; gap:0; padding-top:12px; }
+.service-site .direction-summary-list > li { padding:21px 0; gap:17px; }
+.service-site .direction-summary-list > li + li { border-top:1px solid color-mix(in srgb,var(--color-green-800) 16%,transparent); }
+.service-site .direction-summary-list > li > div { min-width:0; }
+.service-site .direction-summary-list p { line-height:1.65; }
+.service-site .direction-summary-list p.text-sm { font-size:15px; }
+.service-site .direction-summary-list p.font-bold { color:var(--service-ink); line-height:1.35; margin-bottom:6px; font-size:18px; letter-spacing:-.025em; }
+.service-site .direction-summary-number { display:grid; place-items:center; width:44px; height:44px; flex-shrink:0; border-radius:50%; background:var(--color-green-600); color:var(--on-accent); font-size:19px; font-weight:600; }
+.service-site .direction-summary--taxi { background:var(--service-ink); border-color:var(--service-ink); }
+.service-site .direction-summary--taxi > h2 { color:#fff; }
+.service-site .direction-summary--taxi .direction-summary-list > li + li { border-color:#ffffff29; }
+.service-site .direction-summary--taxi .direction-summary-list p { color:#e0decf; }
+.service-site .direction-summary--taxi .direction-summary-list p.font-bold { color:#fff; }
+.service-site .direction-summary--taxi .direction-summary-list > li > span { background:var(--service-accent); color:var(--on-accent); border-radius:50%; }
+.service-site .direction-trust-strip { background:var(--color-green-100); border-block:1px solid var(--color-green-200); color:var(--service-ink); }
+.service-site .direction-trust-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px; }
+.service-site .direction-trust-grid > div { min-width:0; }
+.service-site .direction-trust-grid > div + div { border-left:1px solid var(--color-green-200); padding-left:24px; }
+.service-site .direction-trust-grid .font-bold { font-size:16px; line-height:1.4; letter-spacing:-.025em; color:var(--service-ink); }
+.service-site .direction-trust-icon { display:grid; place-items:center; flex-shrink:0; width:36px; height:36px; border-radius:50%; background:#ffffffb3; color:var(--color-green-800); }
+.service-site .direction-trust-note { margin-top:5px; font-size:13px; line-height:1.5; color:var(--color-green-800); }
+.service-site .direction-section { padding:88px 0; }
+.service-site .direction-steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px; }
+.service-site .direction-steps--five { display:flex; flex-wrap:wrap; justify-content:center; }
+.service-site .direction-steps--five > .direction-step { flex:0 0 calc((100% - 112px) / 5); }
+.service-site .direction-step { min-width:0; padding:23px 0 0; border-top:1px solid var(--color-green-200); }
+.service-site .direction-step-number { display:block; margin-bottom:29px; color:var(--color-green-800); opacity:.5; font-size:51px; font-weight:400; line-height:1; letter-spacing:-.06em; }
+.service-site .direction-step h3 { margin:0 0 12px; font-size:19px; font-weight:700; line-height:1.35; letter-spacing:-.035em; }
+.service-site .direction-step p { font-size:15px; line-height:1.75; }
+.service-site .direction-shift-card { padding:27px; }
+.service-site .direction-shift-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
+.service-site .direction-shift-grid > * { flex:0 0 100%; min-width:0; }
+.service-site .direction-shift-card h3 { font-size:19px; line-height:1.35; letter-spacing:-.035em; min-height:2.7em; }
+.service-site .direction-shift-card h3 + p { margin:10px 0 12px; font-size:24px; letter-spacing:-.04em; }
+.service-site .direction-shift-card > p:last-child { font-size:15px; line-height:1.7; }
+.service-site .direction-honest { background:transparent; }
+.service-site .direction-honest-panel { padding:42px; border-radius:28px; color:white; background:var(--service-ink); }
+.service-site .direction-honest-panel h2 { color:white; font-size:clamp(27px,3vw,39px); line-height:1.2; }
+.service-site .direction-honest-panel > p { font-size:16px; color:#e4e0d5; }
+.service-site .direction-honest-panel .text-green-400 { color:var(--color-green-300); }
+.service-site .direction-honest-card { background:#ffffff0a; border:1px solid #ffffff26; }
+.service-site .direction-honest-card > p:first-child { font-size:18px; line-height:1.45; letter-spacing:-.025em; }
+.service-site .direction-honest-card > p:last-child { color:#e4e0d5; font-size:15px; line-height:1.75; }
+.service-site .smena-explanation > div { flex-direction:column; }
+.service-site .smena-explanation p { font-size:16px; line-height:1.8; }
+.service-site .smena-comparison > div:first-child > div { padding-block:19px; }
+.service-site .smena-comparison > div > div { padding-inline:21px; }
+.service-site .smena-comparison span { line-height:1.65; }
+.service-site .taxi-calculator { background:#fff; }
+.service-site .taxi-calculator input[type='range'] { min-height:28px; }
+.service-site .taxi-calculator-results > div { min-width:0; border-radius:20px; padding:24px 16px; box-shadow:none; }
+.service-site .taxi-calculator-results > div > p:first-child { font-size:13px; letter-spacing:0; }
+.service-site .taxi-calculator-results > div > p:nth-child(2) { margin-block:10px; font-size:clamp(22px,2.3vw,31px); letter-spacing:-.05em; white-space:nowrap; }
+.service-site .taxi-calculator-results > div > p:last-child { line-height:1.6; }
+.service-site .eda-hero-form { box-shadow:0 14px 44px #4535090a; }
+.service-site .eda-hero .service-hero-grid { align-items:start; }
+.service-site .eda-hero-copy { padding-top:14px; }
+.service-site .eda-route-photo { border-radius:58px 22px 22px 22px; }
+.service-site .eda-route-photo img { min-height:230px; }
+.service-site .eda-route-photo figcaption { padding:25px; }
+.service-site .eda-route-photo figcaption > span:first-child { font-size:20px; line-height:1.25; letter-spacing:-.03em; }
+.service-site .eda-transport-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; }
+.service-site .eda-transport-grid .eda-card > span:nth-child(2) { font-size:22px; line-height:1.35; letter-spacing:-.035em; }
+.service-site .eda-transport-grid .eda-card > span:last-child { font-size:15px; line-height:1.7; }
+.service-site .eda-support-panel h2 { font-size:clamp(30px,3vw,43px); line-height:1.15; }
+.service-site .eda-support-panel h3 { line-height:1.35; }
+
+@media (min-width:768px) {
+  .service-site .direction-shift-grid > * { flex-basis:calc((100% - 20px) / 2); }
+}
+@media (min-width:1024px) {
+  .service-site .direction-shift-grid { gap:24px; }
+  .service-site .direction-shift-grid > * { flex-basis:calc((100% - 72px) / 4); }
+}
+@media (min-width:540px) {
+  .service-site .eda-hero-form fieldset > div { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width:1199px) {
+  .service-site .direction-summary { padding:29px; }
+  .service-site .direction-hero-actions { gap:10px; }
+  .service-site :is(.direction-primary-button,.direction-secondary-button) { padding-inline:20px; }
+  .service-site .direction-trust-grid { gap:17px; }
+  .service-site .direction-trust-grid > div + div { padding-left:17px; }
+  .service-site .direction-steps--five > .direction-step { flex-basis:calc((100% - 56px) / 3); }
+  .service-site .direction-shift-card { padding:22px; }
+}
+@media (max-width:1023px) {
+  .service-site .direction-summary { border-top-left-radius:54px; }
+  .service-site .direction-trust-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:25px; }
+  .service-site .direction-trust-grid > div + div { padding-left:0; border-left:0; }
+  .service-site .direction-steps { grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px 25px; }
+  .service-site .direction-steps--five > .direction-step { flex-basis:calc((100% - 25px) / 2); }
+  .service-site .eda-transport-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .service-site .eda-route-photo img { max-height:330px; }
+}
+@media (max-width:767px) {
+  .service-site .direction-section { padding:52px 0; }
+  .service-site .direction-income { padding:20px; margin:24px 0; border-radius:20px; }
+  .service-site .direction-income > span:nth-child(2) { font-size:clamp(27px,7vw,40px); }
+  .service-site .direction-summary { padding:28px 23px; border-radius:44px 22px 22px 22px; }
+  .service-site .direction-summary-list > li { padding-block:18px; gap:13px; }
+  .service-site .direction-summary > h2 { font-size:25px; }
+  .service-site .direction-honest-panel { padding:28px 22px; border-radius:24px; }
+  .service-site .direction-honest-panel > .flex { align-items:flex-start; }
+  .service-site .direction-honest-panel h2 { font-size:26px; }
+  .service-site .direction-shift-card h3 { min-height:0; }
+  .service-site .smena-comparison > div > div { padding-inline:12px; gap:6px; }
+  .service-site .smena-comparison span { font-size:13px; }
+  .service-site .smena-comparison .text-sm { font-size:13px; }
+  .service-site .taxi-calculator { padding:22px; }
+  .service-site .eda-hero-form { padding:23px 20px; border-radius:24px; }
+  .service-site .eda-hero-copy { padding-top:0; }
+  .service-site .eda-route-photo { border-radius:44px 20px 20px 20px; }
+  .service-site .eda-route-photo figcaption { padding:21px; }
+}
+@media (max-width:539px) {
+  .service-site .direction-hero-actions { flex-direction:column; align-items:stretch; }
+  .service-site :is(.direction-primary-button,.direction-secondary-button) { min-height:56px; font-size:14px; }
+  .service-site .direction-trust-grid { gap:21px 15px; }
+  .service-site .direction-trust-grid > div { flex-direction:column; gap:10px; }
+  .service-site .direction-trust-grid .font-bold { font-size:15px; }
+  .service-site .direction-steps { grid-template-columns:minmax(0,1fr); gap:26px; }
+  .service-site .direction-step { padding-top:20px; }
+  .service-site .direction-step-number { font-size:43px; margin-bottom:17px; }
+  .service-site .direction-step p { max-width:440px; }
+  .service-site .direction-steps--five > .direction-step { flex-basis:100%; }
+  .service-site .eda-transport-grid { grid-template-columns:minmax(0,1fr); gap:15px; }
+  .service-site .eda-route-photo img { min-height:230px; aspect-ratio:1.35; }
+  .service-site .eda-hero-form { padding-inline:18px; }
+}

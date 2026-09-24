@@ -76,7 +76,7 @@ export const CookieBanner = ({ onOpenLegal, className }: CookieBannerProps) => {
       role="dialog"
       aria-label="Уведомление об использовании cookie"
       className={cn(
-        `fixed z-[100] bottom-[calc(1rem+env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] right-[max(1rem,env(safe-area-inset-right))]
+        `cookie-notice fixed z-[100] bottom-[calc(1rem+env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] right-[max(1rem,env(safe-area-inset-right))]
          sm:left-auto sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:max-w-md
          bg-white rounded-2xl shadow-2xl border border-green-100
          p-4 sm:p-5 animate-toast-in`,

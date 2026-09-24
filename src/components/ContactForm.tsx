@@ -5,7 +5,7 @@ import { LegalType } from './LegalModal';
 import { trackGoal } from '../utils/analytics';
 import { useToast } from './Toast';
 import kuraImage from '../assets/kura.webp';
-import { CONSENT_VERSION } from '../utils/consent';
+import { CONSENT_VERSION, MARKETING_CONSENT_VERSION } from '../utils/consent';
 import { useSmartCaptcha } from '../hooks/useSmartCaptcha';
 import { requireLeadSuccess } from '../utils/leadResponse';
 import { ChevronDown } from 'lucide-react';
@@ -37,6 +37,8 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
     city: '',
     message: '',
     additionalDirections: [] as WorkDirectionId[],
+    marketingOptIn: false,
+    email: '',
     soglasie: false,
   });
 
@@ -47,6 +49,7 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
   // Фиксируем момент, когда пользователь выразил согласие (нажал «Отправить» с отмеченной галочкой).
   // Отправляется на бэкенд вместе с заявкой как доказательство факта и времени согласия (ст. 9 ФЗ-152).
   const consentTimestampRef = useRef<string>('');
+  const marketingConsentTimestampRef = useRef<string>('');
 
   useEffect(() => {
     formDataRef.current = formData;
@@ -81,9 +84,11 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
         ? WORK_DIRECTIONS.filter(item => currentData.additionalDirections.includes(item.id)).map(item => item.title)
         : [];
       data.append('additional_directions', additionalDirections.join(', '));
-      // Keep new fields in the message too: the existing PHP handler forwards this field to the manager.
+      // The deployed handler forwards message/problem to the manager even without support for new fields.
       const extraDetails = [
         additionalDirections.length ? `Также интересны: ${additionalDirections.join(', ')}` : '',
+        currentData.marketingOptIn ? `Email для рассылки: ${currentData.email.trim()}` : '',
+        currentData.marketingOptIn ? `Согласие на рассылку: да, редакция ${MARKETING_CONSENT_VERSION}, ${marketingConsentTimestampRef.current}` : '',
       ].filter(Boolean);
 
       if (currentData.status === 'employee') {
@@ -105,6 +110,12 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
       data.append('soglasie', currentData.soglasie ? 'Y' : 'N');
       data.append('consent_version', CONSENT_VERSION);
       data.append('consent_timestamp', consentTimestampRef.current);
+      data.append('marketing_opt_in', currentData.marketingOptIn ? 'Y' : 'N');
+      if (currentData.marketingOptIn) {
+        data.append('email', currentData.email.trim());
+        data.append('marketing_consent_version', MARKETING_CONSENT_VERSION);
+        data.append('marketing_consent_timestamp', marketingConsentTimestampRef.current);
+      }
       data.append('smart-token', token);
 
       const response = await fetch('/local/tools/form-handler.php', {
@@ -116,7 +127,8 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
       await requireLeadSuccess(response);
       setStatus('success');
       trackGoal('lead_success', { type: currentData.type });
-      setFormData(prev => ({ ...prev, name: '', phone: '', department: '', problem: '', city: '', message: '', additionalDirections: [], soglasie: false }));
+      setFormData(prev => ({ ...prev, name: '', phone: '', department: '', problem: '', city: '', message: '', additionalDirections: [], marketingOptIn: false, email: '', soglasie: false }));
+      marketingConsentTimestampRef.current = '';
       showToast('Спасибо за заявку! Наш оператор свяжется с вами в ближайшее время!', 'success');
     } catch (error) {
       console.error('Ошибка отправки:', error);
@@ -150,6 +162,10 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
       showToast('Пожалуйста, укажите город', 'error');
       return;
     }
+    if (formData.marketingOptIn && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      showToast('Укажите корректный email для рассылки', 'error');
+      return;
+    }
     if (formData.status === 'employee') {
       if (!formData.department || !formData.problem) {
         trackGoal('lead_validation_error', { reason: 'employee_fields' });
@@ -173,7 +189,14 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
     const target = e.target as HTMLInputElement;
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
+    if (target.name === 'marketingOptIn') {
+      marketingConsentTimestampRef.current = value ? new Date().toISOString() : '';
+    }
+
     setFormData(prev => {
+      if (target.name === 'marketingOptIn') {
+        return { ...prev, marketingOptIn: Boolean(value), email: value ? prev.email : '' };
+      }
       if (target.name === 'direction') {
         const direction = value as WorkDirectionId;
         trackGoal('lead_direction_select', { direction });
@@ -425,6 +448,36 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
                   </div>
                 </>
               )}
+
+              <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3">
+                <label htmlFor="contact-marketing-opt-in" className="flex cursor-pointer items-start gap-3 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    id="contact-marketing-opt-in"
+                    name="marketingOptIn"
+                    checked={formData.marketingOptIn}
+                    onChange={handleChange}
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-green-700"
+                  />
+                  <span>Хочу получать бонусы, акции и предложения на почту</span>
+                </label>
+                {formData.marketingOptIn && (
+                  <div className="mt-3 pl-7">
+                    <label htmlFor="contact-marketing-email" className="mb-1 block text-sm font-medium text-gray-700">Электронная почта</label>
+                    <input
+                      type="email"
+                      id="contact-marketing-email"
+                      name="email"
+                      autoComplete="email"
+                      required
+                      placeholder="name@example.com"
+                      className="ym-disable-keys w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition-all focus:border-green-700 focus:ring-2 focus:ring-green-700"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </div>
+                )}
+              </div>
 
               <div className="flex items-start gap-3">
                 <input

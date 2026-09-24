@@ -13,6 +13,7 @@ import { trackGoal } from '../utils/analytics';
 import { CONSENT_VERSION } from '../utils/consent';
 import maxIcon from '../assets/max-icon.svg';
 import vkIcon from '../assets/vk-icon.svg';
+import './service-design.css';
 
 type LegalType = import('../components/LegalModal').LegalType;
 const LegalModal = lazy(() => import('../components/LegalModal').then(m => ({ default: m.LegalModal })));
@@ -114,7 +115,7 @@ export const Messengers = ({ place, className = '', size = 'h-9 w-9', labeled = 
 export const Section = ({ id, className = '', children }: { id?: string; className?: string; children: React.ReactNode }) => {
   const { ref, isVisible } = useScrollAnimation(0.08);
   return (
-    <section id={id} ref={ref} className={`scroll-mt-24 fade-in-up py-14 lg:py-16 ${isVisible ? 'visible' : ''} ${className}`}>
+    <section id={id} ref={ref} className={`service-section scroll-mt-24 fade-in-up py-14 lg:py-16 ${isVisible ? 'visible' : ''} ${className}`}>
       {children}
     </section>
   );
@@ -128,9 +129,9 @@ export const Section = ({ id, className = '', children }: { id?: string; classNa
 export const SectionHead = ({ kicker, title, subtitle, className = 'max-w-3xl' }: {
   kicker?: string; title: string; subtitle?: string; className?: string;
 }) => (
-  <div className={className}>
+  <div className={`service-section-head ${className}`}>
     {kicker && (
-      <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-green-800">
+      <p className="service-eyebrow flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-green-800">
         <span aria-hidden="true" className="h-px w-8 bg-green-600/45" />
         {kicker}
       </p>
@@ -147,7 +148,7 @@ const FaqContact = ({ place }: { place: string }) => {
   const { track, scrollToOrder, phone } = useLanding();
   return (
     <div className="lg:col-span-5">
-      <div className="rounded-[18px] border border-green-200 l-glass p-6">
+      <div className="service-faq-contact rounded-[18px] border border-green-200 l-glass p-6">
         <p className="font-oswald text-xl font-bold uppercase text-slate-950">Не нашли свой вопрос?</p>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">Позвоните, напишите в мессенджер или оставьте заявку — ответим и подскажем.</p>
         <Messengers place={place} className="mt-4" />
@@ -174,7 +175,7 @@ const FaqContact = ({ place }: { place: string }) => {
 
 /** Карточка «иконка + заголовок + текст» — базовый кирпич всех лендингов. */
 export const InfoCard = ({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) => (
-  <div className="l-glass p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+  <div className="service-info-card l-glass p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
     <div className="w-12 h-12 rounded-xl bg-green-50 text-green-800 flex items-center justify-center mb-4">{icon}</div>
     <h3 className="text-lg font-bold font-oswald uppercase mb-2">{title}</h3>
     <p className="text-gray-600 text-sm leading-relaxed">{text}</p>
@@ -187,7 +188,7 @@ export const OrderButton = ({ place, children, className = '' }: { place: string
   return (
     <button
       onClick={() => scrollToOrder(place)}
-      className={`cursor-pointer inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-[var(--on-accent)] px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-green-200 transition-colors ${className}`}
+      className={`service-order-button cursor-pointer inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-[var(--on-accent)] px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-green-200 transition-colors ${className}`}
     >
       {children}
     </button>
@@ -214,11 +215,11 @@ export const Faq = ({
       <div className="container mx-auto grid items-start gap-10 lg:grid-cols-12">
         <SectionHead kicker={kicker} title={title} subtitle={subtitle} className="lg:col-span-7" />
         <FaqContact place="faq" />
-        <div className="space-y-3 lg:col-span-12 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
+        <div className="service-faq-list space-y-3 lg:col-span-12 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
           {items.map(item => (
             <details
               key={item.q}
-              className="group rounded-[16px] border border-slate-200 l-glass px-5 py-4 open:border-green-300"
+              className="service-faq-item group rounded-[16px] border border-slate-200 l-glass px-5 py-4 open:border-green-300"
               onToggle={e => {
                 if ((e.currentTarget as HTMLDetailsElement).open) track('faq_open', { question: item.q });
               }}
@@ -280,14 +281,14 @@ export const LandingShell = ({
   return (
     <Ctx.Provider value={ctx}>
       <ToastProvider>
-        <div className="min-h-screen bg-white">
+        <div className={`service-site service-site--${goalPrefix} min-h-screen`}>
           <Header pageLinks={nav} phone={phone} ctaLabel={ctaLabel} onOrder={() => ctx.scrollToOrder('header')} />
           <main className="site-landing-main">{children}</main>
           <Footer onOpenLegal={setLegalType} legalNote={legalNote} />
 
           {/* Липкая кнопка отклика на мобильных.
               pb учитывает home indicator iPhone — иначе кнопка лежит прямо на нём. */}
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-gray-200 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-3">
+          <div className="service-mobile-actions lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-gray-200 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-3">
             <a
               href={phone.href}
               onClick={() => ctx.track('phone_click', { place: 'sticky' })}
@@ -439,7 +440,7 @@ export const ChoiceGroup = <T extends string>({ name, label, options, value, onC
   return (
     <fieldset>
       <legend className={label ? 'block text-sm font-medium text-gray-700 mb-1.5' : 'sr-only'}>{label || name}</legend>
-      <div className={`grid gap-2 ${columns === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
+      <div className={`grid gap-2 ${columns === 1 ? 'grid-cols-1' : 'service-choice-grid grid-cols-1 sm:grid-cols-2'}`}>
         {options.map(option => (
           <label
             key={option.value}
@@ -509,11 +510,11 @@ export const FormSection = ({ title, lead, bullets, image, minAge = 18, children
   minAge?: 16 | 18;
   children: React.ReactNode;
 }) => (
-  <section id="order" className="scroll-mt-24 py-14 lg:py-16 bg-gradient-to-br from-green-50 via-green-50/40 to-white">
+  <section id="order" className="service-form-section scroll-mt-24 py-14 lg:py-16 bg-gradient-to-br from-green-50 via-green-50/40 to-white">
     <div className="container mx-auto">
       {/* На десктопе карточка занимает всю ширину контейнера и делится 5/7, как остальные секции. */}
-      <div className="max-w-5xl mx-auto lg:max-w-none bg-white rounded-3xl shadow-2xl shadow-green-900/10 overflow-hidden flex flex-col lg:flex-row border border-green-100">
-        <div className="lg:w-5/12 relative bg-green-700 p-6 lg:p-10 flex flex-col justify-center overflow-hidden">
+      <div className="service-form-panel max-w-5xl mx-auto lg:max-w-none bg-white rounded-3xl shadow-2xl shadow-green-900/10 overflow-hidden flex flex-col lg:flex-row border border-green-100">
+        <div className="service-form-story lg:w-5/12 relative bg-green-700 p-6 lg:p-10 flex flex-col justify-center overflow-hidden">
           {image && (
             <img src={image} alt="" loading="lazy" decoding="async" aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-overlay" />
@@ -537,7 +538,7 @@ export const FormSection = ({ title, lead, bullets, image, minAge = 18, children
           </div>
         </div>
 
-        <div className="lg:w-7/12 p-5 lg:p-10">
+        <div className="service-form-fields lg:w-7/12 p-5 lg:p-10">
           <div className="flex items-center gap-2 mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-red-700">
             <span className="shrink-0 inline-flex items-center rounded-full bg-red-600 text-white font-bold leading-none text-xs px-2 py-1">{minAge}+</span>
             <p className="text-xs sm:text-sm font-semibold leading-snug">

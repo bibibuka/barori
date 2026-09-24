@@ -13,6 +13,7 @@ import {
   LandingShell, Section, SectionHead, InfoCard, OrderButton, Faq, ChoiceGroup, useLanding,
 } from '../landing/kit';
 import { TaxiForm } from './TaxiForm';
+import '../landing/service-directions.css';
 
 // Ставка за час «грязными» (оборот на линии до комиссии и топлива) — ориентир, не гарантия дохода.
 // Считана обратным ходом из рыночных данных по СПб на 2026 год: 4 500–8 000 ₽ чистыми
@@ -31,40 +32,35 @@ type DayKind = 'Обычный день' | 'Пиковый день';
 const Hero = () => {
   const { track, scrollToOrder, phone } = useLanding();
   return (
-    <section className="relative pt-28 lg:pt-32 pb-14 lg:pb-20 overflow-hidden bg-gradient-to-br from-green-50 via-green-50/40 to-white">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-green-200/40 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 -left-24 w-72 h-72 bg-yellow-200/30 rounded-full blur-3xl" />
-      </div>
-
-      <div className="container mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div className="text-center lg:text-left">
-          <span className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white border border-green-200 text-green-800 text-xs sm:text-sm font-bold shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+    <section className="service-hero direction-hero">
+      <div className="container mx-auto service-hero-grid">
+        <div className="service-hero-copy">
+          <span className="service-eyebrow direction-hero-eyebrow">
+            <span aria-hidden="true" />
             Таксопарк Барори Парк — подключение к Яндекс Такси, 18+
           </span>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase leading-tight mb-4">
+          <h1 className="direction-hero-title">
             Работа в такси: <span className="text-green-800">на линию — уже завтра</span>
           </h1>
 
-          <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+          <p className="service-lead">
             Подключим к Яндекс Такси, поможем с самозанятостью и документами.
             Выплаты — хоть каждый день, смены выбираете сами: полный день, вечера или только выходные.
           </p>
 
-          <div className="inline-flex flex-col items-center lg:items-start bg-white rounded-2xl border border-green-100 shadow-lg shadow-green-900/5 px-6 py-4 mb-6">
-            <span className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Доход за смену</span>
-            <span className="text-4xl lg:text-5xl font-bold font-oswald text-green-800 leading-none">
+          <div className="direction-income">
+            <span className="text-xs tracking-wider text-gray-400 font-semibold mb-1">Доход за смену</span>
+            <span className="text-4xl lg:text-5xl font-bold text-green-800 leading-none">
               4 500 – 12 000 ₽<span className="text-lg align-super text-gray-300">*</span>
             </span>
             <span className="text-sm text-gray-500 mt-2">смена 6–12 часов, до вычета топлива и комиссии</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+          <div className="direction-hero-actions">
             <button
               onClick={() => scrollToOrder('hero')}
-              className="cursor-pointer inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-[var(--on-accent)] px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-green-200 hover:from-green-700 hover:to-green-600 transition-all hover:scale-[1.02] animate-btn-pulse"
+              className="direction-primary-button"
             >
               Подключиться к такси
               <ChevronRight size={20} />
@@ -72,7 +68,7 @@ const Hero = () => {
             <a
               href={phone.href}
               onClick={() => track('phone_click', { place: 'hero' })}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg border-2 border-green-600 text-green-800 hover:bg-green-600 hover:text-[var(--on-accent)] transition-colors"
+              className="direction-secondary-button"
             >
               <PhoneCall size={20} />
               Позвонить
@@ -92,9 +88,9 @@ const Hero = () => {
         </div>
 
         {/* Правая колонка — карточка «что вы получаете» вместо фотостока */}
-        <div className="l-glass rounded-3xl border border-green-100 shadow-2xl shadow-green-900/10 p-6 lg:p-8">
-          <h2 className="text-xl font-bold font-oswald uppercase mb-5 text-gray-800">Что вы получаете при подключении</h2>
-          <ul className="space-y-4">
+        <div className="service-hero-visual direction-summary direction-summary--taxi">
+          <h2 className="text-xl font-bold mb-5 text-gray-800">Что вы получаете при подключении</h2>
+          <ul className="direction-summary-list">
             {[
               { icon: <Rocket size={20} />, title: 'Подключение за 15 минут', text: 'Документы принимаем онлайн — приезжать в офис не обязательно.' },
               { icon: <Wallet size={20} />, title: 'Выплаты хоть каждый день', text: 'Деньги за смену на карту — без ожидания «до аванса».' },
@@ -104,7 +100,7 @@ const Hero = () => {
               <li key={item.title} className="flex gap-4">
                 <span className="w-11 h-11 shrink-0 rounded-xl bg-green-50 text-green-800 flex items-center justify-center">{item.icon}</span>
                 <div>
-                  <p className="font-bold font-oswald text-lg leading-tight">{item.title}</p>
+                  <p className="font-bold text-lg leading-tight">{item.title}</p>
                   <p className="text-gray-600 text-sm leading-snug">{item.text}</p>
                 </div>
               </li>
@@ -112,7 +108,7 @@ const Hero = () => {
           </ul>
           <button
             onClick={() => scrollToOrder('hero_card')}
-            className="mt-6 w-full cursor-pointer bg-green-600 hover:bg-green-700 text-[var(--on-accent)] font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-green-200"
+            className="direction-primary-button mt-6 w-full"
           >
             Оставить заявку
           </button>
@@ -125,9 +121,9 @@ const Hero = () => {
 /* ─────────────────────────────  ПОЛОСА ДОВЕРИЯ  ───────────────────────────── */
 
 const TrustBar = () => (
-  <div className="bg-green-700 text-[var(--on-accent)]">
+  <div className="direction-trust-strip">
     <div className="container mx-auto py-6 lg:py-7">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="direction-trust-grid">
         {[
           { icon: <Wallet size={22} />, title: 'Выплаты каждый день', text: 'по вашему запросу' },
           { icon: <Rocket size={22} />, title: 'Подключение за 15 минут', text: 'онлайн, без очередей' },
@@ -135,10 +131,10 @@ const TrustBar = () => (
           { icon: <MessageCircle size={22} />, title: 'Поддержка 24/7', text: 'живой человек, не бот' },
         ].map(item => (
           <div key={item.title} className="flex items-start gap-3">
-            <span className="shrink-0 mt-0.5 text-[var(--on-accent-soft)]">{item.icon}</span>
+            <span className="direction-trust-icon">{item.icon}</span>
             <div>
-              <p className="font-bold font-oswald text-base lg:text-lg leading-tight">{item.title}</p>
-              <p className="text-[var(--on-accent-soft)] text-xs lg:text-sm">{item.text}</p>
+              <p className="font-bold text-base lg:text-lg leading-tight">{item.title}</p>
+              <p className="direction-trust-note">{item.text}</p>
             </div>
           </div>
         ))}
@@ -174,7 +170,7 @@ const Money = () => {
           subtitle="Покажем честно: сначала доход на линии, потом минус топливо. Комиссию парка менеджер называет на звонке — до подключения, а не после."
         />
 
-        <div className="mt-10 max-w-4xl mx-auto lg:max-w-none rounded-3xl border border-green-100 l-glass p-6 lg:p-10 shadow-xl shadow-green-900/5">
+        <div className="taxi-calculator mt-10 max-w-4xl mx-auto lg:max-w-none rounded-3xl border border-green-100 l-glass p-6 lg:p-10">
           <div className="mb-6 max-w-md">
             <ChoiceGroup
               name="taxi-day-kind"
@@ -195,7 +191,7 @@ const Money = () => {
             <div>
               <div className="flex justify-between items-baseline mb-2">
                 <label htmlFor="t-hours" className="text-sm font-medium text-gray-700">Часов на линии</label>
-                <span className="font-bold font-oswald text-green-800 text-lg">{hours} ч</span>
+                <span className="font-bold text-green-800 text-lg">{hours} ч</span>
               </div>
               <input id="t-hours" type="range" min={4} max={14} step={1} value={hours}
                 onChange={e => setHours(Number(e.target.value))} className="w-full accent-green-800 cursor-pointer" />
@@ -203,7 +199,7 @@ const Money = () => {
             <div>
               <div className="flex justify-between items-baseline mb-2">
                 <label htmlFor="t-days" className="text-sm font-medium text-gray-700">Дней в неделю</label>
-                <span className="font-bold font-oswald text-green-800 text-lg">{days}</span>
+                <span className="font-bold text-green-800 text-lg">{days}</span>
               </div>
               <input id="t-days" type="range" min={1} max={7} step={1} value={days}
                 onChange={e => setDays(Number(e.target.value))} className="w-full accent-green-800 cursor-pointer" />
@@ -211,14 +207,14 @@ const Money = () => {
             <div>
               <div className="flex justify-between items-baseline mb-2">
                 <label htmlFor="t-fuel" className="text-sm font-medium text-gray-700">Топливо за смену</label>
-                <span className="font-bold font-oswald text-green-800 text-lg">{fuel} ₽</span>
+                <span className="font-bold text-green-800 text-lg">{fuel} ₽</span>
               </div>
               <input id="t-fuel" type="range" min={0} max={3000} step={100} value={fuel}
                 onChange={e => setFuel(Number(e.target.value))} className="w-full accent-green-800 cursor-pointer" />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="taxi-calculator-results grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[
               { label: 'Смена на линии', value: gross, note: 'до расходов' },
               { label: 'Минус топливо', value: net, note: 'за смену' },
@@ -227,8 +223,8 @@ const Money = () => {
             ].map(box => (
               <div key={box.label}
                 className={`rounded-2xl p-5 text-center ${box.accent ? 'bg-green-700 text-[var(--on-accent)] shadow-lg shadow-green-200' : 'bg-white border border-green-100'}`}>
-                <p className={`text-xs uppercase tracking-wider font-semibold mb-1 ${box.accent ? 'text-[var(--on-accent-soft)]' : 'text-gray-400'}`}>{box.label}</p>
-                <p className={`text-2xl font-bold font-oswald ${box.accent ? 'text-[var(--on-accent)]' : 'text-gray-800'}`}>
+                <p className={`text-xs tracking-wider font-semibold mb-1 ${box.accent ? 'text-[var(--on-accent-soft)]' : 'text-gray-400'}`}>{box.label}</p>
+                <p className={`text-2xl font-bold ${box.accent ? 'text-[var(--on-accent)]' : 'text-gray-800'}`}>
                   ≈ {box.value.toLocaleString('ru-RU')} ₽
                 </p>
                 <p className={`text-xs mt-1 ${box.accent ? 'text-[var(--on-accent-soft)]' : 'text-gray-400'}`}>{box.note}</p>
@@ -270,7 +266,7 @@ const WhyPark = () => (
             <span className="w-11 h-11 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center shrink-0">
               <XCircle size={22} />
             </span>
-            <h3 className="text-xl font-bold font-oswald uppercase text-gray-500">Сам по себе</h3>
+            <h3 className="text-xl font-bold text-gray-500">Сам по себе</h3>
           </div>
           <ul className="space-y-3">
             {[
@@ -291,7 +287,7 @@ const WhyPark = () => (
             <span className="w-11 h-11 rounded-xl bg-green-600 text-[var(--on-accent)] flex items-center justify-center shrink-0">
               <Building2 size={22} />
             </span>
-            <h3 className="text-xl font-bold font-oswald uppercase text-green-800">С Барори Парк</h3>
+            <h3 className="text-xl font-bold text-green-800">С Барори Парк</h3>
           </div>
           <ul className="space-y-3">
             {[
@@ -327,7 +323,7 @@ const Requirements = () => (
             subtitle="Требования к водителям такси задаёт сервис и закон, а не мы. Поэтому проверяем всё на первом звонке — чтобы вы не тратили день на поездку в офис зря."
           />
           <div className="mt-7 rounded-2xl bg-green-100 border border-green-200 p-5">
-            <p className="font-bold text-green-800 font-oswald text-xl uppercase mb-1">Нужен свой автомобиль</p>
+            <p className="font-bold text-green-800 text-xl mb-1">Нужен свой автомобиль</p>
             <p className="text-gray-600 text-sm">
               Аренду машин мы не предоставляем — работа только на своём авто. Если машины нет,
               скажите менеджеру: подберём направление парка, где она не нужна.
@@ -373,16 +369,16 @@ const Start = () => (
   <Section id="start" className="l-tint">
     <div className="container mx-auto">
       <SectionHead kicker="Старт" title="Как подключиться: 4 шага" subtitle="От заявки до первого заказа — обычно один день." />
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+      <div className="direction-steps mt-10">
         {[
           { n: '01', title: 'Заявка', text: 'Форма внизу страницы: имя, телефон, город, авто и стаж. Полминуты.' },
           { n: '02', title: 'Звонок за 15 минут', text: 'Проверим документы, назовём условия и комиссию по вашему городу. Без давления.' },
           { n: '03', title: 'Оформление', text: 'Помогаем с самозанятостью и документами, подключаем к сервису и настраиваем Яндекс Про.' },
           { n: '04', title: 'Первая смена', text: 'Выходите на линию, когда удобно, и запрашиваете выплату — хоть в тот же день.' },
         ].map(step => (
-          <div key={step.n} className="relative p-6 rounded-2xl l-glass border border-gray-100 shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300">
-            <span className="text-4xl font-bold font-oswald text-green-800/20 leading-none">{step.n}</span>
-            <h3 className="text-lg font-bold font-oswald uppercase mt-3 mb-2">{step.title}</h3>
+          <div key={step.n} className="direction-step">
+            <span className="direction-step-number">{step.n}</span>
+            <h3 className="text-lg font-bold mt-3 mb-2">{step.title}</h3>
             <p className="text-gray-600 text-sm leading-relaxed">{step.text}</p>
           </div>
         ))}
@@ -397,14 +393,14 @@ const Start = () => (
 /* ─────────────────────────────  ЧЕСТНО  ───────────────────────────── */
 
 const Honest = () => (
-  <Section className="bg-slate-900 text-white">
+  <Section className="direction-honest">
     <div className="container mx-auto">
-      <div className="max-w-4xl mx-auto lg:max-w-none">
+      <div className="direction-honest-panel">
         <div className="flex items-center gap-3 mb-5">
           <span className="w-11 h-11 rounded-xl bg-green-600/20 flex items-center justify-center shrink-0">
             <ShieldCheck className="text-green-400" size={24} />
           </span>
-          <h2 className="text-2xl lg:text-3xl font-bold uppercase font-oswald leading-tight">Честно: как это оформляется</h2>
+          <h2 className="text-2xl lg:text-3xl font-bold leading-tight">Честно: как это оформляется</h2>
         </div>
         <p className="text-gray-300 leading-relaxed mb-6 lg:max-w-3xl">
           Водители сотрудничают с парком <strong className="text-white">как самозанятые или ИП по договору</strong>,
@@ -417,8 +413,8 @@ const Honest = () => (
             { title: 'Отпускных и больничных нет', text: 'Это обратная сторона свободного графика — так устроен режим самозанятости по закону.' },
             { title: 'Расходы на машине — ваши', text: 'Топливо, мойка, обслуживание. Зато и машина, и заработанное — тоже ваши.' },
           ].map(item => (
-            <div key={item.title} className="bg-slate-800/80 border border-slate-700 rounded-2xl p-5">
-              <p className="font-bold font-oswald text-lg mb-1.5 text-green-400">{item.title}</p>
+            <div key={item.title} className="direction-honest-card rounded-2xl p-5">
+              <p className="font-bold text-lg mb-1.5 text-green-400">{item.title}</p>
               <p className="text-gray-300 text-sm leading-relaxed">{item.text}</p>
             </div>
           ))}
@@ -459,7 +455,7 @@ const Reviews = () => (
                 {review.emoji}
               </div>
               <div>
-                <p className="font-bold font-oswald">{review.name}</p>
+                <p className="font-bold ">{review.name}</p>
                 <p className="text-xs text-gray-500">{review.role}</p>
               </div>
             </div>

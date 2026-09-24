@@ -326,7 +326,7 @@ export const Tariffs = ({ calculatorOnly = false }: { calculatorOnly?: boolean }
             Честные комиссии без скрытых списаний
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-oswald uppercase tracking-tight text-gray-900 mb-4">
-            ТАРИФЫ <span className="text-green-600">БАРОРИ ПАРК</span>
+            Тарифы <span className="text-green-600">Барори Парк</span>
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
             Главное правило нашего парка: <strong className="text-gray-900 font-semibold">чем больше смен вы выполняете — тем ниже процент комиссии!</strong> Выбирайте свой тип занятости и смотрите условия по каждому направлению.

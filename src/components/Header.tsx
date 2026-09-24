@@ -104,6 +104,7 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
             </div>
           </details>
           <nav className="classic-header__desktop-nav" aria-label="Основная навигация">
+            <a href={siteUrl('/')} aria-current={path === '/' ? 'page' : undefined}>Главная</a>
             <details className="classic-header__dropdown" onBlur={event => {
               if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
             }}>
@@ -115,7 +116,6 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
             </details>
             <a href={siteUrl('/tariffs/')} aria-current={path === '/tariffs/' ? 'page' : undefined}>Тарифы</a>
             <a href={siteUrl('/info/')} aria-current={path === '/info/' ? 'page' : undefined}>Условия</a>
-            <a href={siteUrl('/#about')}>О нас</a>
             <button type="button" onClick={openKnowledge}>База знаний</button>
           </nav>
           <div className="classic-header__actions">
@@ -160,7 +160,7 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
           <div className="classic-menu__body">
             <SiteNavigation />
             <div className="classic-menu__secondary" onClick={() => setMenuOpen(false)}>
-              <a href={siteUrl('/#about')}>О нас</a><a href={siteUrl('/#vacancies')}>Вакансии</a><button type="button" onClick={openKnowledge}>База знаний</button>
+              <a href={siteUrl('/#vacancies')}>Вакансии</a><button type="button" onClick={openKnowledge}>База знаний</button>
             </div>
             {pageLinks.length > 0 && <details className="classic-menu__sections"><summary>На этой странице</summary>{pageLinks.map(link => <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>{link.label}</a>)}</details>}
             <div className="classic-menu__contacts"><a className="classic-menu__phone" href={phone.href} onClick={() => trackGoal('phone_click', { place: 'mobile_menu' })}>{phone.text}</a>{contactLinks}<a href="#contacts" onClick={() => setMenuOpen(false)}>Контакты и офис</a></div>

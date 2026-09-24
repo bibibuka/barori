@@ -37,26 +37,32 @@ export const Reviews = () => {
   const reviews = [
     {
       name: 'Алексей Лукас', role: 'Яндекс Карты · 29 августа', rating: 5,
+      emoji: '😄',
       text: 'Лояльность парка к работающему персоналу 10 из 10, поддержка 10 из 10 , сотрудничество 10 из 10.Все доходчиво объясняют и можно обратиться с любым вопросом,который решают за считаные минуты. Держите планку ребята и девчата! В современных реалиях этого не хватает от других компаний.',
     },
     {
       name: 'Даша Ласюта', role: 'Яндекс Карты · 20 августа', rating: 5,
+      emoji: '😊',
       text: 'Просто лучшие, решили мой вопрос с задержкой выплаты, очень благодарна за быстрый ответ и результат)))',
     },
     {
       name: 'тима тима', role: 'Яндекс Карты · 13 августа', rating: 5,
+      emoji: '😎',
       text: 'Красавцы, думал уже из доставки уходить из-за постоянных корректировок в минус баланс, но все решили быстрее чем я им написал. Круто очень',
     },
     {
       name: 'Светлана Катаева', role: 'Яндекс Карты · 9 июля', rating: 5,
+      emoji: '🙂',
       text: 'Быстро,понятно,продуктивно. Рекомендую 👍🏻',
     },
     {
       name: 'Иван Евдокимов', role: 'Яндекс Карты · 18 мая', rating: 5,
+      emoji: '😀',
       text: 'Хороший парк , добрая поддержка , быстро отвечают',
     },
     {
       name: 'Марта Батырева', role: 'Яндекс Карты · 15 мая', rating: 5,
+      emoji: '☺️',
       text: 'Выражаю благодарность Вашему специалисту Льву. Он помог разобраться в программе. Объяснил всё доходчиво. Проявив терпение и знание вопроса. Побольше бы таких сотрудников!',
     },
     {
@@ -94,7 +100,7 @@ export const Reviews = () => {
       <div className="container mx-auto">
 
         <div className="home-reviews-heading">
-          <div><p className="home-eyebrow"><span />Опыт тех, кто уже с нами</p><h2 className="home-heading">Отзывы <em>исполнителей.</em></h2></div>
+          <div><p className="home-eyebrow"><span />Опыт тех, кто уже с нами</p><h2 className="home-heading">Отзывы <em>исполнителей</em></h2></div>
           <div className="home-review-nav"><button type="button" aria-label="Предыдущий отзыв" className="review-prev"><ArrowLeft size={22} /></button><button type="button" aria-label="Следующий отзыв" className="review-next"><ArrowRight size={22} /></button></div>
         </div>
 
@@ -129,11 +135,10 @@ export const Reviews = () => {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="relative">
                     <div
-                      role="img"
-                      aria-label={review.name}
-                      className="home-review-avatar w-14 h-14 rounded-full flex items-center justify-center text-base font-bold bg-green-50 border-2 border-green-700"
+                      aria-hidden="true"
+                      className="home-review-avatar w-14 h-14 rounded-full flex items-center justify-center text-2xl bg-green-50 border-2 border-green-700"
                     >
-                      {review.name.split(' ').map(part => part[0]).slice(0, 2).join('').toUpperCase()}
+                      {review.emoji}
                     </div>
                     <div className="absolute -bottom-1 -right-1 bg-green-700 w-4 h-4 rounded-full border-2 border-white" />
                   </div>

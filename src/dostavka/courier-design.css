@@ -1,0 +1,136 @@
+/* Delivery keeps its red-orange palette within the home page's quiet visual system. */
+.service-site--courier .delivery-hero { padding:30px 0 34px; background:transparent; }
+.service-site--courier .delivery-hero::before { display:none; }
+.service-site--courier .delivery-hero-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:44px; align-items:center; }
+.service-site--courier .delivery-hero-copy { min-width:0; padding-block:24px; text-align:left; }
+.service-site--courier .delivery-hero-badge { display:flex; align-items:center; gap:10px; margin:0 0 23px; font-size:13px; line-height:1.6; font-weight:700; color:var(--color-green-800); }
+.service-site--courier .delivery-hero-badge::before { content:''; flex:none; width:6px; height:6px; border-radius:50%; background:currentColor; }
+.service-site--courier .delivery-hero .delivery-hero-title { margin:0; font-size:clamp(48px,5.5vw,76px); font-weight:700; line-height:1.08; letter-spacing:-.06em; color:var(--service-ink); text-wrap:balance; overflow-wrap:break-word; }
+.service-site--courier .delivery-hero-description { max-width:510px; margin:24px 0 0; font-size:18px; line-height:1.75; color:var(--service-muted); }
+.service-site--courier .delivery-hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:29px; }
+.service-site--courier .delivery-primary-cta { display:inline-flex; align-items:center; justify-content:space-between; gap:22px; min-height:59px; padding:7px 8px 7px 24px; border-radius:100px; background:var(--color-green-700); color:var(--on-accent); font-size:15px; line-height:1.45; font-weight:700; cursor:pointer; transition:background .2s,transform .2s; }
+.service-site--courier .delivery-primary-cta > span { display:grid; place-items:center; width:43px; height:43px; flex:none; border-radius:50%; background:var(--color-green-100); color:var(--color-green-900); }
+.service-site--courier .delivery-primary-cta:hover { background:var(--color-green-800); transform:translateY(-2px); }
+.service-site--courier .delivery-primary-cta::after { display:none; }
+.service-site--courier .delivery-secondary-cta { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:55px; padding:13px 20px; border:1px solid var(--color-green-200); border-radius:100px; background:#ffffff70; color:var(--color-green-900); font-size:14px; font-weight:700; transition:background .2s; }
+.service-site--courier .delivery-secondary-cta:hover { background:var(--color-green-100); }
+.service-site--courier .delivery-route-scene { width:100%; height:480px; margin:0; border:0; border-radius:100px 26px 26px 26px; box-shadow:none; }
+.service-site--courier .delivery-route-scene > img { object-position:48% center; }
+.service-site--courier .delivery-route-shade { background:linear-gradient(180deg,#3d0c0005 30%,#3d0c0030 62%,#3d0c00cf); }
+.service-site--courier .delivery-route-caption { padding:25px 29px; background:linear-gradient(180deg,transparent,#3d0c0066); }
+.service-site--courier .delivery-route-caption-title { display:block; max-width:430px; font-size:24px; font-weight:600; line-height:1.25; letter-spacing:-.035em; }
+.service-site--courier .delivery-route-caption-description { display:block; max-width:410px; margin-top:9px; color:#ffffffd9; font-size:13px; line-height:1.65; }
+.service-site--courier .delivery-route-chip { color:var(--color-green-900); box-shadow:0 5px 16px #3d0c001a; }
+.service-site--courier .delivery-trust-wrap { margin-bottom:8px; }
+.service-site--courier .delivery-trust-bar { padding:25px; gap:25px; border:1px solid var(--color-green-200); border-radius:20px; background:#fff9; }
+.service-site--courier .delivery-trust-bar > div { min-width:0; padding:0; }
+.service-site--courier .delivery-trust-bar > div > span { width:35px; height:35px; border-radius:50%; background:var(--color-green-100); }
+.service-site--courier .delivery-trust-bar p:first-child { font-family:var(--font-sans); font-size:14px; line-height:1.5; letter-spacing:-.015em; text-transform:none; }
+.service-site--courier .delivery-trust-bar p:last-child { margin-top:4px; font-size:12px; line-height:1.5; }
+.service-site--courier .delivery-format-rail { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin-top:38px; padding:0; overflow:visible; }
+.service-site--courier :is(.delivery-format-card,.delivery-direction-card,.delivery-match-card) { min-width:0; border:1px solid var(--color-green-100); border-radius:24px; padding:28px; background:#ffffffb3; box-shadow:none; backdrop-filter:none; }
+.service-site--courier .delivery-format-card { background:color-mix(in srgb,var(--color-green-50) 65%,white); }
+.service-site--courier .delivery-format-card > span:first-child { width:51px; height:51px; border-radius:50%; background:white; box-shadow:none; }
+.service-site--courier .delivery-format-card > span:nth-child(2) { margin-top:25px; font-family:var(--font-sans); font-size:23px; font-weight:700; line-height:1.25; letter-spacing:-.04em; text-transform:none; color:var(--service-ink); }
+.service-site--courier .delivery-format-card > span:nth-child(3) { margin-top:12px; font-size:15px; line-height:1.7; color:var(--service-muted); }
+.service-site--courier .delivery-format-card > span:last-child { margin-top:auto; padding-top:24px; font-size:13px; line-height:1.6; }
+.service-site--courier .delivery-direction-grid { margin-top:38px; gap:20px; }
+.service-site--courier .delivery-direction-card { padding:31px; }
+.service-site--courier .delivery-direction-card h3 { margin-top:24px; font-size:30px; line-height:1.2; letter-spacing:-.045em; color:var(--service-ink); }
+.service-site--courier .delivery-direction-card > p:nth-of-type(1) { font-size:16px; line-height:1.75; color:var(--service-muted); }
+.service-site--courier .delivery-direction-top > span:first-child { width:53px; height:53px; border-radius:50%; }
+.service-site--courier .delivery-direction-reward { max-width:75%; font-size:13px; line-height:1.5; padding:9px 15px; }
+.service-site--courier .delivery-direction-card > button { display:flex; align-items:center; justify-content:space-between; width:100%; margin-top:25px; border:0; border-top:1px solid var(--color-green-200); border-radius:0; padding:20px 0 0; background:transparent; color:var(--color-green-800); }
+.service-site--courier .delivery-direction-card > button > svg { box-sizing:content-box; flex:none; padding:12px; border-radius:50%; background:var(--color-green-100); }
+.service-site--courier .delivery-direction-card > button:hover { color:var(--color-green-950); background:transparent; }
+.service-site--courier .delivery-direction-card > button:hover > svg { background:var(--color-green-200); }
+.service-site--courier .delivery-comparison-photo { border-radius:28px; }
+.service-site--courier .delivery-match-grid { align-self:stretch; gap:16px; }
+.service-site--courier .delivery-match-card { padding:25px; }
+.service-site--courier .delivery-match-card:last-child { grid-column:1 / -1; }
+.service-site--courier .delivery-match-card > span { width:44px; height:44px; border-radius:50%; background:var(--color-green-50); box-shadow:none; }
+.service-site--courier .delivery-match-card h3 { font-size:21px; line-height:1.3; }
+.service-site--courier .delivery-match-card p { font-size:15px; line-height:1.75; }
+.service-site--courier .delivery-support-panel { border:1px solid var(--color-green-100); border-radius:28px; background:#ffffffb3; box-shadow:none; }
+.service-site--courier .delivery-support-intro { display:flex; flex-direction:column; justify-content:center; padding:38px; }
+.service-site--courier .delivery-support-intro h2 { font-size:clamp(34px,3.7vw,49px); line-height:1.12; letter-spacing:-.055em; color:var(--on-accent); }
+.service-site--courier .delivery-support-grid > div { padding:30px; border-color:var(--color-green-100); }
+.service-site--courier .delivery-support-grid h3 { font-size:21px; line-height:1.3; }
+.service-site--courier .delivery-support-grid p { font-size:15px; line-height:1.75; }
+.service-site--courier .delivery-route-steps { gap:28px; margin-top:44px; }
+.service-site--courier .delivery-step { border-top:1px solid var(--color-green-200); padding-top:23px; }
+.service-site--courier .delivery-step > span { display:block; margin-bottom:30px; font-family:var(--font-sans); font-size:55px; line-height:1; font-weight:400; letter-spacing:-.06em; color:var(--color-green-300); }
+.service-site--courier .delivery-step h3 { font-size:21px; line-height:1.35; }
+.service-site--courier .delivery-step p { margin-top:12px; font-size:15px; line-height:1.75; }
+.service-site--courier .delivery-requirements > .container { gap:30px 45px; }
+.service-site--courier .delivery-contract-note { padding:29px 32px; border:0; border-radius:24px; }
+.service-site--courier .delivery-contract-note > p:first-child { font-family:var(--font-sans); font-size:24px; line-height:1.3; letter-spacing:-.035em; text-transform:none; }
+.service-site--courier .delivery-contract-note > p:last-child { font-size:15px; line-height:1.75; }
+.service-site--courier .delivery-requirements .l-glass { padding:22px; border-color:var(--color-green-100); border-radius:20px; box-shadow:none; }
+.service-site--courier .delivery-requirements .l-glass > span { font-size:15px; }
+@media (min-width:1024px) {
+  .service-site--courier .delivery-trust-bar > div + div { padding-left:24px; border-color:var(--color-green-200); }
+}
+@media (max-width:1100px) {
+  .service-site--courier .delivery-hero-grid { gap:28px; }
+  .service-site--courier .delivery-route-scene { height:455px; }
+  .service-site--courier .delivery-format-rail { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .service-site--courier .delivery-trust-bar { gap:24px; }
+  .service-site--courier .delivery-route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px; }
+}
+@media (max-width:767px) {
+  .service-site--courier .delivery-hero { padding:17px 0 25px; }
+  .service-site--courier .delivery-hero-grid { grid-template-columns:minmax(0,1fr); gap:28px; }
+  .service-site--courier .delivery-hero-copy { padding:0; }
+  .service-site--courier .delivery-hero-badge { margin-bottom:17px; font-size:11px; }
+  .service-site--courier .delivery-hero .delivery-hero-title { font-size:clamp(40px,10.3vw,65px); }
+  .service-site--courier .delivery-hero-description { margin-top:19px; font-size:16px; line-height:1.75; }
+  .service-site--courier .delivery-hero-actions { gap:11px; margin-top:23px; }
+  .service-site--courier .delivery-primary-cta { min-height:57px; gap:16px; padding-left:21px; }
+  .service-site--courier .delivery-secondary-cta { padding-inline:18px; }
+  .service-site--courier .delivery-route-scene { height:auto; aspect-ratio:1.16; border-radius:65px 23px 23px 23px; }
+  .service-site--courier .delivery-route-caption { padding:23px; }
+  .service-site--courier .delivery-route-caption-title { max-width:340px; font-size:23px; }
+  .service-site--courier .delivery-route-caption-description { max-width:330px; font-size:12px; }
+  .service-site--courier .delivery-trust-bar { padding:21px 18px; gap:21px 15px; }
+  .service-site--courier .delivery-trust-bar > div { gap:8px; }
+  .service-site--courier .delivery-trust-bar > div > span { width:29px; height:29px; margin-top:1px; }
+  .service-site--courier .delivery-trust-bar > div > span svg { width:17px; height:17px; }
+  .service-site--courier .delivery-trust-bar p:first-child { font-size:13px; }
+  .service-site--courier .delivery-trust-bar p:last-child { font-size:11px; }
+  .service-site--courier .delivery-format-rail { margin-top:28px; gap:13px; }
+  .service-site--courier .delivery-format-card { padding:24px; }
+  .service-site--courier .delivery-direction-grid { margin-top:28px; gap:15px; }
+  .service-site--courier .delivery-direction-card { padding:25px; }
+  .service-site--courier .delivery-direction-card h3 { font-size:27px; }
+  .service-site--courier .delivery-direction-reward { font-size:12px; padding:8px 11px; }
+  .service-site--courier .delivery-support-intro { padding:29px; }
+  .service-site--courier .delivery-support-grid > div { padding:27px; }
+  .service-site--courier .delivery-contract-note { padding:26px; }
+}
+@media (max-width:639px) {
+  .service-site--courier .delivery-match-grid { display:grid; grid-template-columns:minmax(0,1fr); margin:0; padding:0; overflow:visible; }
+  .service-site--courier .delivery-match-card { min-width:0; }
+  .service-site--courier .delivery-route-steps { grid-template-columns:minmax(0,1fr); gap:26px; margin-top:30px; }
+  .service-site--courier .delivery-route-steps::before { display:none; }
+  .service-site--courier .delivery-route-steps .delivery-step { padding:22px 0 0; border-top:1px solid var(--color-green-200); }
+  .service-site--courier .delivery-route-steps .delivery-step::before { display:none; }
+  .service-site--courier .delivery-step > span { margin-bottom:18px; font-size:43px; }
+}
+@media (max-width:579px) {
+  .service-site--courier .delivery-format-rail { grid-template-columns:minmax(0,1fr); }
+  .service-site--courier .delivery-format-card > span:nth-child(2) { margin-top:19px; }
+  .service-site--courier .delivery-hero-actions > * { width:100%; }
+  .service-site--courier .delivery-primary-cta { justify-content:space-between; }
+}
+@media (max-width:359px) {
+  .service-site--courier .delivery-hero-badge { font-size:10px; letter-spacing:.02em; }
+  .service-site--courier .delivery-trust-bar { grid-template-columns:minmax(0,1fr); }
+  .service-site--courier .delivery-direction-card { padding:22px; }
+  .service-site--courier .delivery-direction-top { gap:10px; }
+  .service-site--courier .delivery-direction-reward { max-width:77%; font-size:11px; }
+  .service-site--courier .delivery-route-caption-title { font-size:21px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .service-site--courier :is(.delivery-primary-cta,.delivery-secondary-cta) { transition:none; }
+}

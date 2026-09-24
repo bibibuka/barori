@@ -21,6 +21,7 @@ import courierImage from '../assets/kura.webp';
 import heroImage from '../assets/delivery-hero.webp';
 import { CourierFinalForm, useCourierLead } from './CourierForm';
 import { formatCampaignHeadline, readCampaignContext } from './campaign';
+import './courier-design.css';
 import {
   DELIVERY_DIRECTIONS,
   DELIVERY_FORMATS,
@@ -86,33 +87,31 @@ const Hero = ({ headline }: { headline: string }) => {
   return (
     <section
       data-testid="delivery-hero"
-      className="delivery-hero relative overflow-hidden bg-green-50 pb-10 pt-20 lg:min-h-[760px] lg:pb-14 lg:pt-28"
+      className="delivery-hero service-hero relative"
     >
-      <div className="delivery-hero-orb pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-green-300/30 blur-3xl" />
-      {/* 12 колонок: текст 5, сцена 7. Заявку с первого экрана уводим в форму внизу (#order). */}
-      <div className="delivery-hero-grid container relative mx-auto grid items-center gap-5 lg:grid-cols-12 lg:gap-10">
-        <div className="delivery-hero-copy text-center lg:col-span-5 lg:text-left">
-          <p className="delivery-hero-badge inline-flex items-center rounded-full border border-green-200 bg-white/90 px-4 py-2 text-xs font-bold text-green-800 shadow-sm">
+      <div className="delivery-hero-grid service-hero-grid container relative mx-auto">
+        <div className="delivery-hero-copy service-hero-copy">
+          <p className="delivery-hero-badge service-eyebrow">
             Работа и подработка в доставке, 16+
           </p>
-          <h1 className="mx-auto mt-4 max-w-3xl text-balance text-[clamp(2.6rem,9vw,4.3rem)] font-bold uppercase leading-[0.92] tracking-[-0.035em] text-slate-950 lg:mx-0 lg:mt-5">
+          <h1 className="delivery-hero-title">
             {headline}
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-slate-700 sm:text-lg lg:mx-0 lg:mt-5">
+          <p className="delivery-hero-description service-lead">
             Посылки, документы и грузы. Пешком, на самокате, велосипеде или авто. Сравним доступные варианты в вашем городе.
           </p>
-          <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row lg:mt-7 lg:justify-start">
+          <div className="delivery-hero-actions">
             <button
               type="button"
               onClick={() => scrollToOrder('hero')}
-              className="delivery-primary-cta inline-flex min-h-14 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full bg-green-700 px-6 py-4 text-base font-bold text-[var(--on-accent)] shadow-[0_14px_35px_var(--accent-shadow)] transition-transform hover:-translate-y-0.5 hover:bg-green-600 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
+              className="delivery-primary-cta"
             >
-              Подобрать вариант <ArrowRight size={19} />
+              Подобрать вариант <span><ArrowRight size={19} /></span>
             </button>
             <a
               href={phone.href}
               onClick={() => track('phone_click', { place: 'hero' })}
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-slate-300 bg-white/90 px-7 py-4 text-base font-bold text-slate-800 transition-colors hover:border-green-700 hover:text-green-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
+              className="delivery-secondary-cta"
             >
               <PhoneCall size={18} /> Позвонить
             </a>
@@ -121,7 +120,7 @@ const Hero = ({ headline }: { headline: string }) => {
 
         <figure
           data-testid="delivery-route-scene"
-          className="delivery-route-scene relative aspect-[3/2] overflow-hidden rounded-[22px] border border-white/90 bg-green-950 shadow-[0_24px_60px_rgba(15,23,42,.18)] lg:col-span-7 lg:h-[560px] lg:aspect-auto"
+          className="delivery-route-scene service-hero-visual relative overflow-hidden bg-green-950"
         >
           <img
             src={heroImage}
@@ -132,7 +131,7 @@ const Hero = ({ headline }: { headline: string }) => {
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,38,20,.06)_25%,rgba(3,18,9,.8)_100%)]" />
+          <div className="delivery-route-shade absolute inset-0" />
           {/* Маршрут идёт горизонтально через середину кадра: слева направо, с двумя перегибами. */}
           <svg
             aria-hidden="true"
@@ -149,9 +148,9 @@ const Hero = ({ headline }: { headline: string }) => {
           <span className="delivery-route-chip delivery-route-chip--foot"><Footprints size={16} /> Пешком</span>
           <span className="delivery-route-chip delivery-route-chip--bike"><Bike size={16} /> Вело</span>
           <span className="delivery-route-chip delivery-route-chip--car"><Car size={16} /> Авто</span>
-          <figcaption className="delivery-route-caption absolute inset-x-0 bottom-0 z-10 p-5 text-left text-white lg:p-6">
-            <span className="block font-oswald text-2xl font-bold uppercase leading-none">Один запрос — разные варианты</span>
-            <span className="mt-2 block text-xs text-white/80 lg:text-sm">Город, транспорт и условия соберём в один понятный маршрут</span>
+          <figcaption className="delivery-route-caption absolute inset-x-0 bottom-0 z-10 text-left text-white">
+            <span className="delivery-route-caption-title">Один запрос — разные варианты</span>
+            <span className="delivery-route-caption-description">Город, транспорт и условия соберём в один понятный маршрут</span>
           </figcaption>
         </figure>
 
@@ -161,8 +160,8 @@ const Hero = ({ headline }: { headline: string }) => {
 };
 
 const TrustBar = () => (
-  <div className="border-t border-green-100 bg-white">
-    <div className="delivery-reveal delivery-trust-bar container mx-auto grid grid-cols-2 gap-x-5 gap-y-6 py-7 lg:grid-cols-4 lg:gap-x-0">
+  <div className="delivery-trust-wrap container mx-auto">
+    <div className="delivery-reveal delivery-trust-bar grid grid-cols-2 lg:grid-cols-4">
       {TRUST_ITEMS.map(item => (
         <div key={item.title} className="flex items-start gap-3 lg:px-7 lg:first:pl-0 lg:last:pr-0">
           <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-green-50 text-green-800">{item.icon}</span>
@@ -186,14 +185,12 @@ const FormatSection = () => (
         subtitle="Выбирать сейчас ничего не нужно. Оставьте контакты — менеджер проверит, какие форматы открыты в вашем городе, и поможет сравнить."
       />
 
-      <div className="delivery-format-rail mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 md:mt-10 md:grid md:grid-cols-12 md:gap-4 md:overflow-visible md:pb-0 lg:gap-6">
-        {DELIVERY_FORMATS.map((format, index) => {
-          // Планшет — две пары, десктоп — ровный ряд из четырёх.
-          const spans = ['md:col-span-5', 'md:col-span-7', 'md:col-span-7', 'md:col-span-5'];
+      <div className="delivery-format-rail">
+        {DELIVERY_FORMATS.map(format => {
           return (
             <article
               key={format.id}
-              className={`${spans[index]} delivery-format-card min-w-[82vw] snap-center rounded-[20px] border border-slate-200 l-glass p-6 text-slate-900 transition-all duration-300 md:flex md:min-w-0 md:flex-col lg:col-span-3`}
+              className="delivery-format-card flex min-w-0 flex-col rounded-[20px] border border-slate-200 l-glass p-6 text-slate-900 transition-all duration-300"
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-green-800 shadow-sm">
                 {FORMAT_ICONS[format.id]}
@@ -216,11 +213,11 @@ const DirectionCard = ({
 }) => (
   <article className="delivery-direction-card relative flex flex-col overflow-hidden rounded-[20px] border border-slate-200 l-glass p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl lg:col-span-6">
     {/* min-h-12 = высота иконки: бейдж в одну или две строки не сдвигает заголовки соседних карточек. */}
-    <div className="flex min-h-12 items-center justify-between gap-4">
+    <div className="delivery-direction-top flex min-h-12 items-center justify-between gap-4">
       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-green-50 text-green-800">
         {DIRECTION_ICONS[direction.id]}
       </span>
-      <span className="max-w-[62%] rounded-full bg-green-50 px-3 py-1.5 text-right text-[11px] font-bold leading-snug text-green-800">
+      <span className="delivery-direction-reward rounded-full bg-green-50 px-3 py-1.5 text-right text-[11px] font-bold leading-snug text-green-800">
         {direction.reward}
       </span>
     </div>
@@ -277,7 +274,7 @@ const DirectionsSection = () => {
 };
 
 const ComparisonSection = () => (
-  <section id="compare" className="scroll-mt-24 l-tint py-16">
+  <section id="compare" className="delivery-comparison scroll-mt-24 l-tint py-16">
     <div className="delivery-reveal container mx-auto">
       <div className="grid items-start gap-10 lg:grid-cols-12">
         <div className="lg:sticky lg:top-28 lg:col-span-5">
@@ -291,7 +288,7 @@ const ComparisonSection = () => (
             alt="Курьер на городском маршруте"
             loading="lazy"
             decoding="async"
-            className="mt-8 aspect-[16/9] w-full rounded-[20px] object-cover shadow-[0_18px_55px_rgba(15,23,42,.12)] lg:aspect-[4/3]"
+            className="delivery-comparison-photo mt-8 aspect-[16/9] w-full rounded-[20px] object-cover lg:aspect-[4/3]"
           />
         </div>
         <div className="delivery-match-grid grid gap-4 sm:grid-cols-2 lg:col-span-7 lg:gap-6">
@@ -319,7 +316,7 @@ const SupportSection = () => (
     <div className="delivery-reveal container mx-auto">
       <div className="delivery-support-panel overflow-hidden rounded-[20px] border border-green-200 l-glass shadow-[0_24px_70px_var(--accent-shadow)]">
         <div className="grid lg:grid-cols-12">
-          <div className="bg-green-700 p-7 text-[var(--on-accent)] lg:col-span-5 lg:p-10">
+          <div className="delivery-support-intro bg-green-700 p-7 text-[var(--on-accent)] lg:col-span-5 lg:p-10">
             <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-[var(--on-accent-soft)]">
               <span aria-hidden="true" className="h-px w-8 bg-green-200/50" />
               Барори Парк
@@ -329,7 +326,7 @@ const SupportSection = () => (
               Помогаем понять условия, подготовиться к подключению и решить вопросы после старта.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:col-span-7">
+          <div className="delivery-support-grid grid sm:grid-cols-2 lg:col-span-7">
             {[
               { icon: <MapPin size={22} />, title: 'Проверяем город', text: 'Показываем только те направления, которые доступны для вашего региона.' },
               { icon: <ShieldCheck size={22} />, title: 'Объясняем договор', text: 'До оформления сообщаем формат сотрудничества и требования сервиса.' },
@@ -376,7 +373,7 @@ const StepsSection = () => (
 );
 
 const RequirementsSection = () => (
-  <section className="l-tint py-16">
+  <section className="delivery-requirements l-tint py-16">
     {/* 12 колонок: заголовок и чипы делят первую строку, полоса о договоре идёт под ними —
         иначе правая колонка кончается раньше левой и под чипами остаётся пустая полоса. */}
     <div className="delivery-reveal container mx-auto grid items-start gap-10 lg:grid-cols-12">
@@ -386,13 +383,13 @@ const RequirementsSection = () => (
         subtitle="Базовый список короткий. Дополнительные требования зависят от направления, поэтому их проверяем до оформления."
         className="lg:col-span-5 lg:row-start-1"
       />
-      <div className="rounded-[18px] border border-green-200 bg-green-700 p-6 text-[var(--on-accent)] lg:col-span-12 lg:row-start-2">
+      <div className="delivery-contract-note rounded-[18px] border border-green-200 bg-green-700 p-6 text-[var(--on-accent)] lg:col-span-12 lg:row-start-2">
         <p className="font-oswald text-2xl font-bold uppercase">Важно о договоре</p>
         <p className="mt-2 max-w-4xl text-sm leading-relaxed text-[var(--on-accent-soft)]">
           Отправка заявки не создаёт трудовые отношения. Формат сотрудничества, договор и порядок выплат сообщаются для конкретного предложения.
         </p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:col-span-7 lg:col-start-6 lg:row-start-1 lg:gap-4">
+      <div className="service-requirements-list grid gap-3 sm:grid-cols-2 lg:col-span-7 lg:col-start-6 lg:row-start-1 lg:gap-4">
         {[
           'Возраст от 16 лет',
           'Смартфон с доступом в интернет',

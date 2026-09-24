@@ -164,7 +164,7 @@ export const Footer = ({ onOpenLegal, legalNote }: FooterProps) => {
 
           {/* Right Column: Map */}
           <div className="footer-map-panel h-80 sm:h-96 lg:h-auto w-full rounded-2xl overflow-hidden bg-gray-800 shadow-2xl relative z-0 border border-slate-700">
-            <div className="footer-map-fallback absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+            <div className={`footer-map-fallback absolute inset-0 ${mapReady ? 'hidden' : 'flex'} flex-col items-center justify-center gap-4 p-6 text-center`}>
               <MapPin size={42} className="text-green-400" aria-hidden="true" />
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-green-300">Офис обслуживания</p>

@@ -15,46 +15,42 @@ import {
   LandingShell, Section, SectionHead, InfoCard, OrderButton, Faq, useLanding, PHONE_SMENA,
 } from '../landing/kit';
 import { SmenaForm } from './SmenaForm';
+import '../landing/service-directions.css';
 
 /* ─────────────────────────────  ПЕРВЫЙ ЭКРАН  ───────────────────────────── */
 
 const Hero = () => {
   const { track, scrollToOrder, phone } = useLanding();
   return (
-    <section className="relative pt-28 lg:pt-32 pb-14 lg:pb-20 overflow-hidden bg-gradient-to-br from-green-50 via-green-50/40 to-white">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-green-200/40 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 -left-24 w-72 h-72 bg-yellow-200/30 rounded-full blur-3xl" />
-      </div>
-
-      <div className="container mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div className="text-center lg:text-left">
-          <span className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-white border border-green-200 text-green-800 text-xs sm:text-sm font-bold shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+    <section className="service-hero direction-hero">
+      <div className="container mx-auto service-hero-grid">
+        <div className="service-hero-copy">
+          <span className="service-eyebrow direction-hero-eyebrow">
+            <span aria-hidden="true" />
             Яндекс Смена — подработка без трудоустройства, 18+
           </span>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase leading-tight mb-4">
+          <h1 className="direction-hero-title">
             Подработка на 4–12 часов: <span className="text-green-800">деньги обычно на следующий день</span>
           </h1>
 
-          <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+          <p className="service-lead">
             Выбрали смену в приложении — пришли — отработали — получили деньги.
             Без собеседований, трудовой книжки и начальника, который ставит график.
           </p>
 
-          <div className="inline-flex flex-col items-center lg:items-start bg-white rounded-2xl border border-green-100 shadow-lg shadow-green-900/5 px-6 py-4 mb-6">
-            <span className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Оплата за смену</span>
-            <span className="text-4xl lg:text-5xl font-bold font-oswald text-green-800 leading-none">
+          <div className="direction-income">
+            <span className="text-xs tracking-wider text-gray-400 font-semibold mb-1">Оплата за смену</span>
+            <span className="text-4xl lg:text-5xl font-bold text-green-800 leading-none">
               2 000 – 4 000 ₽<span className="text-lg align-super text-gray-300">*</span>
             </span>
             <span className="text-sm text-gray-500 mt-2">зависит от вида смены, города и её длительности</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+          <div className="direction-hero-actions">
             <button
               onClick={() => scrollToOrder('hero')}
-              className="cursor-pointer inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-[var(--on-accent)] px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-green-200 hover:from-green-700 hover:to-green-600 transition-all hover:scale-[1.02] animate-btn-pulse"
+              className="direction-primary-button"
             >
               Начать подрабатывать
               <ChevronRight size={20} />
@@ -62,7 +58,7 @@ const Hero = () => {
             <a
               href={phone.href}
               onClick={() => track('phone_click', { place: 'hero' })}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg border-2 border-green-600 text-green-800 hover:bg-green-600 hover:text-[var(--on-accent)] transition-colors"
+              className="direction-secondary-button"
             >
               <PhoneCall size={20} />
               Задать вопрос
@@ -80,10 +76,10 @@ const Hero = () => {
         </div>
 
         {/* Правая колонка — «как это работает» в четырёх шагах прямо на первом экране */}
-        <div className="l-glass rounded-3xl border border-green-100 shadow-2xl shadow-green-900/10 p-6 lg:p-8">
-          <h2 className="text-xl font-bold font-oswald uppercase mb-1 text-gray-800">Если совсем коротко</h2>
+        <div className="service-hero-visual direction-summary direction-summary--smena">
+          <h2 className="text-xl font-bold mb-1 text-gray-800">Если совсем коротко</h2>
           <p className="text-sm text-gray-500 mb-5">Четыре шага — и деньги у вас на карте</p>
-          <ol className="space-y-4">
+          <ol className="direction-summary-list">
             {[
               { n: 1, icon: <Smartphone size={20} />, text: 'Открываете приложение и видите список смен рядом с домом' },
               { n: 2, icon: <CalendarClock size={20} />, text: 'Выбираете день, время и место — что удобно именно вам' },
@@ -91,7 +87,7 @@ const Hero = () => {
               { n: 4, icon: <Wallet size={20} />, text: 'Получаете оплату — обычно на следующий день' },
             ].map(step => (
               <li key={step.n} className="flex gap-4 items-start">
-                <span className="w-11 h-11 shrink-0 rounded-xl bg-green-600 text-[var(--on-accent)] flex items-center justify-center font-bold font-oswald">
+                <span className="direction-summary-number">
                   {step.n}
                 </span>
                 <div className="flex items-start gap-2 pt-1.5">
@@ -103,7 +99,7 @@ const Hero = () => {
           </ol>
           <button
             onClick={() => scrollToOrder('hero_card')}
-            className="mt-6 w-full cursor-pointer bg-green-600 hover:bg-green-700 text-[var(--on-accent)] font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-green-200"
+            className="direction-primary-button mt-6 w-full"
           >
             Хочу попробовать
           </button>
@@ -116,9 +112,9 @@ const Hero = () => {
 /* ─────────────────────────────  ПОЛОСА ДОВЕРИЯ  ───────────────────────────── */
 
 const TrustBar = () => (
-  <div className="bg-green-700 text-[var(--on-accent)]">
+  <div className="direction-trust-strip">
     <div className="container mx-auto py-6 lg:py-7">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="direction-trust-grid">
         {[
           { icon: <Wallet size={22} />, title: 'Оплата за смену', text: 'а не два раза в месяц' },
           { icon: <CalendarClock size={22} />, title: 'Смены от 4 часов', text: 'выбираете сами' },
@@ -126,10 +122,10 @@ const TrustBar = () => (
           { icon: <ThumbsUp size={22} />, title: 'Без опыта', text: 'всему учат на месте' },
         ].map(item => (
           <div key={item.title} className="flex items-start gap-3">
-            <span className="shrink-0 mt-0.5 text-[var(--on-accent-soft)]">{item.icon}</span>
+            <span className="direction-trust-icon">{item.icon}</span>
             <div>
-              <p className="font-bold font-oswald text-base lg:text-lg leading-tight">{item.title}</p>
-              <p className="text-[var(--on-accent-soft)] text-xs lg:text-sm">{item.text}</p>
+              <p className="font-bold text-base lg:text-lg leading-tight">{item.title}</p>
+              <p className="direction-trust-note">{item.text}</p>
             </div>
           </div>
         ))}
@@ -150,7 +146,7 @@ const WhatIsIt = () => (
 
       {/* На десктопе объяснение и таблица идут рядом (5/7), а не одной узкой колонкой. */}
       <div className="mt-10 max-w-4xl mx-auto lg:max-w-none lg:grid lg:grid-cols-12 lg:items-start lg:gap-10">
-        <div className="rounded-3xl l-glass border border-green-100 p-6 lg:p-8 mb-6 lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:mb-0">
+        <div className="smena-explanation rounded-3xl l-glass border border-green-100 p-6 lg:p-8 mb-6 lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:mb-0">
           <div className="flex items-start gap-4">
             <span className="w-12 h-12 shrink-0 rounded-xl bg-green-600 text-[var(--on-accent)] flex items-center justify-center">
               <HelpCircle size={24} />
@@ -171,13 +167,13 @@ const WhatIsIt = () => (
         </div>
 
         {/* Сравнение с обычной работой — снимает главное непонимание */}
-        <div className="rounded-3xl border border-gray-200 overflow-hidden l-glass shadow-lg lg:col-span-7 lg:col-start-6 lg:row-start-1">
+        <div className="smena-comparison rounded-3xl border border-gray-200 overflow-hidden l-glass shadow-lg lg:col-span-7 lg:col-start-6 lg:row-start-1">
           <div className="grid grid-cols-2">
             <div className="bg-gray-50 px-4 py-3 border-b border-r border-gray-200">
-              <p className="font-bold font-oswald uppercase text-gray-500 text-sm lg:text-base">Обычная работа</p>
+              <p className="font-bold text-gray-500 text-sm lg:text-base">Обычная работа</p>
             </div>
             <div className="bg-green-600 px-4 py-3 border-b border-green-600">
-              <p className="font-bold font-oswald uppercase text-[var(--on-accent)] text-sm lg:text-base">Яндекс Смена</p>
+              <p className="font-bold text-[var(--on-accent)] text-sm lg:text-base">Яндекс Смена</p>
             </div>
           </div>
           {[
@@ -237,14 +233,14 @@ const ShiftTypes = () => (
         title="Какие смены бывают"
         subtitle="Список зависит от вашего города и дня. Начать можно с самой простой смены, а дальше выбирать то, что понравилось."
       />
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+      <div className="direction-shift-grid mt-10">
         {SHIFTS.map(shift => (
-          <div key={shift.title} className="l-glass p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+          <div key={shift.title} className="direction-shift-card l-glass p-5 rounded-2xl border border-gray-100 flex flex-col">
             <div className="w-12 h-12 rounded-xl bg-green-50 text-green-800 flex items-center justify-center mb-4">
               {shift.icon}
             </div>
-            <h3 className="text-lg font-bold font-oswald uppercase leading-tight mb-1">{shift.title}</h3>
-            <p className="text-green-800 font-bold font-oswald text-xl mb-2">{shift.pay}</p>
+            <h3 className="text-lg font-bold leading-tight mb-1">{shift.title}</h3>
+            <p className="text-green-800 font-bold text-xl mb-2">{shift.pay}</p>
             <p className="text-gray-600 text-sm leading-relaxed flex-grow">{shift.text}</p>
           </div>
         ))}
@@ -292,7 +288,7 @@ const FirstShift = () => (
         title="Как пройдёт ваша первая смена"
         subtitle="Самый частый страх — «я приду и не буду понимать, что делать». Вот как это выглядит на самом деле."
       />
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 lg:gap-6">
+      <div className="direction-steps direction-steps--five mt-10">
         {[
           { n: '01', title: 'Заявка и звонок', text: 'Оставляете заявку — менеджер звонит, объясняет формат и помогает с самозанятостью.' },
           { n: '02', title: 'Доступ к сменам', text: 'Помогаем оформиться и получить доступ, показываем, где смотреть смены и как их брать.' },
@@ -300,9 +296,9 @@ const FirstShift = () => (
           { n: '04', title: 'На месте', text: 'Приходите к указанному времени, вас встречают и объясняют задачу. Опыт не нужен.' },
           { n: '05', title: 'Оплата', text: 'Смена закрыта — оплата уходит вам. Дальше решаете сами, брать ли ещё.' },
         ].map(step => (
-          <div key={step.n} className="relative p-5 rounded-2xl l-glass border border-gray-100 shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300">
-            <span className="text-3xl font-bold font-oswald text-green-800/20 leading-none">{step.n}</span>
-            <h3 className="text-base font-bold font-oswald uppercase mt-2 mb-2 leading-tight">{step.title}</h3>
+          <div key={step.n} className="direction-step">
+            <span className="direction-step-number">{step.n}</span>
+            <h3 className="text-base font-bold mt-2 mb-2 leading-tight">{step.title}</h3>
             <p className="text-gray-600 text-sm leading-relaxed">{step.text}</p>
           </div>
         ))}
@@ -327,7 +323,7 @@ const Requirements = () => (
             subtitle="Резюме, опыт и знакомства не нужны. Нужны совершеннолетие, документы и желание выйти на смену — остальное поможем оформить."
           />
           <div className="mt-7 rounded-2xl bg-green-100 border border-green-200 p-5">
-            <p className="font-bold text-green-800 font-oswald text-xl uppercase mb-1">Медкнижка — бесплатно</p>
+            <p className="font-bold text-green-800 text-xl mb-1">Медкнижка — бесплатно</p>
             <p className="text-gray-600 text-sm">
               Нужна для смен, где есть контакт с продуктами и едой. Оформление берём на себя,
               вам платить не придётся.
@@ -390,14 +386,14 @@ const WhyUs = () => (
 /* ─────────────────────────────  ЧЕСТНО  ───────────────────────────── */
 
 const Honest = () => (
-  <Section className="bg-slate-900 text-white">
+  <Section className="direction-honest">
     <div className="container mx-auto">
-      <div className="max-w-4xl mx-auto lg:max-w-none">
+      <div className="direction-honest-panel">
         <div className="flex items-center gap-3 mb-5">
           <span className="w-11 h-11 rounded-xl bg-green-600/20 flex items-center justify-center shrink-0">
             <ShieldCheck className="text-green-400" size={24} />
           </span>
-          <h2 className="text-2xl lg:text-3xl font-bold uppercase font-oswald leading-tight">Честно: как это оформляется</h2>
+          <h2 className="text-2xl lg:text-3xl font-bold leading-tight">Честно: как это оформляется</h2>
         </div>
         <p className="text-gray-300 leading-relaxed mb-6 lg:max-w-3xl">
           Смены — это <strong className="text-white">не трудоустройство</strong>. Вы работаете как
@@ -411,8 +407,8 @@ const Honest = () => (
             { title: 'Отпускных и больничных нет', text: 'Так устроен режим самозанятости по закону — это обратная сторона свободного графика.' },
             { title: 'Смены нужно закрывать', text: 'Взяли смену — на вас рассчитывают. Постоянные неявки закроют доступ к сменам.' },
           ].map(item => (
-            <div key={item.title} className="bg-slate-800/80 border border-slate-700 rounded-2xl p-5">
-              <p className="font-bold font-oswald text-lg mb-1.5 text-green-400">{item.title}</p>
+            <div key={item.title} className="direction-honest-card rounded-2xl p-5">
+              <p className="font-bold text-lg mb-1.5 text-green-400">{item.title}</p>
               <p className="text-gray-300 text-sm leading-relaxed">{item.text}</p>
             </div>
           ))}
@@ -453,7 +449,7 @@ const Reviews = () => (
                 {review.emoji}
               </div>
               <div>
-                <p className="font-bold font-oswald">{review.name}</p>
+                <p className="font-bold ">{review.name}</p>
                 <p className="text-xs text-gray-500">{review.role}</p>
               </div>
             </div>

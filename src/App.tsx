@@ -12,6 +12,7 @@ import { ContactForm } from './components/ContactForm';
 import { Footer } from './components/Footer';
 import { ToastProvider } from './components/Toast';
 import { Benefits, Bonuses, TariffsPreview } from './components/HomeSections';
+import { useHomeReveals } from './hooks/useHomeReveals';
 import './home.css';
 
 const Vacancies = lazy(() => import('./components/Vacancies').then(m => ({ default: m.Vacancies })));
@@ -29,6 +30,7 @@ const CookieBanner = lazy(() => import('./components/CookieBanner').then(m => ({
 
 export const App = () => {
   const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
+  const mainRef = useHomeReveals();
 
   // Состояние для юридических модалок
   const [legalModalType, setLegalModalType] = useState<LegalType>(null);
@@ -52,7 +54,7 @@ export const App = () => {
 
       <div className="site-header-spacer" aria-hidden="true"></div>
 
-      <main>
+      <main ref={mainRef}>
         <Hero />
         <Benefits />
         <Partners />
