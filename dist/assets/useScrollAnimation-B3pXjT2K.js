@@ -1,1 +1,0 @@
-import{a as r}from"./vendor-motion-CgKT7xo3.js";const f=(t=.1)=>{const n=r.useRef(null),[i,u]=r.useState(!1);return r.useEffect(()=>{const s=new IntersectionObserver(([o])=>{o.isIntersecting&&(u(!0),s.unobserve(o.target))},{threshold:t}),e=n.current;return e&&s.observe(e),()=>{e&&s.unobserve(e)}},[t]),{ref:n,isVisible:i}};export{f as u};

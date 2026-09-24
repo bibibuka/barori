@@ -11,14 +11,15 @@ import { Steps } from './components/Steps';
 import { ContactForm } from './components/ContactForm';
 import { Footer } from './components/Footer';
 import { ToastProvider } from './components/Toast';
+import { Benefits, Bonuses, TariffsPreview } from './components/HomeSections';
+import './home.css';
 
 const Vacancies = lazy(() => import('./components/Vacancies').then(m => ({ default: m.Vacancies })));
 const Reviews = lazy(() => import('./components/Reviews').then(m => ({ default: m.Reviews })));
+const ScrollCar = lazy(() => import('./components/ScrollCar').then(m => ({ default: m.ScrollCar })));
 
 // Lazy-loaded components (не нужны при первой загрузке)
 const SeoLandingContent = lazy(() => import('./components/SeoLandingContent').then(m => ({ default: m.SeoLandingContent })));
-const MobileApp = lazy(() => import('./components/MobileApp').then(m => ({ default: m.MobileApp })));
-const ScrollCar = lazy(() => import('./components/ScrollCar').then(m => ({ default: m.ScrollCar })));
 const KnowledgeModal = lazy(() => import('./components/KnowledgeModal').then(m => ({ default: m.KnowledgeModal })));
 // Импортируем тип LegalType отдельно (tree-shakeable)
 type LegalType = import('./components/LegalModal').LegalType;
@@ -42,7 +43,7 @@ export const App = () => {
 
   return (
     <ToastProvider>
-    <div className="min-h-screen bg-white">
+    <div className="home-site min-h-screen">
       <Suspense fallback={null}>
         <ScrollCar />
       </Suspense>
@@ -53,17 +54,23 @@ export const App = () => {
 
       <main>
         <Hero />
-        <About />
-        <Tariffs />
-        <Suspense fallback={null}>
-          <Vacancies />
-        </Suspense>
+        <Benefits />
         <Partners />
-        <Schedule />
+        {/* Одна полоса фона на две секции, чтобы узор не рвался на стыке */}
+        <div className="home-band">
+          <Suspense fallback={null}>
+            <Vacancies />
+          </Suspense>
+          <TariffsPreview />
+        </div>
         <Suspense fallback={null}>
           <Reviews />
         </Suspense>
         <Steps />
+        <Schedule />
+        <Tariffs calculatorOnly />
+        <About />
+        <Bonuses />
         <Suspense fallback={null}>
           <SeoLandingContent />
         </Suspense>
@@ -71,9 +78,6 @@ export const App = () => {
         <ContactForm
             onOpenLegal={handleOpenLegal}
         />
-        <Suspense fallback={null}>
-          <MobileApp />
-        </Suspense>
       </main>
 
       {/* Передаем функцию открытия документов в футер */}

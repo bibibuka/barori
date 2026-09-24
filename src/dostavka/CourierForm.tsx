@@ -17,11 +17,11 @@ import {
   SELF_EMPLOYMENT_OPTIONS,
   validateCourierLead,
 } from './lead';
-import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
-const DELIVERY_SERVICE_OPTIONS = DIRECTION_PREFERENCES.delivery.map(option => ({
-  value: option.label as CourierService,
-  label: option.label,
+
+const DELIVERY_SERVICE_OPTIONS = (['Подберите мне', 'Яндекс Доставка', 'Купер', 'TopGo'] as CourierService[]).map(service => ({
+  value: service,
+  label: service,
 }));
 
 export interface CourierFormController {

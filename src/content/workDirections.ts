@@ -13,6 +13,7 @@ export interface WorkDirection {
   category: string;
   title: string;
   salary: string;
+  note?: string;
   image: string;
   description: string[];
   services: string[];
@@ -25,11 +26,12 @@ export const WORK_DIRECTIONS: WorkDirection[] = [
     id: 'delivery',
     category: 'Доставка',
     title: 'Доставка заказов',
-    salary: 'Условия зависят от сервиса и города',
+    salary: '4 000 – 7 000 ₽ за день',
+    note: 'Формат и сервис подберем под ваш город и транспорт.',
     image: deliveryImage,
     description: [
-      'Посылки, продукты и заказы из магазинов, экспресс- и грузовая доставка.',
-      'Подберём сервис и формат под ваш город и транспорт.',
+      'Посылки, продукты и заказы из магазинов, грузы.',
+      'Экспресс-доставка и плановые заказы по городу.',
     ],
     services: ['Яндекс Доставка', 'Купер', 'TopGo'],
     formats: ['Пешком', 'Вело и самокат', 'Автомобиль'],
@@ -39,11 +41,12 @@ export const WORK_DIRECTIONS: WorkDirection[] = [
     id: 'smena',
     category: 'Подработка',
     title: 'Подработка по сменам',
-    salary: 'Смены разной длительности в доступных городах',
+    salary: '2 000 – 4 000 ₽ за смену',
+    note: 'Выплаты уже на следующий день. Без собеседований.',
     image: deliveryImage,
     description: [
-      'Касса, сборка заказов, склад, выкладка, кухня, ПВЗ и клининг.',
-      'Выбирайте подходящие задания и совмещайте с основной работой или учёбой.',
+      'Разовые подработки на складах, кассах и кухнях партнёров.',
+      'Вы сами выбираете удобные смены и объекты.',
     ],
     services: ['Яндекс Смена'],
     formats: ['Сборка', 'Касса', 'Склад', 'Кухня', 'Клининг'],
@@ -53,21 +56,22 @@ export const WORK_DIRECTIONS: WorkDirection[] = [
     id: 'taxi',
     category: 'Такси',
     title: 'Водитель такси',
-    salary: 'На своём или арендованном автомобиле',
+    salary: '4 500 – 12 000 ₽ за смену',
+    note: 'Выплаты доступны каждый день.',
     image: deliveryImage,
     description: [
-      'Подключение к заказам Яндекс Такси через Барори Парк.',
-      'Можно работать на своём автомобиле или подобрать аренду.',
+      'Подключение к заказам Яндекс Такси через Барори Парк — поможем с самозанятостью и документами.',
+      '',
     ],
     services: ['Яндекс Такси'],
-    formats: ['Свой автомобиль', 'Аренда автомобиля'],
+    formats: ['Стаж от 3 лет', 'Свой автомобиль', 'Аренда автомобиля'],
     href: '/taxi/',
   },
   {
     id: 'eda',
     category: 'Доставка еды',
     title: 'Курьер Яндекс Еды',
-    salary: 'Свободные и плановые слоты',
+    salary: '',
     image: courierImage,
     description: [
       'Доставка заказов из ресторанов и магазинов в удобной локации.',
@@ -81,13 +85,13 @@ export const WORK_DIRECTIONS: WorkDirection[] = [
 
 export const DIRECTION_PREFERENCES: Record<WorkDirectionId, ChoiceOption[]> = {
   delivery: [
-    { value: 'match', label: 'Подберите мне' },
-    { value: 'yandex-delivery', label: 'Яндекс Доставка' },
-    { value: 'kuper', label: 'Купер' },
-    { value: 'topgo', label: 'TopGo' },
+    { value: 'walk', label: 'Пешком' },
+    { value: 'bike', label: 'Вело или самокат' },
+    { value: 'car', label: 'Автомобиль' },
+    { value: 'undecided', label: 'Пока не решил' },
   ],
   smena: [
-    { value: 'any', label: 'Любая доступная' },
+    { value: 'any', label: 'Любые доступные' },
     { value: 'picking', label: 'Сборка' },
     { value: 'cashier', label: 'Касса' },
     { value: 'warehouse', label: 'Склад и выкладка' },
@@ -95,20 +99,20 @@ export const DIRECTION_PREFERENCES: Record<WorkDirectionId, ChoiceOption[]> = {
     { value: 'cleaning', label: 'Клининг' },
   ],
   taxi: [
-    { value: 'own-car', label: 'Свой автомобиль' },
+    { value: 'own-car', label: 'На своём автомобиле' },
     { value: 'rental', label: 'Нужна аренда' },
     { value: 'undecided', label: 'Пока не решил' },
   ],
   eda: [
     { value: 'walk', label: 'Пешком' },
-    { value: 'bike', label: 'Велосипед или самокат' },
+    { value: 'bike', label: 'Вело или самокат' },
     { value: 'car', label: 'Автомобиль' },
     { value: 'undecided', label: 'Пока не решил' },
   ],
 };
 
 export const DEFAULT_PREFERENCE: Record<WorkDirectionId, string> = {
-  delivery: 'match',
+  delivery: 'undecided',
   smena: 'any',
   taxi: 'undecided',
   eda: 'undecided',
@@ -131,9 +135,7 @@ export const getWorkSelection = (direction: WorkDirectionId, preference: string)
 
   return {
     position: workDirection.title,
-    department: direction === 'delivery' && preferenceLabel !== 'Подберите мне'
-      ? preferenceLabel
-      : workDirection.services[0],
+    department: workDirection.services[0],
     preference: preferenceLabel,
   };
 };

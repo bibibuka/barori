@@ -19,14 +19,14 @@ const smenaHtml = renderToStaticMarkup(createElement(SmenaForm));
 
 test('taxi asks only for the relevant vehicle setup', () => {
   assert.match(taxiHtml, /Какой автомобиль будет у вас/);
-  assert.match(taxiHtml, /Свой автомобиль/);
+  assert.match(taxiHtml, /На своём автомобиле/);
   assert.match(taxiHtml, /Нужна аренда/);
   assert.match(taxiHtml, /Пока не решил/);
 });
 
 test('Yandex Smena asks for the preferred shift type', () => {
   assert.match(smenaHtml, /Какие смены интересуют/);
-  assert.match(smenaHtml, /Любая доступная/);
+  assert.match(smenaHtml, /Любые доступные/);
   assert.match(smenaHtml, /Склад и выкладка/);
   assert.match(smenaHtml, /Клининг/);
 });

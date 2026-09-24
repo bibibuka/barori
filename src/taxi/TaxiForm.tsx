@@ -12,7 +12,7 @@ import {
 } from '../landing/kit';
 import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
-type TaxiVehicle = 'Свой автомобиль' | 'Нужна аренда' | 'Пока не решил';
+type TaxiVehicle = 'На своём автомобиле' | 'Нужна аренда' | 'Пока не решил';
 const VEHICLE_OPTIONS = DIRECTION_PREFERENCES.taxi.map(option => ({
   value: option.label as TaxiVehicle,
   label: option.label,

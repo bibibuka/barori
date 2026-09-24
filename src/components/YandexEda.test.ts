@@ -58,9 +58,9 @@ test('the applicant form uses two compact selects for direction and its relevant
   assert.match(formHtml, /Подработка по сменам/);
   assert.match(formHtml, /Водитель такси/);
   assert.match(formHtml, /Курьер Яндекс Еды/);
-  assert.match(formHtml, /Какой сервис вам подходит/);
-  assert.match(formHtml, /Подберите мне/);
-  assert.doesNotMatch(formHtml, /Любая доступная/);
+  assert.match(formHtml, /Как будете доставлять/);
+  assert.match(formHtml, /Пока не решил/);
+  assert.doesNotMatch(formHtml, /Любые доступные/);
 });
 
 test('the optional message starts as one line and is prepared to grow with its content', () => {
@@ -75,7 +75,7 @@ test('the contact form uses compact responsive rows and a collapsed age note', (
   assert.match(formHtml, /data-testid="contact-direction-preference"[^>]+sm:grid-cols-2/);
   assert.ok(formHtml.indexOf('id="contact-name"') < formHtml.indexOf('id="contact-city"'));
   assert.ok(formHtml.indexOf('id="contact-city"') < formHtml.indexOf('id="contact-phone"'));
-  assert.match(formHtml, /<details[^>]+>.*<summary[^>]+>.*16\+.*Возраст и документы/s);
+  assert.match(formHtml, /<details[^>]+>.*<summary[^>]+>.*18\+.*Возраст и документы/s);
   assert.match(formHtml, /Большинство направлений — с 18 лет/);
 });
 
@@ -86,10 +86,10 @@ test('every direction has the approved follow-up choices and support has the exa
         .map(([key, options]) => [key, options.map(option => option.label)]),
     ),
     {
-      delivery: ['Подберите мне', 'Яндекс Доставка', 'Купер', 'TopGo'],
-      smena: ['Любая доступная', 'Сборка', 'Касса', 'Склад и выкладка', 'Кухня', 'Клининг'],
-      taxi: ['Свой автомобиль', 'Нужна аренда', 'Пока не решил'],
-      eda: ['Пешком', 'Велосипед или самокат', 'Автомобиль', 'Пока не решил'],
+      delivery: ['Пешком', 'Вело или самокат', 'Автомобиль', 'Пока не решил'],
+      smena: ['Любые доступные', 'Сборка', 'Касса', 'Склад и выкладка', 'Кухня', 'Клининг'],
+      taxi: ['На своём автомобиле', 'Нужна аренда', 'Пока не решил'],
+      eda: ['Пешком', 'Вело или самокат', 'Автомобиль', 'Пока не решил'],
     },
   );
   assert.deepEqual(EMPLOYEE_SERVICES, [

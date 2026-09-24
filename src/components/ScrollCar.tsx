@@ -24,7 +24,7 @@ export const ScrollCar = () => {
   const xRange = useTransform(scaleX, [0, 1], ["0%", "90%"]);
 
   return (
-    <div className="hidden lg:block fixed bottom-0 left-0 w-full z-40 pointer-events-none h-16 overflow-hidden">
+    <div className="scroll-car hidden lg:block fixed bottom-0 left-0 w-full z-40 pointer-events-none h-16 overflow-hidden" aria-hidden="true">
       {/* Track line (road) */}
       <div className="absolute bottom-0 w-full h-2 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-400">
         {/* Road markings */}
@@ -39,7 +39,7 @@ export const ScrollCar = () => {
         style={{ left: xRange }}
         animate={{ scaleX: isScrollingUp ? -1 : 1 }}
         transition={{ scaleX: { duration: 0.2 } }}
-        className="absolute bottom-2 w-20 h-12 will-change-transform"
+        className="scroll-car__vehicle absolute bottom-2 w-20 h-12 will-change-transform"
       >
         {/* Car SVG - Delivery Van */}
         <svg viewBox="0 0 64 40" fill="none" className="w-full h-full drop-shadow-lg" xmlns="http://www.w3.org/2000/svg">

@@ -29,7 +29,7 @@ export const SELF_EMPLOYMENT_OPTIONS: { value: EdaSelfEmployment; label: string 
 ];
 
 const TRANSPORT_OPTIONS = DIRECTION_PREFERENCES.eda.map(option => ({
-  value: option.label as EdaTransport,
+  value: (option.value === 'bike' ? 'Велосипед или самокат' : option.label) as EdaTransport,
   label: option.label,
 }));
 

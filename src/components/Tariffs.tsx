@@ -244,7 +244,8 @@ const PARK_TARIFFS: TariffItem[] = [
   },
 ];
 
-export const Tariffs: React.FC = () => {
+export const Tariffs = ({ calculatorOnly = false }: { calculatorOnly?: boolean }) => {
+  const CalculatorHeading = calculatorOnly ? 'h2' : 'h3';
   // Выбор типа занятости: 'smz' (Самозанятый/ИП) или 'park' (Парковый сотрудник)
   const [employmentType, setEmploymentType] = useState<EmploymentType>('smz');
 
@@ -288,9 +289,7 @@ export const Tariffs: React.FC = () => {
     
     // Экономия между начальной и максимальной ставкой при снижении
     const isFixed = tariff.isFixed;
-    const monthlySavings = isFixed 
-      ? Math.round((monthlyRevenue * (10 - (tariff.fixedRate || tariff.minRate))) / 100) // выгода по сравнению со средней комиссией 10%
-      : standardParkFee - loyalParkFee;
+    const monthlySavings = standardParkFee - loyalParkFee;
     const yearlySavings = monthlySavings * 12;
 
     return {
@@ -311,7 +310,7 @@ export const Tariffs: React.FC = () => {
   };
 
   return (
-    <section id="tariffs" className="py-16 lg:py-24 bg-gradient-to-b from-white via-green-50/20 to-white relative overflow-hidden">
+    <section id={calculatorOnly ? "calculator" : "tariffs"} data-home-calculator={calculatorOnly || undefined} className="py-16 lg:py-24 bg-gradient-to-b from-white via-green-50/20 to-white relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 -right-24 w-96 h-96 bg-green-200/20 rounded-full blur-3xl" />
@@ -319,6 +318,7 @@ export const Tariffs: React.FC = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
+        {!calculatorOnly && <>
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
@@ -334,6 +334,7 @@ export const Tariffs: React.FC = () => {
         </div>
 
         {/* ========================================================================= */}
+        </>}
         {/* EMPLOYMENT TYPE SELECTOR TOGGLE (САМОЗАНЯТЫЙ / ИП VS ПАРКОВЫЙ СОТРУДНИК) */}
         {/* ========================================================================= */}
         <div className="max-w-2xl mx-auto mb-8">
@@ -416,6 +417,7 @@ export const Tariffs: React.FC = () => {
         {/* УТВЕРЖДЕННЫЙ ВАРИАНТ: СВОДНАЯ ТАБЛИЦА СТАВОК + КАЛЬКУЛЯТОР ЭКОНОМИИ */}
         {/* ========================================================================= */}
         <div className="space-y-10">
+          {!calculatorOnly && <>
           {/* Сводная таблица */}
           <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
             {/* Header таблицы */}
@@ -542,9 +544,10 @@ export const Tariffs: React.FC = () => {
           </div>
 
           {/* ========================================================================= */}
+          </>}
           {/* ИНТЕРАКТИВНЫЙ КАЛЬКУЛЯТОР ВЫГОДЫ */}
           {/* ========================================================================= */}
-          <div className="bg-gradient-to-br from-slate-900 via-gray-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-emerald-500/20 relative overflow-hidden">
+          <div className="home-calculator-panel bg-gradient-to-br from-slate-900 via-gray-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-emerald-500/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
@@ -552,23 +555,24 @@ export const Tariffs: React.FC = () => {
               <div className="lg:col-span-7 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">
                   <Zap size={14} className="text-emerald-400" />
-                  Калькулятор чистой выгоды ({employmentType === 'smz' ? 'СМЗ / ИП' : 'Парковый'})
+                  Калькулятор заработка ({employmentType === 'smz' ? 'СМЗ / ИП' : 'Парковый'})
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-bold font-oswald uppercase text-white leading-tight">
+                <CalculatorHeading className="text-2xl sm:text-3xl font-bold font-oswald uppercase text-white leading-tight">
                   Сколько денег останется в вашем кармане?
-                </h3>
+                </CalculatorHeading>
 
                 {/* Выбор сервиса */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2.5">
+                  <p className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2.5">
                     Выберите сервис для расчёта:
-                  </label>
+                  </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
                     {currentTariffs.map((t) => (
                       <button
                         type="button"
                         key={t.id}
+                        aria-pressed={selectedCalcTariff === t.id}
                         onClick={() => setSelectedCalcTariff(t.id)}
                         className={`py-2.5 px-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
                           selectedCalcTariff === t.id
@@ -584,7 +588,7 @@ export const Tariffs: React.FC = () => {
 
                 {/* Ползунок оборота */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="home-revenue-label flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">
                       Ваш ориентировочный оборот в месяц:
                     </span>
@@ -611,7 +615,7 @@ export const Tariffs: React.FC = () => {
               </div>
 
               {/* Правая часть: Карточка результата */}
-              <div className="lg:col-span-5 bg-white/10 backdrop-blur-xl rounded-2xl p-6 sm:p-7 border border-white/20 flex flex-col justify-between space-y-6">
+              <div className="home-calculator-result lg:col-span-5 bg-white/10 backdrop-blur-xl rounded-2xl p-6 sm:p-7 border border-white/20 flex flex-col justify-between space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-gray-300 font-semibold">
@@ -622,6 +626,11 @@ export const Tariffs: React.FC = () => {
                     </span>
                   </div>
 
+                  <div className="py-3" aria-live="polite" aria-atomic="true">
+                    <span className="block text-xs text-gray-300">После комиссии парка, при минимальной ставке</span>
+                    <output className="block font-oswald text-4xl font-bold text-green-400">{(monthlyRevenue - calcData.loyalParkFee).toLocaleString('ru-RU')} ₽</output>
+                    <p className="mt-2 text-xs leading-relaxed text-gray-300">Ориентировочный расчет. Налоги, расходы и комиссия сервиса не учтены. Условия снижения ставки зависят от активности.</p>
+                  </div>
                   <div className="grid grid-cols-2 gap-3 py-3 border-y border-white/10 my-2">
                     <div>
                       <span className="text-[11px] text-gray-400 block">
@@ -644,7 +653,7 @@ export const Tariffs: React.FC = () => {
 
                 <div>
                   <span className="text-xs text-gray-300 uppercase tracking-wider block mb-1">
-                    {calcData.isFixed ? 'Экономия vs рынок (10%):' : 'Ваша экономия в месяц:'}
+                    {calcData.isFixed ? 'Экономия от активности при фиксированной ставке:' : 'Экономия при снижении комиссии в месяц:'}
                   </span>
                   <div className="text-3xl sm:text-4xl font-extrabold font-oswald text-green-400">
                     +{calcData.monthlySavings.toLocaleString('ru-RU')} ₽
@@ -667,6 +676,7 @@ export const Tariffs: React.FC = () => {
           </div>
         </div>
 
+        {!calculatorOnly && <>
         {/* Bottom Trust Guarantee Badge */}
         <div className="mt-12 max-w-4xl mx-auto rounded-2xl bg-white border border-green-200 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-left">
@@ -691,6 +701,7 @@ export const Tariffs: React.FC = () => {
             Оставить заявку
           </button>
         </div>
+        </>}
       </div>
     </section>
   );

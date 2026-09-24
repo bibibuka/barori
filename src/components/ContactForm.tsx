@@ -36,6 +36,7 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
     preference: DEFAULT_PREFERENCE.delivery,
     city: '',
     message: '',
+    additionalDirections: [] as WorkDirectionId[],
     soglasie: false,
   });
 
@@ -75,18 +76,28 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
       data.append('phone', currentData.phone);
       data.append('type', currentData.type);
       data.append('status', currentData.status === 'employee' ? 'Я уже работаю' : 'Хочу устроиться');
+      data.append('city', currentData.city.trim());
+      const additionalDirections = currentData.status === 'applicant'
+        ? WORK_DIRECTIONS.filter(item => currentData.additionalDirections.includes(item.id)).map(item => item.title)
+        : [];
+      data.append('additional_directions', additionalDirections.join(', '));
+      // Keep new fields in the message too: the existing PHP handler forwards this field to the manager.
+      const extraDetails = [
+        additionalDirections.length ? `Также интересны: ${additionalDirections.join(', ')}` : '',
+      ].filter(Boolean);
+
       if (currentData.status === 'employee') {
         data.append('department', currentData.department);
-        data.append('problem', currentData.problem);
+        data.append('problem', [currentData.problem.trim(), `Город: ${currentData.city.trim()}`, ...extraDetails].join('\n'));
       } else {
         const selection = getWorkSelection(currentData.direction, currentData.preference);
         data.append('position', selection.position);
         data.append('department', selection.department);
-        data.append('city', currentData.city);
         data.append('message', [
           `Направление: ${selection.position}`,
           `Предпочтение: ${selection.preference}`,
           currentData.message.trim(),
+          ...extraDetails,
         ].filter(Boolean).join('\n'));
       }
       // Отправляем РЕАЛЬНОЕ значение чекбокса, а не хардкод (ст. 9 ФЗ-152: согласие должно быть
@@ -105,7 +116,7 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
       await requireLeadSuccess(response);
       setStatus('success');
       trackGoal('lead_success', { type: currentData.type });
-      setFormData(prev => ({ ...prev, name: '', phone: '', department: '', problem: '', city: '', message: '' }));
+      setFormData(prev => ({ ...prev, name: '', phone: '', department: '', problem: '', city: '', message: '', additionalDirections: [], soglasie: false }));
       showToast('Спасибо за заявку! Наш оператор свяжется с вами в ближайшее время!', 'success');
     } catch (error) {
       console.error('Ошибка отправки:', error);
@@ -135,16 +146,14 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
       return;
     }
 
+    if (!formData.city.trim()) {
+      showToast('Пожалуйста, укажите город', 'error');
+      return;
+    }
     if (formData.status === 'employee') {
       if (!formData.department || !formData.problem) {
         trackGoal('lead_validation_error', { reason: 'employee_fields' });
         showToast('Пожалуйста, выберите сервис и опишите проблему', 'error');
-        return;
-      }
-    } else {
-      if (!formData.city) {
-        trackGoal('lead_validation_error', { reason: 'applicant_fields' });
-        showToast('Пожалуйста, укажите город', 'error');
         return;
       }
     }
@@ -168,7 +177,7 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
       if (target.name === 'direction') {
         const direction = value as WorkDirectionId;
         trackGoal('lead_direction_select', { direction });
-        return { ...prev, direction, preference: DEFAULT_PREFERENCE[direction] };
+        return { ...prev, direction, preference: DEFAULT_PREFERENCE[direction], additionalDirections: prev.additionalDirections.filter(item => item !== direction) };
       }
       if (target.name === 'preference') {
         trackGoal('lead_preference_select', { direction: prev.direction, preference: String(value) });
@@ -180,20 +189,20 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
 
   const isLoading = status === 'sending' || status === 'validating';
   const preferenceLegend: Record<WorkDirectionId, string> = {
-    delivery: 'Какой сервис вам подходит?',
-    smena: 'Какие смены вам подходят?',
-    taxi: 'На каком автомобиле планируете работать?',
+    delivery: 'Как будете доставлять?',
+    smena: 'Какие смены вас интересуют?',
+    taxi: 'На каком автомобиле будете работать?',
     eda: 'Как будете доставлять?',
   };
   const selectClass = 'w-full appearance-none rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 pr-11 text-sm font-semibold text-gray-800 outline-none transition-colors hover:border-green-300 focus:border-green-600 focus:ring-4 focus:ring-green-100';
 
   return (
-    <section id="order" className="py-6 lg:py-10 scroll-mt-28 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
+    <section id="order" className="py-12 lg:py-16 scroll-mt-28 bg-gradient-to-br from-green-50 via-green-50/30 to-white">
       <div className="container mx-auto px-4">
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+        <div className="home-form-card bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
           
           {/* Левая часть с картинкой */}
-          <div className="h-32 sm:h-36 lg:h-auto lg:w-1/2 relative bg-green-600 flex flex-col justify-center p-3 lg:p-6 overflow-hidden">
+          <div className="home-form-story min-h-48 lg:h-auto lg:w-5/12 relative bg-green-600 flex flex-col justify-end p-6 lg:p-10 overflow-hidden">
             <img
               src={kuraImage}
               alt="Курьер"
@@ -204,23 +213,23 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
             <div className="absolute inset-0 bg-gradient-to-t from-green-700/80 to-transparent z-0"></div>
             <div className="relative z-10 text-white text-center lg:text-left">
               <h3 className="text-2xl lg:text-5xl font-bold font-oswald uppercase mb-1 lg:mb-3 leading-tight drop-shadow-md">
-                Готов начать?
+                Начать просто
               </h3>
               <p className="text-sm lg:text-xl text-green-50 opacity-90 font-light max-w-md mx-auto lg:mx-0">
-                Заполни форму и стань частью команды!
+                Заполните форму — менеджер свяжется с вами, ответит на вопросы и поможет подключиться.
               </p>
             </div>
           </div>
 
           {/* Правая часть с формой */}
-          <div className="lg:w-1/2 p-3 lg:p-8">
+          <div className="home-form-fields lg:w-7/12 p-5 lg:p-8">
             <h2 className="text-2xl lg:text-3xl font-bold font-oswald uppercase mb-1 text-gray-800 text-center lg:text-left">
               Оставить заявку
             </h2>
 
             <details className="group mb-3 rounded-lg border border-red-200 bg-red-50 text-red-700">
               <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3 py-2 text-xs sm:text-sm font-semibold leading-snug [&::-webkit-details-marker]:hidden">
-                <span className="flex-shrink-0 inline-flex items-center rounded-full bg-red-600 text-white font-bold leading-none text-xs px-2 py-1">16+</span>
+                <span className="flex-shrink-0 inline-flex items-center rounded-full bg-red-600 text-white font-bold leading-none text-xs px-2 py-1">18+</span>
                 <span className="flex-1">Возраст и документы</span>
                 <ChevronDown aria-hidden="true" size={18} className="flex-shrink-0 transition-transform group-open:rotate-180" />
               </summary>
@@ -235,10 +244,10 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
               
               <div
                 data-testid="contact-primary-fields"
-                className={`grid gap-3 ${formData.status === 'applicant' ? 'sm:grid-cols-2' : ''}`}
+                className="grid gap-3 sm:grid-cols-2"
               >
                 <div>
-                  <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-1">Ваше полное имя</label>
+                  <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-1">Ваше имя</label>
                   <input
                     type="text"
                     id="contact-name" name="name" autoComplete="name"
@@ -250,7 +259,6 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
                   />
                 </div>
 
-                {formData.status === 'applicant' && (
                   <div>
                     <label htmlFor="contact-city" className="block text-sm font-medium text-gray-700 mb-1">Город</label>
                     <input
@@ -263,7 +271,6 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
                       onChange={handleChange}
                     />
                   </div>
-                )}
 
               </div>
 
@@ -272,7 +279,7 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
                 className="grid gap-3 sm:grid-cols-2"
               >
                 <div>
-                  <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-1">Ваш телефон</label>
+                  <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
                   <input
                     type="tel"
                     id="contact-phone" name="phone" autoComplete="tel" inputMode="tel"
@@ -286,11 +293,11 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
 
                 {/* Выбор статуса */}
                 <fieldset>
-                  <legend className="block text-sm font-medium text-gray-700 mb-1">Кто вы?</legend>
+                  <legend className="block text-sm font-medium text-gray-700 mb-1">Вы уже работаете с нами?</legend>
                   <div className="grid grid-cols-2 gap-2">
                     {([
-                      { value: 'employee', label: 'Я уже работаю' },
-                      { value: 'applicant', label: 'Хочу устроиться' },
+                      { value: 'employee', label: 'Да, уже работаю' },
+                      { value: 'applicant', label: 'Нет, хочу подключиться' },
                     ] as const).map(option => (
                       <label
                         key={option.value}
@@ -390,13 +397,27 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
                     </div>
                   </div>
 
+                  <fieldset>
+                    <legend className="text-sm font-semibold text-gray-700">Какие направления еще интересны?</legend>
+                    <p className="mt-1 mb-2 text-xs text-gray-500">Можно выбрать несколько вариантов</p>
+                    <div className="flex flex-wrap gap-2">
+                      {WORK_DIRECTIONS.filter(direction => direction.id !== formData.direction).map(direction => (
+                        <label key={direction.id} className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold ${formData.additionalDirections.includes(direction.id) ? 'border-green-600 bg-green-50 text-green-800' : 'border-gray-200 text-gray-600'}`}>
+                          <input type="checkbox" name="additionalDirections" value={direction.id} checked={formData.additionalDirections.includes(direction.id)}
+                            onChange={event => { const checked = event.target.checked; setFormData(previous => ({ ...previous, additionalDirections: checked ? [...previous.additionalDirections, direction.id] : previous.additionalDirections.filter(item => item !== direction.id) })); }}
+                            className="h-3.5 w-3.5 accent-green-700" />
+                          {direction.title}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
                   <div>
-                    <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-1">Сообщение</label>
+                    <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-1">Есть вопрос или пожелание?</label>
                     <textarea
                       ref={messageRef}
                       id="contact-message" name="message"
                       rows={1}
-                      placeholder="Пара слов о себе (необязательно)"
+                      placeholder="Напишите здесь (необязательно)"
                       className="ym-disable-keys w-full overflow-hidden px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none transition-[border-color,box-shadow] resize-none"
                       value={formData.message}
                       onChange={handleChange}

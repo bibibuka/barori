@@ -1,18 +1,16 @@
 // Общий каркас страниц: навигация сайта, локальные секции и формы направлений.
 
 import { createContext, useContext, useRef, useState, lazy, Suspense } from 'react';
-import { PhoneCall, Clock, MapPin } from 'lucide-react';
+import { PhoneCall } from 'lucide-react';
 import { ToastProvider, useToast } from '../components/Toast';
 import { TelegramIcon } from '../components/TelegramIcon';
 import { Header } from '../components/Header';
-import { SiteNavigation } from '../components/SiteNavigation';
+import { Footer } from '../components/Footer';
 import { useSmartCaptcha } from '../hooks/useSmartCaptcha';
 import { requireLeadSuccess } from '../utils/leadResponse';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { trackGoal } from '../utils/analytics';
 import { CONSENT_VERSION } from '../utils/consent';
-import { resetAnalyticsConsent } from '../utils/metrika';
-import logo from '../assets/logo.webp';
 import maxIcon from '../assets/max-icon.svg';
 import vkIcon from '../assets/vk-icon.svg';
 
@@ -243,68 +241,6 @@ export const Faq = ({
 const DEFAULT_LEGAL_NOTE =
   'ООО «БАРОРИ КОР», ИНН 7814820277, ОГРН 1237800027937. Сотрудничество оформляется договором с самозанятым или ИП и не является трудовыми отношениями. Информация на странице не является публичной офертой и гарантией дохода. 18+';
 
-const Footer = ({ about, legalNote }: { about: string; legalNote: string }) => {
-  const { track, openLegal, phone } = useLanding();
-  return (
-    <footer id="contacts" className="bg-slate-900 text-white pt-14 pb-24 lg:pb-10">
-      <div className="container mx-auto">
-        <SiteNavigation footer />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          <div>
-            <img src={logo} alt="Барори Парк" className="h-12 w-auto object-contain mb-4 brightness-0 invert opacity-90" />
-            <p className="text-gray-400 text-sm leading-relaxed">{about}</p>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="font-bold font-oswald uppercase text-lg">Контакты</h3>
-            <a href={phone.href} onClick={() => track('phone_click', { place: 'footer' })} className="flex items-center gap-3 hover:text-green-400 transition-colors">
-              <PhoneCall size={18} className="text-green-500 shrink-0" />
-              <span className="font-bold">{phone.text}</span>
-            </a>
-            <Messengers place="footer" size="h-10 w-10" />
-            <p className="flex items-center gap-3 text-gray-300 text-sm">
-              <Clock size={18} className="text-green-500 shrink-0" /> Ежедневно 10:00-20:00
-            </p>
-            <p className="flex items-start gap-3 text-gray-300 text-sm">
-              <MapPin size={18} className="text-green-500 shrink-0 mt-0.5" /> Санкт-Петербург, ул. Планерная 15Б, офис 2/13
-            </p>
-            <p className="text-gray-400 text-sm">info@baroripark.ru</p>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="font-bold font-oswald uppercase text-lg">Документы</h3>
-            {([
-              { type: 'offer' as const, label: 'Публичная оферта' },
-              { type: 'policy' as const, label: 'Политика обработки персональных данных' },
-              { type: 'consent' as const, label: 'Согласие на обработку ПД' },
-            ]).map(doc => (
-              <button
-                key={doc.type}
-                onClick={() => { track('legal_open', { type: doc.type, place: 'footer' }); openLegal(doc.type); }}
-                className="block text-left text-gray-400 hover:text-white transition-colors text-sm cursor-pointer"
-              >
-                {doc.label}
-              </button>
-            ))}
-            {/* Отзыв согласия на аналитические cookie — не сложнее, чем его дать */}
-            <button
-              onClick={resetAnalyticsConsent}
-              className="block text-left text-gray-400 hover:text-white transition-colors text-sm cursor-pointer"
-            >
-              Настройки cookie
-            </button>
-          </div>
-        </div>
-
-        <div className="border-t border-slate-800 pt-6 text-xs text-gray-500 leading-relaxed space-y-2">
-          <p>{legalNote}</p>
-          <p>© 2026 Барори Парк. Все права защищены.</p>
-        </div>
-      </div>
-    </footer>
-  );
-};
-
 /* ─────────────────────────────  ОБОЛОЧКА  ───────────────────────────── */
 
 interface ShellProps {
@@ -325,7 +261,6 @@ export const LandingShell = ({
   nav,
   ctaLabel,
   stickyLabel,
-  footerAbout,
   legalNote = DEFAULT_LEGAL_NOTE,
   phone = PHONE_DELIVERY,
   children,
@@ -348,7 +283,7 @@ export const LandingShell = ({
         <div className="min-h-screen bg-white">
           <Header pageLinks={nav} phone={phone} ctaLabel={ctaLabel} onOrder={() => ctx.scrollToOrder('header')} />
           <main className="site-landing-main">{children}</main>
-          <Footer about={footerAbout} legalNote={legalNote} />
+          <Footer onOpenLegal={setLegalType} legalNote={legalNote} />
 
           {/* Липкая кнопка отклика на мобильных.
               pb учитывает home indicator iPhone — иначе кнопка лежит прямо на нём. */}

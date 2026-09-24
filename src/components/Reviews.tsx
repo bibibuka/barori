@@ -2,21 +2,29 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { Quote, Star, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Navigation, Pagination, Autoplay, A11y, Keyboard } from 'swiper/modules';
+import type { Swiper as SwiperInstance } from 'swiper';
+import { Quote, Star, ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
+
+const REVIEWS_URL = 'https://yandex.ru/maps/org/barori_park/70152279860/reviews/';
 
 export const Reviews = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<SwiperInstance | null>(null);
+  const [paused, setPaused] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  useEffect(() => {
+    if (paused || !isVisible) sliderRef.current?.autoplay.stop();
+    else sliderRef.current?.autoplay.start();
+  }, [paused, isVisible]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+        setIsVisible(entry.isIntersecting);
       },
-      { threshold: 0.4 }
+      { threshold: 0.15 }
     );
 
     if (sectionRef.current) {
@@ -27,6 +35,30 @@ export const Reviews = () => {
   }, []);
 
   const reviews = [
+    {
+      name: 'Алексей Лукас', role: 'Яндекс Карты · 29 августа', rating: 5,
+      text: 'Лояльность парка к работающему персоналу 10 из 10, поддержка 10 из 10 , сотрудничество 10 из 10.Все доходчиво объясняют и можно обратиться с любым вопросом,который решают за считаные минуты. Держите планку ребята и девчата! В современных реалиях этого не хватает от других компаний.',
+    },
+    {
+      name: 'Даша Ласюта', role: 'Яндекс Карты · 20 августа', rating: 5,
+      text: 'Просто лучшие, решили мой вопрос с задержкой выплаты, очень благодарна за быстрый ответ и результат)))',
+    },
+    {
+      name: 'тима тима', role: 'Яндекс Карты · 13 августа', rating: 5,
+      text: 'Красавцы, думал уже из доставки уходить из-за постоянных корректировок в минус баланс, но все решили быстрее чем я им написал. Круто очень',
+    },
+    {
+      name: 'Светлана Катаева', role: 'Яндекс Карты · 9 июля', rating: 5,
+      text: 'Быстро,понятно,продуктивно. Рекомендую 👍🏻',
+    },
+    {
+      name: 'Иван Евдокимов', role: 'Яндекс Карты · 18 мая', rating: 5,
+      text: 'Хороший парк , добрая поддержка , быстро отвечают',
+    },
+    {
+      name: 'Марта Батырева', role: 'Яндекс Карты · 15 мая', rating: 5,
+      text: 'Выражаю благодарность Вашему специалисту Льву. Он помог разобраться в программе. Объяснил всё доходчиво. Проявив терпение и знание вопроса. Побольше бы таких сотрудников!',
+    },
     {
       name: "Владимир Бондарь",
       role: "Знаток города 4 уровня",
@@ -58,35 +90,21 @@ export const Reviews = () => {
   ];
 
   return (
-    // Уменьшили отступ сверху для мобил (py-8)
-    <section className="py-8 lg:py-12 bg-gradient-to-br from-green-50 via-green-50/30 to-white" ref={sectionRef}>
+    <section id="reviews" aria-label="Отзывы исполнителей" className="py-8 lg:py-12 bg-gradient-to-br from-green-50 via-green-50/30 to-white" ref={sectionRef}>
       <div className="container mx-auto">
 
-        {/* Заголовок и кнопки навигации */}
-        {/* ВАЖНО: Добавил mb-6 только для ПК (lg:mb-10), чтобы на мобиле не было дырки */}
-        <div className={`flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-4 lg:mb-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-
-          {/* Кнопка Назад - скрыта на мобильном */}
-          <div className="hidden md:block">
-            <button className="review-prev flex items-center justify-center w-12 h-12 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg shadow-green-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-              <ArrowLeft size={24} />
-            </button>
-          </div>
-
-          <h2 className="text-3xl lg:text-4xl font-bold uppercase text-center">
-            Отзывы сотрудников
-          </h2>
-
-          {/* Кнопка Вперед - скрыта на мобильном */}
-          <div className="hidden md:block">
-            <button className="review-next flex items-center justify-center w-12 h-12 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg shadow-green-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-              <ArrowRight size={24} />
-            </button>
-          </div>
+        <div className="home-reviews-heading">
+          <div><p className="home-eyebrow"><span />Опыт тех, кто уже с нами</p><h2 className="home-heading">Отзывы <em>исполнителей.</em></h2></div>
+          <div className="home-review-nav"><button type="button" aria-label="Предыдущий отзыв" className="review-prev"><ArrowLeft size={22} /></button><button type="button" aria-label="Следующий отзыв" className="review-next"><ArrowRight size={22} /></button></div>
         </div>
 
         <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
+          modules={[Navigation, Pagination, Autoplay, A11y, Keyboard]}
+          onSwiper={swiper => { sliderRef.current = swiper; if (paused || !isVisible) swiper.autoplay.stop(); }}
+          onFocusCapture={() => setPaused(true)}
+          keyboard={{ enabled: true, onlyInViewport: true }}
+          a11y={{ prevSlideMessage: 'Предыдущий отзыв', nextSlideMessage: 'Следующий отзыв', paginationBulletMessage: 'Перейти к отзыву {{index}}' }}
+          loop
           spaceBetween={24}
           slidesPerView={1}
           navigation={{
@@ -94,18 +112,17 @@ export const Reviews = () => {
             nextEl: '.review-next',
           }}
           pagination={{ clickable: true }}
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          autoplay={{ delay: 6000, disableOnInteraction: false, pauseOnMouseEnter: true }}
           breakpoints={{
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },
           }}
-          className="!py-10 px-4"
+          className="!pt-5 !pb-10 px-4"
         >
           {reviews.map((review, index) => (
             <SwiperSlide key={index} className="!h-auto">
               <div
-                className={`bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-full flex flex-col relative card-3d transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-                style={{ transitionDelay: `${index * 150}ms` }}
+                className="home-review-card bg-white p-6 rounded-2xl border border-gray-100 h-full flex flex-col relative"
               >
                 <Quote size={36} className="text-green-200 absolute top-4 right-4" />
 
@@ -114,9 +131,9 @@ export const Reviews = () => {
                     <div
                       role="img"
                       aria-label={review.name}
-                      className="w-14 h-14 rounded-full flex items-center justify-center text-3xl bg-green-50 border-2 border-green-700"
+                      className="home-review-avatar w-14 h-14 rounded-full flex items-center justify-center text-base font-bold bg-green-50 border-2 border-green-700"
                     >
-                      {review.emoji}
+                      {review.name.split(' ').map(part => part[0]).slice(0, 2).join('').toUpperCase()}
                     </div>
                     <div className="absolute -bottom-1 -right-1 bg-green-700 w-4 h-4 rounded-full border-2 border-white" />
                   </div>
@@ -137,12 +154,18 @@ export const Reviews = () => {
                 </div>
 
                 <div className="flex-grow">
-                  <p className="text-gray-600 italic text-sm">"{review.text}"</p>
+                  <p className="home-review-text text-gray-600 text-sm">"{review.text}"</p>
                 </div>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
+        <div className="home-reviews-bottom flex flex-wrap items-center justify-center gap-5 pb-3 text-sm">
+          <a href={REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-green-800 underline underline-offset-4 hover:text-green-600">Посмотрите наши отзывы на Яндекс Картах ↗</a>
+          <button type="button" onClick={() => setPaused(value => !value)} aria-pressed={paused} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-green-200 bg-white px-4 text-green-800">
+            {paused ? <Play size={15} /> : <Pause size={15} />}{paused ? 'Включить автопрокрутку' : 'Приостановить автопрокрутку'}
+          </button>
+        </div>
       </div>
     </section>
   );

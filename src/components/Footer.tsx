@@ -1,6 +1,6 @@
 import { SiteNavigation } from './SiteNavigation';
 // FILE: src/components/Footer.tsx
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Phone, Mail, Clock, MapPin, Globe, ArrowUpRight, Smartphone } from 'lucide-react';
 import { LegalType } from './LegalModal';
 import { trackGoal } from '../utils/analytics';
@@ -9,10 +9,12 @@ import { resetAnalyticsConsent } from '../utils/metrika';
 
 interface FooterProps {
   onOpenLegal: (type: LegalType) => void;
+  legalNote?: string;
 }
 
-export const Footer = ({ onOpenLegal }: FooterProps) => {
+export const Footer = ({ onOpenLegal, legalNote }: FooterProps) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
     const existingScript = document.getElementById('yandex-maps-script');
@@ -37,6 +39,7 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
         });
 
         myMap.geoObjects.add(myPlacemark);
+        setMapReady(true);
       });
     };
 
@@ -60,7 +63,7 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
   };
 
   return (
-    <footer id="contacts" className="bg-slate-900 text-white pt-20 pb-8">
+    <footer id="contacts" className="site-footer bg-slate-900 text-white pt-16 pb-28 lg:pb-8">
       <div className="container mx-auto">
         <SiteNavigation footer />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
@@ -74,7 +77,9 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
                   <Phone className="text-green-600 mt-1 shrink-0" />
                   <div>
                     <a href="tel:+79219000997" onClick={() => trackGoal('phone_click', { place: 'footer' })} className="font-bold text-xl mb-1 hover:text-green-400 transition-colors inline-block">+7 (921) 900 09 97</a>
-                    <div className="text-gray-400 text-sm">Яндекс Смена, такси, доставка и биржа вакансий</div>
+                    <div className="text-gray-400 text-sm">Яндекс Смена и общие вопросы</div>
+                    <a href="tel:+79990330037" onClick={() => trackGoal('phone_click', { place: 'footer_delivery' })} className="mt-4 inline-block text-xl font-bold hover:text-green-400">+7 (999) 033 00 37</a>
+                    <div className="text-gray-400 text-sm">Такси, доставка и Яндекс Еда</div>
                   </div>
                 </div>
 
@@ -158,11 +163,21 @@ export const Footer = ({ onOpenLegal }: FooterProps) => {
           </div>
 
           {/* Right Column: Map */}
-          <div className="h-80 sm:h-96 lg:h-auto w-full rounded-2xl overflow-hidden bg-gray-800 shadow-2xl relative z-0 border border-slate-700">
-            <div ref={mapContainerRef} className="w-full h-full" />
+          <div className="footer-map-panel h-80 sm:h-96 lg:h-auto w-full rounded-2xl overflow-hidden bg-gray-800 shadow-2xl relative z-0 border border-slate-700">
+            <div className="footer-map-fallback absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+              <MapPin size={42} className="text-green-400" aria-hidden="true" />
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-green-300">Офис обслуживания</p>
+                <p className="mt-2 text-2xl font-bold leading-tight">Санкт-Петербург,<br />ул. Планерная 15Б</p>
+                <p className="mt-2 text-sm text-gray-300">2 этаж, офис 2/13 · ежедневно 10:00–20:00</p>
+              </div>
+              <a href="https://yandex.ru/maps/org/barori_park/70152279860/" target="_blank" rel="noopener noreferrer" className="footer-map-link inline-flex min-h-11 items-center gap-2 rounded-full border border-green-400/50 px-5 text-sm font-semibold text-green-300 hover:bg-green-400/10">Открыть на Яндекс Картах <ArrowUpRight size={16} aria-hidden="true" /></a>
+            </div>
+            <div ref={mapContainerRef} className={`absolute inset-0 ${mapReady ? '' : 'pointer-events-none'}`} />
           </div>
         </div>
 
+        {legalNote && <p className="mb-6 text-xs leading-relaxed text-gray-400">{legalNote}</p>}
         {/* Bottom Links */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
           <div className="text-center md:text-left">

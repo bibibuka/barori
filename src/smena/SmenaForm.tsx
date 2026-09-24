@@ -10,7 +10,7 @@ import {
 } from '../landing/kit';
 import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
-type ShiftPreference = 'Любая доступная' | 'Сборка' | 'Касса' | 'Склад и выкладка' | 'Кухня' | 'Клининг';
+type ShiftPreference = 'Любые доступные' | 'Сборка' | 'Касса' | 'Склад и выкладка' | 'Кухня' | 'Клининг';
 const SHIFT_OPTIONS = DIRECTION_PREFERENCES.smena.map(option => ({
   value: option.label as ShiftPreference,
   label: option.label,
@@ -24,7 +24,7 @@ export const SmenaForm = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
-  const [shiftPreference, setShiftPreference] = useState<ShiftPreference>('Любая доступная');
+  const [shiftPreference, setShiftPreference] = useState<ShiftPreference>('Любые доступные');
   const [selfEmployment, setSelfEmployment] = useState<'' | 'has' | 'ready'>('');
   const [consent, setConsent] = useState(false);
 

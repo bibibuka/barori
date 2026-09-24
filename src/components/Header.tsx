@@ -79,12 +79,12 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
     </div>
   );
   const orderLink = (mobile = false) => (
-    <a className={`classic-header__cta${mobile ? ' classic-header__cta--menu' : ''}`} href="#order" onClick={event => {
+    <a className={`classic-header__cta${mobile ? ' classic-header__cta--menu' : ''}`} href="#order" aria-label={mobile ? ctaLabel : `Начать — ${ctaLabel}`} onClick={event => {
       setMenuOpen(false);
       closeDropdowns();
       if (onOrder) { event.preventDefault(); onOrder(); }
       else trackGoal('cta_order_click', { place: 'header' });
-    }}>{ctaLabel}</a>
+    }}><span className="classic-header__cta-label">{ctaLabel}</span><span className="classic-header__cta-short" aria-hidden="true">Начать</span></a>
   );
 
   return (
@@ -138,6 +138,17 @@ export const Header = ({ onOpenKnowledge, phone = defaultPhone, ctaLabel = 'Ос
                 </span>
               </a>
             </div>
+            <details className="classic-header__dropdown classic-header__desktop-contact" onBlur={event => {
+              if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) event.currentTarget.open = false;
+            }}>
+              <summary>Связаться <ChevronDown size={15} /></summary>
+              <div className="classic-header__popup classic-header__popup--contact">
+                <a className="classic-header__popup-phone" href={phone.href} onClick={() => trackGoal('phone_click', { place: 'header_contacts' })}>
+                  <Phone size={20} aria-hidden="true" />{phone.text}
+                </a>
+                {contactLinks}
+              </div>
+            </details>
             {orderLink()}
             <button ref={menuButtonRef} type="button" className="classic-header__menu-button" aria-label="Открыть меню" aria-expanded={menuOpen} aria-controls="site-menu" onClick={() => { closeDropdowns(); setMenuOpen(true); }}><Menu size={25} /></button>
           </div>

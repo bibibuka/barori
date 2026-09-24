@@ -31,6 +31,7 @@
 .classic-header__cta::after { content: ''; position: absolute; inset: -2px; border: 2px solid rgba(21, 128, 61, .38); border-radius: inherit; pointer-events: none; animation: classic-cta-wave 3.4s cubic-bezier(.23, 1, .32, 1) infinite; }
 .classic-header__cta:hover { background: #166534; }
 .classic-header__cta:active { transform: scale(.97); }
+.classic-header__cta-short, .classic-header__desktop-contact { display: none; }
 .classic-header__dropdown { position: relative; }
 .classic-header summary { display: flex; align-items: center; gap: 6px; min-height: 44px; list-style: none; cursor: pointer; }
 .classic-header summary::-webkit-details-marker { display: none; }
