@@ -1,7 +1,5 @@
 // FILE: src/components/Partners.tsx
 
-import { useState } from 'react';
-import { Pause, Play } from 'lucide-react';
 import './Partners.css';
 
 import partnerLogo1 from '../assets/partners/partner-p1.webp';
@@ -15,7 +13,6 @@ import partnerLogo8 from '../assets/partners/partner-p8.webp';
 import partnerLogo10 from '../assets/partner-9111s.webp';
 
 export const Partners = () => {
-  const [isPaused, setIsPaused] = useState(false);
   const partners: { name: string; logo: string; fallback?: string }[] = [
     { name: 'Перекрёсток', logo: partnerLogo1 },
     { name: 'X5 Group', logo: partnerLogo2 },
@@ -38,7 +35,7 @@ export const Partners = () => {
         <h2 id="partners-heading">Наши партнеры</h2>
         <div
           id="partners-marquee"
-          className={`home-partners__marquee${isPaused ? ' is-paused' : ''}`}
+          className="home-partners__marquee"
           tabIndex={0}
           role="region"
           aria-label="Логотипы всех партнёров. Движение приостанавливается при наведении или фокусе."
@@ -66,18 +63,6 @@ export const Partners = () => {
               </ul>
             ))}
           </div>
-        </div>
-        <div className="home-partners__controls">
-          <button
-            type="button"
-            className="home-partners__toggle"
-            onClick={() => setIsPaused(paused => !paused)}
-            aria-controls="partners-marquee"
-            aria-label={isPaused ? 'Продолжить движение логотипов партнёров' : 'Приостановить движение логотипов партнёров'}
-          >
-            {isPaused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}
-            {isPaused ? 'Продолжить' : 'Пауза'}
-          </button>
         </div>
       </div>
     </section>
