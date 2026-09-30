@@ -17,8 +17,8 @@ import {
   Truck,
 } from 'lucide-react';
 import { Faq, LandingShell, SectionHead, useLanding } from '../landing/kit';
-import courierImage from '../assets/kura.webp';
-import heroImage from '../assets/delivery-hero.webp';
+import courierImage from '../assets/new/delivery-compare.webp';
+import heroImage from '../assets/new/delivery-route.webp';
 import { CourierFinalForm, useCourierLead } from './CourierForm';
 import { formatCampaignHeadline, readCampaignContext } from './campaign';
 import './courier-design.css';
@@ -124,9 +124,9 @@ const Hero = ({ headline }: { headline: string }) => {
         >
           <img
             src={heroImage}
-            alt="Курьеры пешего, вело- и автоформата перед началом работы"
-            width="1536"
-            height="1024"
+            alt="Пеший, вело- и автокурьеры на городском маршруте"
+            width="1672"
+            height="941"
             fetchPriority="high"
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover object-center"
@@ -285,7 +285,7 @@ const ComparisonSection = () => (
           />
           <img
             src={courierImage}
-            alt="Курьер на городском маршруте"
+            alt="Велокурьер едет по городской велодорожке"
             loading="lazy"
             decoding="async"
             className="delivery-comparison-photo mt-8 aspect-[16/9] w-full rounded-[20px] object-cover lg:aspect-[4/3]"

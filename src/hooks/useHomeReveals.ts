@@ -4,7 +4,7 @@ const REVEAL_TARGETS = [
   '.home-section-head',
   '.home-benefit-card',
   '#partners h2',
-  '.home-partners__item',
+  '.home-partners__marquee',
   '.home-direction-card',
   '.home-tariff-panel',
   '.home-reviews-heading',
@@ -23,7 +23,6 @@ const REVEAL_TARGETS = [
 
 const STAGGER_TARGETS = [
   '.home-benefit-card',
-  '.home-partners__item',
   '.home-direction-card',
   '.home-steps-grid article',
   '.home-stats article',

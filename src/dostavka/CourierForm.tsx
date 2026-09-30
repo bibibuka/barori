@@ -8,7 +8,7 @@ import {
   useLanding,
   useLeadSubmit,
 } from '../landing/kit';
-import kuraImage from '../assets/kura.webp';
+import formImage from '../assets/new/delivery-form.webp';
 import type { CampaignContext } from './campaign';
 import {
   buildCourierPayload,
@@ -210,7 +210,7 @@ export const CourierFinalForm = (controller: CourierFormController) => (
   <FormSection
     title="Подберём доставку под вас"
     lead="Оставьте контакты. Проверим направления в вашем городе и объясним условия конкретного предложения."
-    image={kuraImage}
+    image={formImage}
     minAge={16}
     bullets={[
       { icon: <Clock size={18} />, text: 'Свяжемся в рабочее время с 10:00 до 20:00' },

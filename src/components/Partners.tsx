@@ -1,5 +1,9 @@
 // FILE: src/components/Partners.tsx
 
+import { useState } from 'react';
+import { Pause, Play } from 'lucide-react';
+import './Partners.css';
+
 import partnerLogo1 from '../assets/partners/partner-p1.webp';
 import partnerLogo2 from '../assets/partners/partner-p2.webp';
 import partnerLogo3 from '../assets/partners/partner-p3.webp';
@@ -11,6 +15,7 @@ import partnerLogo8 from '../assets/partners/partner-p8.webp';
 import partnerLogo10 from '../assets/partner-9111s.webp';
 
 export const Partners = () => {
+  const [isPaused, setIsPaused] = useState(false);
   const partners: { name: string; logo: string; fallback?: string }[] = [
     { name: 'Перекрёсток', logo: partnerLogo1 },
     { name: 'X5 Group', logo: partnerLogo2 },
@@ -28,23 +33,51 @@ export const Partners = () => {
   ];
 
   return (
-    <section id="partners" className="home-partners">
+    <section id="partners" className="home-partners" aria-labelledby="partners-heading">
       <div className="container">
-        <h2>Наши партнеры</h2>
-        <div className="home-partners__grid">
-          {partners.map((partner, i) => (
-            <div className="home-partners__item" key={partner.name}>
-              <img
-                src={partner.logo}
-                alt={partner.name}
-                loading="lazy"
-                decoding="async"
-                className={`home-partners__image home-partners__image--${i + 1}`}
-                onError={partner.fallback ? event => { event.currentTarget.hidden = true; } : undefined}
-              />
-              {partner.fallback && <span className="home-partners__fallback">{partner.fallback}</span>}
-            </div>
-          ))}
+        <h2 id="partners-heading">Наши партнеры</h2>
+        <div
+          id="partners-marquee"
+          className={`home-partners__marquee${isPaused ? ' is-paused' : ''}`}
+          tabIndex={0}
+          role="region"
+          aria-label="Логотипы всех партнёров. Движение приостанавливается при наведении или фокусе."
+        >
+          <div className="home-partners__track">
+            {[false, true].map(isDuplicate => (
+              <ul
+                className="home-partners__group"
+                key={isDuplicate ? 'duplicate' : 'original'}
+                aria-hidden={isDuplicate ? true : undefined}
+                role="list"
+              >
+                {partners.map((partner, i) => (
+                  <li className="home-partners__item" key={partner.name}>
+                    <img
+                      src={partner.logo}
+                      alt={isDuplicate ? '' : partner.name}
+                      decoding="async"
+                      className={`home-partners__image home-partners__image--${i + 1}`}
+                      onError={partner.fallback ? event => { event.currentTarget.hidden = true; } : undefined}
+                    />
+                    {partner.fallback && <span className="home-partners__fallback">{partner.fallback}</span>}
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+        <div className="home-partners__controls">
+          <button
+            type="button"
+            className="home-partners__toggle"
+            onClick={() => setIsPaused(paused => !paused)}
+            aria-controls="partners-marquee"
+            aria-label={isPaused ? 'Продолжить движение логотипов партнёров' : 'Приостановить движение логотипов партнёров'}
+          >
+            {isPaused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}
+            {isPaused ? 'Продолжить' : 'Пауза'}
+          </button>
         </div>
       </div>
     </section>

@@ -22,7 +22,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { Faq, LandingShell, SectionHead, useLanding } from '../landing/kit';
-import courierImage from '../assets/kura.webp';
+import courierImage from '../assets/new/eda-route.webp';
 // Разбор utm/city из ссылки объявления — общий для рекламных лендингов парка.
 import { readCampaignContext } from '../dostavka/campaign';
 import { EdaFinalForm, EdaLeadForm, useEdaLead } from './EdaForm';
@@ -175,12 +175,12 @@ const Hero = ({ controller }: { controller: ReturnType<typeof useEdaLead> }) => 
           <figure className="eda-route-photo relative mt-8 overflow-hidden rounded-[22px] bg-green-950">
             <img
               src={courierImage}
-              alt="Курьер на городском маршруте"
-              width="1200"
-              height="675"
+              alt="Курьер с термосумкой выходит из ресторана"
+              width="1672"
+              height="941"
               fetchPriority="high"
               decoding="async"
-              className="aspect-[21/9] w-full object-cover"
+              className="aspect-[21/9] w-full object-cover object-top"
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(3,18,9,.82))] p-5 text-left text-white">
               <span className="block text-xl font-bold leading-none">Работа рядом с домом</span>

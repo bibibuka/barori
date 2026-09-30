@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { LegalType } from './LegalModal';
 import { trackGoal } from '../utils/analytics';
 import { useToast } from './Toast';
-import kuraImage from '../assets/kura.webp';
+import formImage from '../assets/new/home-form.webp';
 import { CONSENT_VERSION, MARKETING_CONSENT_VERSION } from '../utils/consent';
 import { useSmartCaptcha } from '../hooks/useSmartCaptcha';
 import { requireLeadSuccess } from '../utils/leadResponse';
@@ -227,8 +227,8 @@ export const ContactForm = ({ onOpenLegal }: ContactFormProps) => {
           {/* Левая часть с картинкой */}
           <div className="home-form-story min-h-48 lg:h-auto lg:w-5/12 relative bg-green-600 flex flex-col justify-end p-6 lg:p-10 overflow-hidden">
             <img
-              src={kuraImage}
-              alt="Курьер"
+              src={formImage}
+              alt="Координатор помогает с подключением по телефону"
               loading="lazy"
               decoding="async"
               className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 grayscale"

@@ -14,7 +14,7 @@ import {
   useLanding,
   useLeadSubmit,
 } from '../landing/kit';
-import courierImage from '../assets/kura.webp';
+import formImage from '../assets/new/eda-form.webp';
 import { DIRECTION_PREFERENCES } from '../content/workDirections';
 
 // Форма собирает минимум: контакты, город и статус самозанятого. Остальное — формат
@@ -249,7 +249,7 @@ export const EdaFinalForm = (controller: EdaFormController) => (
   <FormSection
     title="Хочу доставлять Яндекс Еду"
     lead="Оставьте контакты. Проверим, какие форматы передвижения доступны в вашем городе, и объясним порядок подключения."
-    image={courierImage}
+    image={formImage}
     bullets={[
       { icon: <Clock size={18} />, text: 'Свяжемся в рабочее время с 10:00 до 20:00' },
       { icon: <CheckCircle2 size={18} />, text: 'Расскажем про слоты, локации и работу в Яндекс Про' },
