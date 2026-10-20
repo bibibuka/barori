@@ -1,0 +1,1 @@
+import{c}from"./Footer-CqYTf4KZ.js";const e=[["circle",{cx:"18.5",cy:"17.5",r:"3.5",key:"15x4ox"}],["circle",{cx:"5.5",cy:"17.5",r:"3.5",key:"1noe27"}],["circle",{cx:"15",cy:"5",r:"1",key:"19l28e"}],["path",{d:"M12 17.5V14l-3-3 4-3 2 3h2",key:"1npguv"}]],i=c("bike",e);const o=[["path",{d:"M20 6 9 17l-5-5",key:"1gmf2c"}]],k=c("check",o);export{i as B,k as C};
